@@ -1,0 +1,12 @@
+<phpunit
+        bootstrap="vendor/autoload.php"
+        colors="true"
+        convertDeprecationsToExceptions="true"
+        convertErrorsToExceptions="true"
+        convertNoticesToExceptions="true"
+        convertWarningsToExceptions="true">
+    <testsuite name="QB Tests">
+        <directory>src</directory>
+        <directory>test</directory>
+    </testsuite>
+</phpunit>

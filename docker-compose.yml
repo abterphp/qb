@@ -1,0 +1,50 @@
+version: '3'
+services:
+  mysql:
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=84d5bSeBdYQRrq77
+      - MYSQL_DATABASE=qb
+      - MYSQL_USER=qb
+      - MYSQL_PASSWORD=kf6JdUXBHCU5Br47
+    ports:
+      - "3666:3306"
+    volumes:
+      - ./mysql-init:/docker-entrypoint-initdb.d
+
+  postgres:
+    image: postgres:alpine
+    environment:
+      - POSTGRES_DB=qb
+      - POSTGRES_USER=qb
+      - POSTGRES_PASSWORD=Y2yUc9jN4GNXfC6Y
+    ports:
+      - "5662:5432"
+    volumes:
+      - ./postgres-init:/docker-entrypoint-initdb.d
+
+  fpm:
+    image: abtercms/php:80
+    links:
+      - mysql
+      - postgres
+    environment:
+      - MYSQL_DATABASE=qb
+      - MYSQL_USER=qb
+      - MYSQL_PASSWORD=kf6JdUXBHCU5Br47
+      - POSTGRES_DB=qb
+      - POSTGRES_USER=qb
+      - POSTGRES_PASSWORD=Y2yUc9jN4GNXfC6Y
+    volumes:
+      - .:/qb
+    working_dir: /qb
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  adminer:
+    image: adminer
+    links:
+      - mysql
+      - postgres
+    ports:
+      - "8080:8080"
