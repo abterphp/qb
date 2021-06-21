@@ -9,23 +9,24 @@ use QB\Generic\IQueryPart;
 
 class Expr implements IQueryPart
 {
-    protected string $sql;
+    /** @var string|IQueryPart */
+    protected $sql;
 
     protected int $unnamedParamCount;
 
-    /** @var array<int,array<int,mixed> */
+    /** @var array<int,array<int,mixed>> */
     protected array $unnamedParams = [];
 
-    /** @var array<string,array<int,mixed> */
+    /** @var array<string,array<int,mixed>> */
     protected array $namedParams = [];
 
     /**
      * Expr constructor.
      *
-     * @param string $sql
-     * @param array  $params
+     * @param string|IQueryPart $sql
+     * @param array             $params
      */
-    public function __construct(string $sql, array $params = [])
+    public function __construct(string|IQueryPart $sql, array $params = [])
     {
         $this->sql = $sql;
 
@@ -41,9 +42,11 @@ class Expr implements IQueryPart
      */
     public function bindNamedParam(string $param, &$var, int $type = PDO::PARAM_STR)
     {
-        if (!str_contains($this->sql, $param)) {
+        $sql = (string)$this->sql;
+
+        if (!str_contains($sql, $param)) {
             throw new \InvalidArgumentException(
-                sprintf('Named param was not expected. Param: %s, SQL: %s', $param, $this->sql)
+                sprintf('Named param was not expected. Param: %s, SQL: %s', $param, $sql)
             );
         }
 
@@ -90,7 +93,7 @@ class Expr implements IQueryPart
      */
     public function __toString(): string
     {
-        return $this->sql;
+        return (string)$this->sql;
     }
 
     /**

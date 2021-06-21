@@ -1,10 +1,17 @@
 # qb
 
+[![Github Actions Build](https://github.com/abterphp/qb/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/abterphp/qb/actions)
+[![Scrutinizer Quality](https://scrutinizer-ci.com/g/abterphp/qb/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/abterphp/qb/?branch=main)
+[![Scrutinizer Build](https://scrutinizer-ci.com/g/abterphp/qb/badges/build.png?b=main)](https://scrutinizer-ci.com/g/abterphp/qb/build-status/main)
+[![Code Climate Quality](https://api.codeclimate.com/v1/badges/de5438c64f64b2bba149/maintainability)](https://codeclimate.com/github/abterphp/qb/maintainability)
+[![Code Climate Coverage](https://api.codeclimate.com/v1/badges/de5438c64f64b2bba149/test_coverage)](https://codeclimate.com/github/abterphp/qb/test_coverage)
+
 QB is a generic query build which currently supports the base commands of MySQL and PostgreSQL.
 
-QB aims to support over 95% of use cases, but is unlikely to ever support 100%. Pull requests for supporting other databases and commands are welcome.
-
-Written because most other projects do not support joining tables over other joined tables. (Many-to-many support)
+ - QB aims to support over 95% of use cases, not 100% 
+ - There's still a bit to go for PostgreSQL support, MySQL should already be there. 
+ - Pull requests for supporting other databases and commands are welcome.
+ - Written because most other projects do not support joining tables over other joined tables. (Many-to-many support)
 
 ### Example
 

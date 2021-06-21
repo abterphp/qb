@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace QB\Generic\Factory;
 
-use QB\Generic\Clause\Table;
 use QB\Generic\Statement\IInsert;
 use QB\Generic\Statement\IDelete;
 use QB\Generic\Statement\ISelect;

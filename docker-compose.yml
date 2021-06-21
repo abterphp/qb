@@ -10,7 +10,7 @@ services:
     ports:
       - "3666:3306"
     volumes:
-      - ./mysql-init:/docker-entrypoint-initdb.d
+      -  ./docker/mysql/init:/docker-entrypoint-initdb.d
 
   postgres:
     image: postgres:alpine
@@ -21,7 +21,7 @@ services:
     ports:
       - "5662:5432"
     volumes:
-      - ./postgres-init:/docker-entrypoint-initdb.d
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d
 
   fpm:
     image: abtercms/php:80
@@ -37,6 +37,8 @@ services:
       - POSTGRES_PASSWORD=Y2yUc9jN4GNXfC6Y
     volumes:
       - .:/qb
+      - ./docker/php/conf.d/zzz_020_general.ini:/usr/local/etc/php/conf.d/zzz_020_general.ini:ro
+      - ./docker/php/conf.d/zzz_500_local.ini:/usr/local/etc/php/conf.d/zzz_500_local.ini:ro
     working_dir: /qb
     extra_hosts:
       - "host.docker.internal:host-gateway"

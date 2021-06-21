@@ -78,7 +78,7 @@ class SelectTest extends GenericSelectTest
 
     public function testSelectComplex()
     {
-        $columnQuery =$this->getSut('quix')
+        $columnQuery = $this->getSut('quix')
             ->addColumns('b')
             ->addWhere(new Expr('id = ?', [7]));
 
@@ -126,7 +126,7 @@ class SelectTest extends GenericSelectTest
     /**
      * @param string|Table ...$tables
      *
-     * @return ISelect
+     * @return Select
      */
     protected function getSut(string|Table ...$tables): ISelect
     {

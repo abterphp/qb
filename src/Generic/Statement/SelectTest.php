@@ -10,6 +10,9 @@ use QB\Generic\Expr\Expr;
 
 class SelectTest extends TestCase
 {
+    /**
+     * @suppress PhanNoopCast
+     */
     public function testSelectThrowsAnExceptionIfNotInitialized()
     {
         $this->expectException(\RuntimeException::class);

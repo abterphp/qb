@@ -8,10 +8,10 @@ use QB\Generic\IQueryPart;
 
 class Join implements IJoin
 {
-    public string     $type;
-    public string     $tableName;
+    public string $type;
+    public string $tableName;
     public IQueryPart $on;
-    public ?string    $alias;
+    public ?string $alias;
 
     /**
      * Join constructor.

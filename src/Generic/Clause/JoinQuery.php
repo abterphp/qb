@@ -9,10 +9,10 @@ use QB\Generic\Statement\Select;
 
 class JoinQuery implements IJoin
 {
-    public string     $type;
-    public Select     $subQuery;
+    public string $type;
+    public Select $subQuery;
     public IQueryPart $on;
-    public string     $alias;
+    public string $alias;
 
     /**
      * JoinQuery constructor.

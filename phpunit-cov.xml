@@ -8,4 +8,12 @@
     <testsuite name="QB Tests">
         <directory>src</directory>
     </testsuite>
+    <coverage cacheDirectory=".phpunit.cache/code-coverage" processUncoveredFiles="true">
+        <include>
+            <directory suffix=".php">src</directory>
+        </include>
+        <report>
+            <clover outputFile="clover.xml" />
+        </report>
+    </coverage>
 </phpunit>

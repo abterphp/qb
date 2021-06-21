@@ -12,6 +12,11 @@ use QB\Generic\Clause\Table;
 use QB\Generic\Expr\Expr;
 use QB\Generic\IQueryPart;
 
+/**
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ * SuppressWarnings("complexity")
+ */
 class Select implements ISelect
 {
     public const ALL      = 'ALL';
@@ -83,7 +88,7 @@ class Select implements ISelect
     }
 
     /**
-     * @param string ...$columns
+     * @param string|IColumn ...$columns
      *
      * @return $this
      */

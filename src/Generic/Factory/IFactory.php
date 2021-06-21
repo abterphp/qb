@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace QB\Generic\Factory;;
+namespace QB\Generic\Factory;
 
 use QB\Generic\Statement\IInsert;
 use QB\Generic\Statement\IDelete;

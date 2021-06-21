@@ -6,6 +6,9 @@ namespace QB\MySQL\Statement;
 
 use QB\Generic\Statement\Select as GenericSelect;
 
+/**
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ */
 class Select extends GenericSelect
 {
     public const DISTINCTROW         = 'DISTINCTROW';
@@ -43,6 +46,8 @@ class Select extends GenericSelect
     protected array $outerLocks = [];
 
     /**
+     * @SuppressWarnings("complexity")
+     *
      * @param string ...$modifiers
      *
      * @return $this
@@ -200,9 +205,10 @@ class Select extends GenericSelect
 
         $sql = implode(PHP_EOL, $parts);
 
-        if ($this->outerLimit === null && $this->outerOffset === null
-            && count($this->outerOrderByParts) === 0 && count($this->outerLocks) === 0) {
-
+        if (
+            $this->outerLimit === null && $this->outerOffset === null && count($this->outerOrderByParts) === 0 &&
+            count($this->outerLocks) === 0
+        ) {
             return $sql;
         }
 

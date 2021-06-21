@@ -8,7 +8,6 @@ use QB\Generic\Statement\Select as GenericSelect;
 
 class Select extends GenericSelect
 {
-
     /** @var Select[] */
     protected array $union = [];
 
@@ -78,6 +77,10 @@ class Select extends GenericSelect
         $parts = array_filter($parts);
 
         $sql = implode(PHP_EOL, $parts);
+
+        if ($this->outerLimit === null && $this->outerOffset === null && count($this->outerOrderByParts) === 0) {
+            return $sql;
+        }
 
         $parts = array_merge(
             ['(' . $sql . ')'],

@@ -125,7 +125,7 @@ class Update implements IUpdate
     protected function values(): array
     {
         $values = [];
-        foreach ($this->values as $column => $value) {
+        foreach (array_keys($this->values) as $column) {
             $values[] = sprintf('%s = ?', $column);
         }
 

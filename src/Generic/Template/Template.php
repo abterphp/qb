@@ -21,7 +21,12 @@ class Template implements IQueryPart
 
     public function __toString(): string
     {
-        return sprintf($this->template, ...$this->queryParts);
+        $parts = [];
+        foreach ($this->queryParts as $part) {
+            $parts[] = (string)$part;
+        }
+
+        return sprintf($this->template, ...$parts);
     }
 
     public function getParams(): array
