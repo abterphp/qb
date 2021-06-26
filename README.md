@@ -18,6 +18,7 @@ QB is a generic query build which currently supports the base commands of MySQL 
 ```php
 use QB\Generic\Clause\Column;
 use QB\Generic\Expr\Expr;
+use QB\Generic\Expr\SuperExpr;
 use QB\MySQL\Statement\Select;
 
 $columnQuery = (new Select())
@@ -39,6 +40,7 @@ $sql = (string)(new Select())
     ->addColumn('bar.id', 'bar_id')
     ->addInnerJoin('quix', 'foo.id = q.foo_id', 'q')
     ->addWhere('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']))
+    ->addWhere(new SuperExpr('bar.foo IN (??)', [['bar', 'foo']]))
     ->addGroupBy('q.foo_id', new Expr('q.bar.id'))
     ->setGroupWithRollup()
     ->addHaving('baz_count > 0')
@@ -51,7 +53,7 @@ $sql = (string)(new Select())
 // SELECT DISTINCT COUNT(DISTINCT baz) AS baz_count, (SELECT b FROM quix WHERE id = ?) AS quix_b, NOW() AS now, bar.id AS bar_id
 // FROM foo, bar
 // INNER JOIN quix AS q ON foo.id = q.foo_id
-// WHERE foo.bar = "foo-bar" AND bar.foo = ?
+// WHERE foo.bar = "foo-bar" AND bar.foo = ? AND bar.foo IN (?, ?)
 // GROUP BY q.foo_id, q.bar.id WITH ROLLUP
 // HAVING baz_count > 0
 // ORDER BY baz_count ASC
@@ -62,18 +64,26 @@ $sql = (string)(new Select())
 // FROM baz
 ```
 
-### Example 2 - PostgreSQL INSERT with union
+### Example 2 - PostgreSQL INSERT with UPDATE ON CONFLICT AND RETURNING
 
 ```php
 use QB\PostgreSQL\Statement\Insert;
 use QB\Generic\Clause\Table;
 
 // INSERT
-$query = (string)(new Insert())
+$query = $this->getSut('offices')
     ->setInto(new Table('offices'))
     ->addColumns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
     ->addValues('abc', 'Berlin', '+49 101 123 4567', '', 'Germany', '10111', 'NA')
     ->addValues('bcd', 'Budapest', '+36 70 101 1234', '', 'Hungary', '1011', 'NA')
+    ->setOnConflict('officeCode', 'city')
+    ->setDoUpdate('officeCode = EXCLUDED.officeCode', 'city = EXCLUDED.city')
     ->setReturning('*');
-
+    
+// INSERT INTO offices (officeCode, city, phone, addressLine1, country, postalCode, territory)
+// VALUES (?, ?, ?, ?, ?, ?, ?),
+// (?, ?, ?, ?, ?, ?, ?)
+// ON CONFLICT (officeCode, city) DO UPDATE
+// SET officeCode = EXCLUDED.officeCode, city = EXCLUDED.city
+// RETURNING *
 ```

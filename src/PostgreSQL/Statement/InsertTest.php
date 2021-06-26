@@ -70,13 +70,15 @@ class InsertTest extends GenericInsertTest
             ->addColumns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
             ->addValues('abc', 'Berlin', '+49 101 123 4567', '', 'Germany', '10111', 'NA')
             ->setOnConflict('officeCode', 'city')
-            ->setDoUpdate('officeCode = EXCLUDED.officeCode', 'city = EXCLUDED.city');
+            ->setDoUpdate('officeCode = EXCLUDED.officeCode', 'city = EXCLUDED.city')
+            ->setReturning('*');
 
         $parts   = [];
         $parts[] = 'INSERT INTO offices (officeCode, city, phone, addressLine1, country, postalCode, territory)';
         $parts[] = 'VALUES (?, ?, ?, ?, ?, ?, ?)';
         $parts[] = 'ON CONFLICT (officeCode, city) DO UPDATE';
         $parts[] = 'SET officeCode = EXCLUDED.officeCode, city = EXCLUDED.city';
+        $parts[] = 'RETURNING *';
 
         $expectedSql = implode(PHP_EOL, $parts);
 
