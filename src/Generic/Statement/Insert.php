@@ -21,13 +21,13 @@ class Insert implements IInsert
     protected array $values = [];
 
     /**
-     * @param string|Table ...$tables
+     * @param string|Table $table
      *
      * @return $this
      */
-    public function addFrom(string|Table ...$tables): static
+    public function setInto(string|Table $table): static
     {
-        $this->tables = array_merge($this->tables, $tables);
+        $this->tables = [$table];
 
         return $this;
     }
@@ -193,6 +193,6 @@ class Insert implements IInsert
      */
     public function getValues(): array
     {
-        return $this->values;
+        return array_merge(...$this->values);
     }
 }

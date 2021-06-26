@@ -13,7 +13,7 @@ QB is a generic query build which currently supports the base commands of MySQL 
  - Pull requests for supporting other databases and commands are welcome.
  - Written because most other projects do not support joining tables over other joined tables. (Many-to-many support)
 
-### Example
+### Example 1 - MySQL SELECT with union
 
 ```php
 use QB\Generic\Clause\Column;
@@ -31,7 +31,7 @@ $unionQuery = (new Select())
     ->addFrom('baz')
     ->addColumns('b', 'f');
 
-$sql =  (string)(new Select())
+$sql = (string)(new Select())
     ->addFrom('foo', 'bar')
     ->addModifier('DISTINCT')
     ->addColumns('COUNT(DISTINCT baz) AS baz_count', new Column($columnQuery, 'quix_b'))
@@ -60,4 +60,20 @@ $sql =  (string)(new Select())
 // UNION
 // SELECT b, f
 // FROM baz
+```
+
+### Example 2 - PostgreSQL INSERT with union
+
+```php
+use QB\PostgreSQL\Statement\Insert;
+use QB\Generic\Clause\Table;
+
+// INSERT
+$query = (string)(new Insert())
+    ->setInto(new Table('offices'))
+    ->addColumns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
+    ->addValues('abc', 'Berlin', '+49 101 123 4567', '', 'Germany', '10111', 'NA')
+    ->addValues('bcd', 'Budapest', '+36 70 101 1234', '', 'Hungary', '1011', 'NA')
+    ->setReturning('*');
+
 ```

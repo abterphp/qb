@@ -45,12 +45,12 @@ class InsertTest extends GenericInsertTest
     }
 
     /**
-     * @param string ...$tables
+     * @param string $table
      *
      * @return Insert
      */
-    protected function getSut(string ...$tables): IInsert
+    protected function getSut(string $table): IInsert
     {
-        return (new Insert())->addFrom(...$tables);
+        return (new Insert())->setInto($table);
     }
 }

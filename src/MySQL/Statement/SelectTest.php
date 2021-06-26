@@ -33,11 +33,10 @@ class SelectTest extends GenericSelectTest
         $unionQuery = $this->getSut('baz')
             ->addColumns('id');
 
-        $sql = $this->getSut('foo')
+        $sql = (string)$this->getSut('foo')
             ->addColumns('id')
             ->addUnion($unionQuery)
-            ->setOuterLimit(10)
-            ->__toString();
+            ->setOuterLimit(10);
 
         $parts   = [];
         $parts[] = '(SELECT id';

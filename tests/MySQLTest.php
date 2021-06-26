@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace QB\Test\MySQL\Factory;
+namespace QB\Tests;
 
 use PHPUnit\Framework\TestCase;
 use QB\Generic\Clause\Column;
@@ -126,13 +126,13 @@ class MySQLTest extends TestCase
 
             // INSERT
             $query = $this->sut->insert()
-                ->addFrom(new Table('offices'))
+                ->setInto(new Table('offices'))
                 ->addColumns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
                 ->addValues('abc', 'Berlin', '+49 101 123 4567', '', 'Germany', '10111', 'NA');
 
             $statement = $this->pdo->prepare((string)$query);
 
-            $result = $statement->execute($query->getValues()[0]);
+            $result = $statement->execute($query->getValues());
             $this->assertTrue($result);
 
             // UPDATE
@@ -185,7 +185,7 @@ class MySQLTest extends TestCase
             if ($this->pdo->inTransaction()) {
                 $this->pdo->exec('ROLLBACK');
             }
-            $this->fail($e->getMessage());
+            $this->fail($e->getMessage() . PHP_EOL . $e->getTraceAsString());
         }
     }
 }

@@ -43,7 +43,7 @@ class ExprTest extends TestCase
         $params         = [':foo' => 'bar'];
         $expectedParams = [':foo' => ['bar', \PDO::PARAM_STR]];
 
-        $sut = new Expr($expectedSql);
+        $sut = $this->createSut($expectedSql);
         $sut->bindParams($params);
 
         $actualSql    = $sut->__toString();
@@ -59,7 +59,7 @@ class ExprTest extends TestCase
         $params         = ['col', 6];
         $expectedParams = [['col', \PDO::PARAM_STR], [6, \PDO::PARAM_STR]];
 
-        $sut = new Expr($expectedSql);
+        $sut = $this->createSut($expectedSql);
         $sut->bindParams($params);
 
         $actualSql    = $sut->__toString();
@@ -71,16 +71,16 @@ class ExprTest extends TestCase
 
     public function testToStringWithMultipleUnnamedParams()
     {
-        $sql    = 'COUNT(?) + ?';
-        $params = [['col', \PDO::PARAM_STR], [6, \PDO::PARAM_INT]];
+        $expectedSql = 'COUNT(?) + ?';
+        $params      = [['col', \PDO::PARAM_STR], [6, \PDO::PARAM_INT]];
 
-        $sut = new Expr($sql);
+        $sut = $this->createSut($expectedSql);
         $sut->bindParams($params);
 
         $actualSql    = $sut->__toString();
         $actualParams = $sut->getParams();
 
-        $this->assertSame($sql, $actualSql);
+        $this->assertSame($expectedSql, $actualSql);
         $this->assertSame($params, $actualParams);
     }
 
@@ -91,7 +91,7 @@ class ExprTest extends TestCase
         $sql    = 'COUNT(:foo)';
         $params = [':bar' => ['col', \PDO::PARAM_STR]];
 
-        $sut = new Expr($sql);
+        $sut = $this->createSut($sql);
         $sut->bindParams($params);
     }
 
@@ -102,7 +102,18 @@ class ExprTest extends TestCase
         $sql    = 'COUNT(?)';
         $params = [['col', \PDO::PARAM_STR], [6, \PDO::PARAM_INT]];
 
-        $sut = new Expr($sql);
+        $sut = $this->createSut($sql);
         $sut->bindParams($params);
+    }
+
+    /**
+     * @param string $sql
+     * @param array  $params
+     *
+     * @return Expr
+     */
+    protected function createSut(string $sql, array $params = []): Expr
+    {
+        return new Expr($sql, $params);
     }
 }

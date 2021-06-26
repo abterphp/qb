@@ -33,7 +33,7 @@ class FactoryTest extends TestCase
 
     public function testInsert()
     {
-        $insert = $this->sut->insert()->addFrom('foo')->addValues(['bar' => 'Bar']);
+        $insert = $this->sut->insert()->setInto('foo')->addValues(['bar' => 'Bar']);
 
         $sql = (string)$insert;
 

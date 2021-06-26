@@ -9,8 +9,7 @@ use QB\Generic\IQueryPart;
 
 class Expr implements IQueryPart
 {
-    /** @var string|IQueryPart */
-    protected $sql;
+    protected string|IQueryPart $sql;
 
     protected int $unnamedParamCount;
 

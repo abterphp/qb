@@ -85,6 +85,8 @@ class Select extends GenericSelect
             }
         }
 
+        ksort($this->modifiers);
+
         return $this;
     }
 
@@ -154,6 +156,8 @@ class Select extends GenericSelect
                     break;
             }
         }
+
+        ksort($this->locks);
 
         return $this;
     }

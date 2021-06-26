@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace QB\Test;
+namespace QB\Tests;
 
 use PHPUnit\Framework\TestCase;
 use QB\Generic\Clause\Column;
 use QB\Generic\Clause\Table;
 use QB\Generic\Expr\Expr;
+use QB\Generic\Expr\SuperExpr;
 use QB\PostgreSQL\Factory\Factory;
 
 class PostgreSQLTest extends TestCase
@@ -93,13 +94,13 @@ class PostgreSQLTest extends TestCase
 
             // INSERT
             $query = $this->sut->insert()
-                ->addFrom(new Table('offices'))
+                ->setInto(new Table('offices'))
                 ->addColumns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
                 ->addValues('abc', 'Berlin', '+49 101 123 4567', '', 'Germany', '10111', 'NA');
 
             $statement = $this->pdo->prepare((string)$query);
 
-            $result = $statement->execute($query->getValues()[0]);
+            $result = $statement->execute($query->getValues());
             $this->assertTrue($result);
 
             // UPDATE
@@ -152,7 +153,84 @@ class PostgreSQLTest extends TestCase
             if ($this->pdo->inTransaction()) {
                 $this->pdo->exec('ROLLBACK');
             }
-            $this->fail($e->getMessage());
+            $this->fail($e->getMessage() . PHP_EOL . $e->getTraceAsString());
+        }
+    }
+
+    public function testUpsert()
+    {
+        try {
+            $this->pdo->exec('BEGIN');
+
+            // INSERT
+            $query = $this->sut->insert()
+                ->setInto(new Table('offices'))
+                ->addColumns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
+                ->addValues('abc', 'Berlin', '+49 101 123 4567', '', 'Germany', '10111', 'NA')
+                ->addValues('bcd', 'Budapest', '+36 70 101 1234', '', 'Hungary', '1011', 'NA')
+
+                ->setReturning('*');
+            $sql   = (string)$query;
+
+            $statement = $this->pdo->prepare($sql);
+
+            $result = $statement->execute($query->getValues());
+            $this->assertTrue($result);
+
+            $values = $statement->fetchAll(\PDO::FETCH_ASSOC);
+
+            $expectedValues = [
+                [
+                    'officecode'   => 'abc',
+                    'city'         => 'Berlin',
+                    'phone'        => '+49 101 123 4567',
+                    'addressline1' => '',
+                    'addressline2' => null,
+                    'state'        => null,
+                    'country'      => 'Germany',
+                    'postalcode'   => '10111',
+                    'territory'    => 'NA',
+                ],
+                [
+                    'officecode'   => 'bcd',
+                    'city'         => 'Budapest',
+                    'phone'        => '+36 70 101 1234',
+                    'addressline1' => '',
+                    'addressline2' => null,
+                    'state'        => null,
+                    'country'      => 'Hungary',
+                    'postalcode'   => '1011',
+                    'territory'    => 'NA',
+                ],
+            ];
+            $this->assertSame($expectedValues, $values);
+
+            // DELETE
+            $query = $this->sut->delete()
+                ->addFrom(new Table('offices'))
+                ->addWhere(new SuperExpr('officeCode IN (??)', [['abc', 'bcd']], '??'));
+
+            $sql    = (string)$query;
+            $params = $query->getParams();
+
+            $statement = $this->pdo->prepare($sql);
+            foreach ($params as $k => $v) {
+                if (is_numeric($k)) {
+                    $statement->bindParam($k + 1, $v[0], $v[1]);
+                } else {
+                    $statement->bindParam($k, $v[0], $v[1]);
+                }
+            }
+            $result = $statement->execute();
+            $this->assertTrue($result);
+
+            // COMMIT
+            $this->pdo->exec('COMMIT');
+        } catch (\Exception $e) {
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->exec('ROLLBACK');
+            }
+            $this->fail($e->getMessage() . PHP_EOL . $e->getTraceAsString());
         }
     }
 }

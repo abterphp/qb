@@ -39,12 +39,12 @@ class InsertTest extends TestCase
     }
 
     /**
-     * @param string ...$tables
+     * @param string $table
      *
-     * @return Insert
+     * @return IInsert
      */
-    protected function getSut(string ...$tables): IInsert
+    protected function getSut(string $table): IInsert
     {
-        return (new Insert())->addFrom(...$tables);
+        return (new Insert())->setInto($table);
     }
 }
