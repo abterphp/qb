@@ -14,7 +14,9 @@ QB is a generic query build which currently supports the base commands of MySQL 
  - Pull requests for supporting other databases and commands are welcome.
  - Written because most other projects do not support joining tables over other joined tables. (Many-to-many support)
 
-### Example 1 - MySQL SELECT with union
+### Examples
+
+#### MySQL SELECT with union
 
 ```php
 use QB\Generic\Clause\Column;
@@ -64,7 +66,7 @@ $sql = (string)(new Select())
 // FROM baz
 ```
 
-### Example 2 - PostgreSQL INSERT with UPDATE ON CONFLICT AND RETURNING
+#### PostgreSQL INSERT with UPDATE ON CONFLICT AND RETURNING
 
 ```php
 use QB\Generic\Clause\Table;

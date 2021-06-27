@@ -10,7 +10,7 @@ class Join implements IJoin
 {
     public string $type;
     public string $tableName;
-    public IQueryPart $on;
+    public string|IQueryPart $on;
     public ?string $alias;
 
     /**
@@ -50,6 +50,10 @@ class Join implements IJoin
      */
     public function getParams(): array
     {
-        return $this->on->getParams();
+        if ($this->on instanceof IQueryPart) {
+            return $this->on->getParams();
+        }
+
+        return [];
     }
 }

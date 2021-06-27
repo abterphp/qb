@@ -121,8 +121,6 @@ class Select implements ISelect
      */
     public function addInnerJoin(string $table, string|IQueryPart $on, ?string $alias = null): static
     {
-        $on = is_string($on) ? new Expr($on) : $on;
-
         $this->joins[] = new Join(IJoin::TYPE_INNER_JOIN, $table, $on, $alias);
 
         return $this;
@@ -137,8 +135,6 @@ class Select implements ISelect
      */
     public function addLeftJoin(string $table, string|IQueryPart $on, ?string $alias = null): static
     {
-        $on = is_string($on) ? $on : new Expr($on);
-
         $this->joins[] = new Join(IJoin::TYPE_LEFT_JOIN, $table, $on, $alias);
 
         return $this;
@@ -153,8 +149,6 @@ class Select implements ISelect
      */
     public function addRightJoin(string $table, string|IQueryPart $on, ?string $alias = null): static
     {
-        $on = is_string($on) ? $on : new Expr($on);
-
         $this->joins[] = new Join(IJoin::TYPE_RIGHT_JOIN, $table, $on, $alias);
 
         return $this;
@@ -169,8 +163,6 @@ class Select implements ISelect
      */
     public function addFullJoin(string $table, string|IQueryPart $on, ?string $alias = null): static
     {
-        $on = is_string($on) ? new Expr($on) : $on;
-
         $this->joins[] = new Join(IJoin::TYPE_FULL_JOIN, $table, $on, $alias);
 
         return $this;
@@ -183,9 +175,7 @@ class Select implements ISelect
      */
     public function addJoin(IJoin ...$joins): static
     {
-        foreach ($joins as $join) {
-            $this->joins[] = $join;
-        }
+        $this->joins = array_merge($this->joins, $joins);
 
         return $this;
     }

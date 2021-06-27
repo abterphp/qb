@@ -11,7 +11,7 @@ use QB\Generic\Statement\SelectTest as GenericSelectTest;
 
 class SelectTest extends GenericSelectTest
 {
-    public function testSelectModifiers()
+    public function testToStringModifiers()
     {
         $sql = $this->getSut('foo')
             ->addModifier(Select::ALL, Select::DISTINCT, Select::SQL_CALC_FOUND_ROWS)
@@ -27,7 +27,7 @@ class SelectTest extends GenericSelectTest
         $this->assertSame($expectedSql, $sql);
     }
 
-    public function testSelectWithOuterLimits()
+    public function testToStringWithOuterLimits()
     {
         $unionQuery = $this->getSut('baz')
             ->addColumns('id');
@@ -50,7 +50,7 @@ class SelectTest extends GenericSelectTest
         $this->assertSame($expectedSql, $sql);
     }
 
-    public function testSelectWithOuterLock()
+    public function testToStringWithOuterLock()
     {
         $unionQuery = $this->getSut('baz')
             ->addColumns('id');
@@ -74,7 +74,7 @@ class SelectTest extends GenericSelectTest
         $this->assertSame($expectedSql, $sql);
     }
 
-    public function testSelectComplex()
+    public function testToStringComplex()
     {
         $columnQuery = $this->getSut('quix')
             ->addColumns('b')
