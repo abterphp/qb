@@ -3,6 +3,7 @@
 [![Github Actions Build](https://github.com/abterphp/qb/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/abterphp/qb/actions)
 [![Scrutinizer Quality](https://scrutinizer-ci.com/g/abterphp/qb/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/abterphp/qb/?branch=main)
 [![Scrutinizer Build](https://scrutinizer-ci.com/g/abterphp/qb/badges/build.png?b=main)](https://scrutinizer-ci.com/g/abterphp/qb/build-status/main)
+[![Scrutinizer Coverage](https://scrutinizer-ci.com/g/abterphp/qb/badges/coverage.png?b=main)](https://scrutinizer-ci.com/g/abterphp/qb/?branch=main)
 [![Code Climate Quality](https://api.codeclimate.com/v1/badges/de5438c64f64b2bba149/maintainability)](https://codeclimate.com/github/abterphp/qb/maintainability)
 [![Code Climate Coverage](https://api.codeclimate.com/v1/badges/de5438c64f64b2bba149/test_coverage)](https://codeclimate.com/github/abterphp/qb/test_coverage)
 

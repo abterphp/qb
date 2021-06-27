@@ -19,6 +19,10 @@ class PostgreSQLTest extends TestCase
 
     public function setUp(): void
     {
+        if (!array_key_exists('POSTGRES_USER', $_ENV)) {
+            $this->markTestSkipped('no db');
+        }
+
         $this->sut = new Factory();
 
         $dns      = sprintf(
@@ -207,17 +211,14 @@ class PostgreSQLTest extends TestCase
             // DELETE
             $query = $this->sut->delete()
                 ->addFrom(new Table('offices'))
-                ->addWhere(new SuperExpr('officeCode IN (??)', [['abc', 'bcd']], '??'));
+                ->addWhere(new Expr('officeCode IN (?)', [['abc', 'bcd']]));
 
-            $sql    = (string)$query;
-            $params = $query->getParams();
-
-            $statement = $this->pdo->prepare($sql);
-            foreach ($params as $k => $v) {
-                if (is_numeric($k)) {
-                    $statement->bindParam($k + 1, $v[0], $v[1]);
+            $statement = $this->pdo->prepare((string)$query);
+            foreach ($query->getParams() as $param => $var) {
+                if (is_numeric($param)) {
+                    $statement->bindParam($param + 1, $var[0], $var[1]);
                 } else {
-                    $statement->bindParam($k, $v[0], $v[1]);
+                    $statement->bindParam($param, $var[0], $var[1]);
                 }
             }
             $result = $statement->execute();

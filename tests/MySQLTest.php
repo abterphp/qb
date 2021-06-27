@@ -20,6 +20,10 @@ class MySQLTest extends TestCase
 
     public function setUp(): void
     {
+        if (!array_key_exists('MYSQL_USER', $_ENV)) {
+            $this->markTestSkipped('no db');
+        }
+
         $this->sut = new Factory();
 
         $dns      = sprintf(
