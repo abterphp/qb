@@ -9,7 +9,7 @@ use QB\Generic\Statement\UpdateTest as GenericUpdateTest;
 
 class UpdateTest extends GenericUpdateTest
 {
-    public function testUpdateSimple()
+    public function testToStringComplex()
     {
         $sql = (string)$this->getSut('foo')
             ->addModifier(Update::LOW_PRIORITY)

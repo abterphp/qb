@@ -30,7 +30,7 @@ class TruncateTest extends TestCase
         $this->assertSame($expectedSql, $sql);
     }
 
-    public function testGetParamSimple()
+    public function testGetParams()
     {
         $query = $this->getSut('foo', 'bar');
 

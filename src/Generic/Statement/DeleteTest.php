@@ -46,7 +46,7 @@ class DeleteTest extends TestCase
         $this->assertSame($expectedSql, $sql);
     }
 
-    public function testGetParamsSimple()
+    public function testGetParams()
     {
         $expectedParams = [['bar-foo', PDO::PARAM_STR]];
         $query = $this->getSut('foo')

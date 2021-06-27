@@ -66,9 +66,7 @@ class Update implements IUpdate
     public function addWhere(string|IQueryPart ...$whereParts): static
     {
         foreach ($whereParts as $wherePart) {
-            $wherePart = is_string($wherePart) ? new Expr($wherePart) : $wherePart;
-
-            $this->whereParts[] = $wherePart;
+            $this->whereParts[] = is_string($wherePart) ? new Expr($wherePart) : $wherePart;
         }
 
         return $this;
@@ -83,12 +81,10 @@ class Update implements IUpdate
             throw new \RuntimeException('Under-initialized UPDATE query. Table, values and where are necessary');
         }
 
-        $update = $this->update();
-
         $sqlParts = array_merge(
-            [$update],
-            $this->values(),
-            $this->where(),
+            [$this->getCommand()],
+            $this->getSet(),
+            $this->getWhere(),
         );
 
         $sqlParts = array_filter($sqlParts);
@@ -101,11 +97,14 @@ class Update implements IUpdate
         return count($this->tables) === 1 && count($this->values) > 0 && count($this->whereParts) > 0;
     }
 
-    protected function update(): string
+    /**
+     * @return string
+     */
+    protected function getCommand(): string
     {
         $sql   = [];
         $sql[] = 'UPDATE';
-        $sql[] = $this->getModifiers();
+        $sql[] = implode(' ', $this->modifiers);
         $sql[] = $this->tables[0];
 
         $sql = array_filter($sql);
@@ -113,16 +112,10 @@ class Update implements IUpdate
         return implode(' ', $sql);
     }
 
-    protected function getModifiers(): string
-    {
-        if (empty($this->modifiers)) {
-            return '';
-        }
-
-        return implode(' ', $this->modifiers);
-    }
-
-    protected function values(): array
+    /**
+     * @return string[]
+     */
+    protected function getSet(): array
     {
         $values = [];
         foreach (array_keys($this->values) as $column) {
@@ -132,7 +125,10 @@ class Update implements IUpdate
         return ['SET ' . implode(', ', $values)];
     }
 
-    protected function where(): array
+    /**
+     * @return string[]
+     */
+    protected function getWhere(): array
     {
         if (count($this->whereParts) === 0) {
             return [];

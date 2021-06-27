@@ -4,12 +4,23 @@ declare(strict_types=1);
 
 namespace QB\Generic\Statement;
 
+use PDO;
 use PHPUnit\Framework\TestCase;
 use QB\Generic\Expr\Expr;
 
 class UpdateTest extends TestCase
 {
-    public function testUpdateSimple()
+    /**
+     * @suppress PhanNoopCast
+     */
+    public function testToStringThrowsAnExceptionIfNotInitialized()
+    {
+        $this->expectException(\RuntimeException::class);
+
+        (string)$this->getSut();
+    }
+
+    public function testToStringSimple()
     {
         $sql = (string)$this->getSut('foo')
             ->setValues(['id' => '1234', 'bar_id' => '2345'])
@@ -23,6 +34,34 @@ class UpdateTest extends TestCase
         $expectedSql = implode(PHP_EOL, $parts);
 
         $this->assertSame($expectedSql, $sql);
+    }
+
+    public function testToStringComplex()
+    {
+        $sql = (string)$this->getSut('foo')
+            ->addModifier('BAR')
+            ->setValues(['id' => '1234', 'bar_id' => '2345'])
+            ->addWhere('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']));
+
+        $parts   = [];
+        $parts[] = 'UPDATE BAR foo';
+        $parts[] = 'SET id = ?, bar_id = ?';
+        $parts[] = 'WHERE foo.bar = "foo-bar" AND bar.foo = ?';
+
+        $expectedSql = implode(PHP_EOL, $parts);
+
+        $this->assertSame($expectedSql, $sql);
+    }
+
+    public function testGetParams()
+    {
+        $expectedParams = [['bar-foo', PDO::PARAM_STR]];
+        $query = $this->getSut('foo')
+            ->addWhere('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']));
+
+        $params = $query->getParams();
+
+        $this->assertSame($expectedParams, $params);
     }
 
     /**
