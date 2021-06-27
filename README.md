@@ -72,11 +72,11 @@ $sql = (string)(new Select())
 
 ```php
 use QB\Generic\Clause\Table;
+use QB\PostgreSQL\Statement\Insert;
 
-// INSERT
-$query = $this->getSut('offices')
+$sql = (string)(new Insert())
     ->setInto(new Table('offices'))
-    ->addColumns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
+    ->setColumns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
     ->addValues('abc', 'Berlin', '+49 101 123 4567', '', 'Germany', '10111', 'NA')
     ->addValues('bcd', 'Budapest', '+36 70 101 1234', '', 'Hungary', '1011', 'NA')
     ->setOnConflict('officeCode', 'city')
@@ -89,4 +89,19 @@ $query = $this->getSut('offices')
 // ON CONFLICT (officeCode, city) DO UPDATE
 // SET officeCode = EXCLUDED.officeCode, city = EXCLUDED.city
 // RETURNING *
+```
+
+#### Custom command
+
+```php
+use QB\Generic\Statement\Select;
+use QB\Generic\Statement\Command;
+
+$select = (new Select())
+    ->addFrom('quix')
+    ->addColumns('b');
+
+$sql = (string)(new Command('EXPLAIN %s', $select));
+    
+// EXPLAIN SELECT b FROM quix
 ```
