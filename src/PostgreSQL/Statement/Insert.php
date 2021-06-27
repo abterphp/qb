@@ -93,21 +93,27 @@ class Insert extends GenericInsert
             }
         }
 
-        if ($this->returning) {
+        if (count($this->returning) > 0) {
             $parts[] = sprintf('RETURNING %s', implode(',', $this->returning));
         }
 
         return implode(PHP_EOL, $parts);
     }
 
+    /**
+     * @return bool
+     */
     public function isValid(): bool
     {
         return count($this->tables) === 1;
     }
 
+    /**
+     * @return string[]
+     */
     protected function values(): array
     {
-        if (!$this->values) {
+        if (count($this->values) == 0) {
             return [self::DEFAULT_VALUES];
         }
 

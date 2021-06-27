@@ -18,7 +18,7 @@ class JoinTest extends TestCase
                 new Expr('f.id = bar.foo_id AND ?', [1]),
                 'f',
                 'INNER JOIN foo AS f ON f.id = bar.foo_id AND ?',
-                [[1, \PDO::PARAM_STR]],
+                [[1, \PDO::PARAM_INT]],
             ],
             [
                 IJoin::TYPE_LEFT_JOIN,
@@ -26,7 +26,7 @@ class JoinTest extends TestCase
                 new Expr('foo.id = bar.foo_id AND ?', [1]),
                 null,
                 'LEFT JOIN foo ON foo.id = bar.foo_id AND ?',
-                [[1, \PDO::PARAM_STR]],
+                [[1, \PDO::PARAM_INT]],
             ],
         ];
     }

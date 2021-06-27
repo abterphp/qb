@@ -18,7 +18,6 @@ QB is a generic query build which currently supports the base commands of MySQL 
 ```php
 use QB\Generic\Clause\Column;
 use QB\Generic\Expr\Expr;
-use QB\Generic\Expr\SuperExpr;
 use QB\MySQL\Statement\Select;
 
 $columnQuery = (new Select())
@@ -40,7 +39,7 @@ $sql = (string)(new Select())
     ->addColumn('bar.id', 'bar_id')
     ->addInnerJoin('quix', 'foo.id = q.foo_id', 'q')
     ->addWhere('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']))
-    ->addWhere(new SuperExpr('bar.foo IN (??)', [['bar', 'foo']]))
+    ->addWhere(new Expr('bar.foo IN (?)', [['bar', 'foo']]))
     ->addGroupBy('q.foo_id', new Expr('q.bar.id'))
     ->setGroupWithRollup()
     ->addHaving('baz_count > 0')
@@ -67,7 +66,6 @@ $sql = (string)(new Select())
 ### Example 2 - PostgreSQL INSERT with UPDATE ON CONFLICT AND RETURNING
 
 ```php
-use QB\PostgreSQL\Statement\Insert;
 use QB\Generic\Clause\Table;
 
 // INSERT

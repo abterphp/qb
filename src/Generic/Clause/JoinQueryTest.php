@@ -25,15 +25,15 @@ class JoinQueryTest extends TestCase
                 $on1,
                 'f',
                 'INNER JOIN (SELECT * FROM foo) AS f ON f.id = bar.foo_id AND ?',
-                [[1, \PDO::PARAM_STR]],
+                [[1, \PDO::PARAM_INT]],
             ],
             [
-                IJoin::TYPE_INNER_JOIN,
+                IJoin::TYPE_LEFT_JOIN,
                 $select2,
                 $on2,
                 'f',
-                'INNER JOIN (SELECT * FROM foo WHERE bar = ?) AS f ON f.id = bar.foo_id AND ?',
-                [['baz', \PDO::PARAM_STR], [1, \PDO::PARAM_STR]],
+                'LEFT JOIN (SELECT * FROM foo WHERE bar = ?) AS f ON f.id = bar.foo_id AND ?',
+                [['baz', \PDO::PARAM_STR], [1, \PDO::PARAM_INT]],
             ],
         ];
     }
