@@ -130,10 +130,6 @@ class Update implements IUpdate
      */
     protected function getWhere(): array
     {
-        if (count($this->whereParts) === 0) {
-            return [];
-        }
-
         $whereParts = [];
         foreach ($this->whereParts as $wherePart) {
             $whereParts[] = (string)$wherePart;
