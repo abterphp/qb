@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace QB\MySQL\Statement;
 
+use QB\Generic\IQueryPart;
 use QB\Generic\Statement\Select as GenericSelect;
+use QB\MySQL\Clause\CombiningQuery;
 use QB\MySQL\Clause\Lock;
 
 /**
@@ -25,8 +27,8 @@ class Select extends GenericSelect
 
     protected bool $groupWithRollup = false;
 
-    /** @var Select[] */
-    protected array $union = [];
+    /** @var CombiningQuery[] */
+    protected array $combiningQueries = [];
 
     protected ?Lock $lock = null;
 
@@ -144,13 +146,14 @@ class Select extends GenericSelect
     }
 
     /**
-     * @param Select $select
+     * @param IQueryPart  $select
+     * @param string|null $modifier
      *
      * @return $this
      */
-    public function addUnion(Select $select): static
+    public function addUnion(IQueryPart $select, ?string $modifier = null): static
     {
-        $this->union[] = $select;
+        $this->combiningQueries[] = new CombiningQuery(CombiningQuery::TYPE_UNION, $select, $modifier);
 
         return $this;
     }
@@ -245,11 +248,11 @@ class Select extends GenericSelect
     /**
      * @return string[]
      */
-    public function getUnion(): array
+    protected function getUnion(): array
     {
         $parts = [];
-        foreach ($this->union as $select) {
-            $parts[] = 'UNION' . PHP_EOL . $select;
+        foreach ($this->combiningQueries as $query) {
+            $parts[] = (string)$query;
         }
 
         return $parts;

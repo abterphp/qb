@@ -61,6 +61,30 @@ class SelectTest extends GenericSelectTest
         $this->assertSame($expectedSql, $sql);
     }
 
+    public function testToStringWithOuterOffsetAndLimits()
+    {
+        $unionQuery = $this->getSut('baz')
+            ->addColumns('id');
+
+        $sql = (string)$this->getSut('foo')
+            ->addColumns('id')
+            ->addUnion($unionQuery)
+            ->setOuterLimit(10)
+            ->setOuterOffset(20);
+
+        $parts   = [];
+        $parts[] = '(SELECT id';
+        $parts[] = 'FROM foo';
+        $parts[] = 'UNION';
+        $parts[] = 'SELECT id';
+        $parts[] = 'FROM baz)';
+        $parts[] = 'LIMIT 20, 10';
+
+        $expectedSql = implode(PHP_EOL, $parts);
+
+        $this->assertSame($expectedSql, $sql);
+    }
+
     public function testToStringWithOuterLock()
     {
         $unionQuery = $this->getSut('baz')

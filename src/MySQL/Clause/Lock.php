@@ -35,7 +35,7 @@ class Lock
     {
         if (!$this->isValid($for, $modifier)) {
             throw new \InvalidArgumentException(
-                sprintf('invalid arguments for %s. arguments: %s', __CLASS__, print_r(func_get_args(), true))
+                sprintf('invalid arguments for %s. arguments: %s', __CLASS__, print_r([$for, $modifier], true))
             );
         }
 

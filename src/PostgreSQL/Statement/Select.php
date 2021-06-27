@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace QB\PostgreSQL\Statement;
 
+use QB\Generic\IQueryPart;
 use QB\Generic\Statement\Select as GenericSelect;
+use QB\PostgreSQL\Clause\CombiningQuery;
 use QB\PostgreSQL\Clause\Lock;
 
 class Select extends GenericSelect
@@ -13,7 +15,8 @@ class Select extends GenericSelect
     protected const INTERSECT = 'intersect';
     protected const EXCEPT    = 'except';
 
-    protected array $unionLikes = [];
+    /** @var CombiningQuery[] */
+    protected array $combiningQueries = [];
 
     protected ?Lock $lock = null;
 
@@ -76,56 +79,40 @@ class Select extends GenericSelect
     }
 
     /**
-     * @param Select $select
-     * @param string $modifier
+     * @param IQueryPart  $select
+     * @param string|null $modifier
      *
      * @return $this
      */
-    public function addUnion(Select $select, string $modifier = ''): static
+    public function addUnion(IQueryPart $select, ?string $modifier = null): static
     {
-        return $this->addUnionLike(static::UNION, $select, $modifier);
+        $this->combiningQueries[] = new CombiningQuery(CombiningQuery::TYPE_UNION, $select, $modifier);
+
+        return $this;
     }
 
     /**
-     * @param Select $select
-     * @param string $modifier
+     * @param IQueryPart  $select
+     * @param string|null $modifier
      *
      * @return $this
      */
-    public function addIntersect(Select $select, string $modifier = ''): static
+    public function addIntersect(IQueryPart $select, ?string $modifier = null): static
     {
-        return $this->addUnionLike(static::INTERSECT, $select, $modifier);
+        $this->combiningQueries[] = new CombiningQuery(CombiningQuery::TYPE_INTERSECT, $select, $modifier);
+
+        return $this;
     }
 
     /**
-     * @param Select $select
-     * @param string $modifier
+     * @param IQueryPart  $select
+     * @param string|null $modifier
      *
      * @return $this
      */
-    public function addExcept(Select $select, string $modifier = ''): static
+    public function addExcept(IQueryPart $select, ?string $modifier = null): static
     {
-        return $this->addUnionLike(static::EXCEPT, $select, $modifier);
-    }
-
-    /**
-     * @param string $type
-     * @param Select $select
-     * @param string $modifier
-     *
-     * @return $this
-     */
-    protected function addUnionLike(string $type, Select $select, string $modifier = ''): static
-    {
-        if ($type !== static::INTERSECT && $type !== static::EXCEPT) {
-            $type = static::UNION;
-        }
-
-        if ($modifier !== static::ALL && $modifier !== static::DISTINCT) {
-            $modifier = '';
-        }
-
-        $this->unionLikes[] = [$type, $select, $modifier];
+        $this->combiningQueries[] = new CombiningQuery(CombiningQuery::TYPE_EXCEPT, $select, $modifier);
 
         return $this;
     }
@@ -135,7 +122,7 @@ class Select extends GenericSelect
         $parts = array_merge(
             [parent::__toString()],
             $this->getLock(),
-            $this->getUnionLikes()
+            $this->getCombiningQueries()
         );
 
         $parts = array_filter($parts);
@@ -172,28 +159,11 @@ class Select extends GenericSelect
     /**
      * @return string[]
      */
-    public function getUnionLikes(): array
+    protected function getCombiningQueries(): array
     {
         $parts = [];
-        foreach ($this->unionLikes as $unionLike) {
-            $unionType = $unionLike[0];
-            $select    = $unionLike[1];
-            $modifier  = '';
-            if ($unionLike[2]) {
-                $modifier = ' ' . $unionLike[2];
-            }
-
-            switch ($unionType) {
-                case static::UNION:
-                    $parts[] = 'UNION' . $modifier . PHP_EOL . $select;
-                    break;
-                case static::INTERSECT:
-                    $parts[] = 'INTERSECT' . $modifier . PHP_EOL . $select;
-                    break;
-                case static::EXCEPT:
-                    $parts[] = 'EXCEPT' . $modifier . PHP_EOL . $select;
-                    break;
-            }
+        foreach ($this->combiningQueries as $query) {
+            $parts[] = (string)$query;
         }
 
         return $parts;
