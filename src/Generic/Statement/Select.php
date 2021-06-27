@@ -311,17 +311,13 @@ class Select implements ISelect
 
         $sql = implode(' ', $sql);
 
-        if (count($this->columns) == 0) {
-            return $sql . ' *';
-        }
-
         return $sql . ' ' . $this->getColumns();
     }
 
     protected function getColumns(): string
     {
         if (empty($this->columns)) {
-            return '';
+            return '*';
         }
 
         $parts = [];

@@ -6,6 +6,7 @@ namespace QB\Generic\Clause;
 
 use PHPUnit\Framework\TestCase;
 use QB\Generic\Expr\Expr;
+use QB\Generic\IQueryPart;
 
 class JoinTest extends TestCase
 {
@@ -23,10 +24,10 @@ class JoinTest extends TestCase
             [
                 IJoin::TYPE_LEFT_JOIN,
                 'foo',
-                new Expr('foo.id = bar.foo_id AND ?', [1]),
+                'foo.id = bar.foo_id',
                 null,
-                'LEFT JOIN foo ON foo.id = bar.foo_id AND ?',
-                [[1, \PDO::PARAM_INT]],
+                'LEFT JOIN foo ON foo.id = bar.foo_id',
+                [],
             ],
         ];
     }
@@ -34,17 +35,17 @@ class JoinTest extends TestCase
     /**
      * @dataProvider toStringGetParamsProvider
      *
-     * @param string      $type
-     * @param string      $tableName
-     * @param Expr        $on
-     * @param string|null $alias
-     * @param string      $expectedSql
-     * @param array       $expectedParams
+     * @param string            $type
+     * @param string            $tableName
+     * @param IQueryPart|string $on
+     * @param string|null       $alias
+     * @param string            $expectedSql
+     * @param array             $expectedParams
      */
     public function testToStringGetParamsProvider(
         string $type,
         string $tableName,
-        Expr $on,
+        IQueryPart|string $on,
         ?string $alias,
         string $expectedSql,
         array $expectedParams
@@ -56,5 +57,12 @@ class JoinTest extends TestCase
 
         $this->assertSame($expectedSql, $actualSql);
         $this->assertSame($expectedParams, $actualParams);
+    }
+
+    public function testInvalidType()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        new Join('foo', 'bar', 'bar.id = foo.bar_id', 'b');
     }
 }
