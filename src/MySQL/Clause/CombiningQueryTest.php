@@ -57,13 +57,12 @@ class CombiningQueryTest extends TestCase
 
     /**
      * @dataProvider constructValidationProvider
-     *
      * @suppress     PhanNoopNew
      *
-     * @param string|null $type
+     * @param string      $type
      * @param string|null $modifier
      */
-    public function testConstructValidation(?string $type, ?string $modifier)
+    public function testConstructValidation(string $type, ?string $modifier)
     {
         $this->expectException(\InvalidArgumentException::class);
 

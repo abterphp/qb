@@ -55,7 +55,6 @@ class LockTest extends TestCase
 
     /**
      * @dataProvider constructValidationProvider
-     *
      * @suppress     PhanNoopNew
      *
      * @param string|null $for
