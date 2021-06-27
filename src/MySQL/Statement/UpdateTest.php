@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace QB\MySQL\Statement;
 
 use QB\Generic\Expr\Expr;
-use QB\Generic\Statement\IUpdate;
 use QB\Generic\Statement\UpdateTest as GenericUpdateTest;
 
 class UpdateTest extends GenericUpdateTest
@@ -34,7 +33,7 @@ class UpdateTest extends GenericUpdateTest
      *
      * @return Update
      */
-    protected function getSut(string ...$tables): IUpdate
+    protected function getSut(string ...$tables): Update
     {
         return (new Update())->addFrom(...$tables);
     }

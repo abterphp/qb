@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace QB\MySQL\Statement;
 
 use QB\Generic\Expr\Expr;
-use QB\Generic\Statement\IDelete;
 use QB\Generic\Statement\DeleteTest as GenericDeleteTest;
 
 class DeleteTest extends GenericDeleteTest
@@ -34,7 +33,7 @@ class DeleteTest extends GenericDeleteTest
      *
      * @return Delete
      */
-    protected function getSut(string ...$tables): IDelete
+    protected function getSut(string ...$tables): Delete
     {
         return (new Delete())->addFrom(...$tables);
     }

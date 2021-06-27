@@ -80,15 +80,15 @@ class Insert extends GenericInsert
     {
         $parts = [parent::__toString()];
 
-        if ($this->doNothing || $this->doUpdate) {
+        if ($this->doNothing || count($this->doUpdate) > 0) {
             $action = $this->doNothing ? static::CONFLICT_DO_NOTHING : static::CONFLICT_DO_UPDATE;
-            if ($this->onConflict) {
+            if (count($this->onConflict) > 0) {
                 $parts[] = sprintf('ON CONFLICT (%s) %s', implode(', ', $this->onConflict), $action);
             } else {
                 $parts[] = sprintf('ON CONFLICT %s', $action);
             }
 
-            if ($this->doUpdate) {
+            if (count($this->doUpdate) > 0) {
                 $parts[] = sprintf('SET %s', implode(', ', $this->doUpdate));
             }
         }

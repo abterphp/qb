@@ -7,7 +7,6 @@ namespace QB\PostgreSQL\Statement;
 use QB\Generic\Clause\Column;
 use QB\Generic\Clause\Table;
 use QB\Generic\Expr\Expr;
-use QB\Generic\Statement\ISelect;
 use QB\Generic\Statement\SelectTest as GenericSelectTest;
 
 class SelectTest extends GenericSelectTest
@@ -204,7 +203,7 @@ class SelectTest extends GenericSelectTest
      *
      * @return Select
      */
-    protected function getSut(string|Table ...$tables): ISelect
+    protected function getSut(string|Table ...$tables): Select
     {
         return (new Select())->addFrom(...$tables);
     }

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace QB\MySQL\Statement;
 
 use QB\Generic\Expr\Expr;
-use QB\Generic\Statement\IInsert;
 use QB\Generic\Statement\InsertTest as GenericInsertTest;
 
 class InsertTest extends GenericInsertTest
@@ -49,7 +48,7 @@ class InsertTest extends GenericInsertTest
      *
      * @return Insert
      */
-    protected function getSut(string $table): IInsert
+    protected function getSut(string $table): Insert
     {
         return (new Insert())->setInto($table);
     }

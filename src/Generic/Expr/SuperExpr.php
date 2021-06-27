@@ -48,11 +48,11 @@ class SuperExpr extends Expr
     }
 
     /**
-     * @param null|bool|int|float|string|array $param
+     * @param bool|int|float|string|array|null $param
      *
      * @return bool
      */
-    protected function isParamArray(null|bool|int|float|string|array $param): bool
+    protected function isParamArray(bool|int|float|string|array|null $param): bool
     {
         if (!is_array($param)) {
             return false;

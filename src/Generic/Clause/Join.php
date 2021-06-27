@@ -16,12 +16,12 @@ class Join implements IJoin
     /**
      * Join constructor.
      *
-     * @param string      $type
-     * @param string      $tableName
-     * @param IQueryPart  $on
-     * @param string|null $alias
+     * @param string            $type
+     * @param string            $tableName
+     * @param string|IQueryPart $on
+     * @param string|null       $alias
      */
-    public function __construct(string $type, string $tableName, IQueryPart $on, ?string $alias = null)
+    public function __construct(string $type, string $tableName, string|IQueryPart $on, ?string $alias = null)
     {
         if (!in_array($type, IJoin::VALID_TYPES)) {
             throw new \InvalidArgumentException(sprintf('Invalid join type: %s', $type));

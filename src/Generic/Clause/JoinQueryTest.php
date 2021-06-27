@@ -41,18 +41,18 @@ class JoinQueryTest extends TestCase
     /**
      * @dataProvider toStringGetParamsProvider
      *
-     * @param string      $type
-     * @param Select      $subQuery
-     * @param Expr        $on
-     * @param string|null $alias
-     * @param string      $expectedSql
-     * @param array       $expectedParams
+     * @param string $type
+     * @param Select $subQuery
+     * @param Expr   $on
+     * @param string $alias
+     * @param string $expectedSql
+     * @param array  $expectedParams
      */
     public function testToStringGetParamsProvider(
         string $type,
         Select $subQuery,
         Expr $on,
-        ?string $alias,
+        string $alias,
         string $expectedSql,
         array $expectedParams
     ) {
