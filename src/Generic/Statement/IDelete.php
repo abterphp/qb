@@ -11,7 +11,5 @@ interface IDelete extends IStatement
 {
     public function addFrom(string|Table ...$tables): static;
 
-    public function addModifier(string ...$modifiers): static;
-
     public function addWhere(string|IQueryPart ...$whereParts): static;
 }

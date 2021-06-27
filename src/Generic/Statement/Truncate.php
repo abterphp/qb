@@ -32,17 +32,12 @@ class Truncate implements ITruncate
             throw new \RuntimeException('under-initialized TRUNCATE query');
         }
 
-        return $this->truncate();
+        return 'TRUNCATE ' . implode(', ', $this->tables);
     }
 
     public function isValid(): bool
     {
         return count($this->tables) > 0;
-    }
-
-    protected function truncate(): string
-    {
-        return 'TRUNCATE ' . implode(', ', $this->tables);
     }
 
     /**

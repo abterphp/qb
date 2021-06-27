@@ -32,18 +32,6 @@ class Delete implements IDelete
     }
 
     /**
-     * @param string ...$modifiers
-     *
-     * @return $this
-     */
-    public function addModifier(string ...$modifiers): static
-    {
-        $this->modifiers = array_merge($this->modifiers, $modifiers);
-
-        return $this;
-    }
-
-    /**
      * @param string|IQueryPart ...$whereParts
      *
      * @return $this
@@ -72,7 +60,7 @@ class Delete implements IDelete
 
         $sqlParts = array_merge(
             [$delete],
-            $this->where(),
+            $this->getWhere(),
         );
 
         $sqlParts = array_filter($sqlParts);
@@ -107,7 +95,7 @@ class Delete implements IDelete
         return implode(' ', $this->modifiers);
     }
 
-    protected function where(): array
+    protected function getWhere(): array
     {
         if (count($this->whereParts) === 0) {
             return [];

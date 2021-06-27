@@ -8,7 +8,17 @@ use PHPUnit\Framework\TestCase;
 
 class TruncateTest extends TestCase
 {
-    public function testTruncateSimple()
+    /**
+     * @suppress PhanNoopCast
+     */
+    public function testToStringThrowsAnExceptionIfNotInitialized()
+    {
+        $this->expectException(\RuntimeException::class);
+
+        (string)$this->getSut();
+    }
+
+    public function testToStringSimple()
     {
         $sql = (string)$this->getSut('foo', 'bar');
 
@@ -18,6 +28,15 @@ class TruncateTest extends TestCase
         $expectedSql = implode(PHP_EOL, $parts);
 
         $this->assertSame($expectedSql, $sql);
+    }
+
+    public function testGetParamSimple()
+    {
+        $query = $this->getSut('foo', 'bar');
+
+        $params = $query->getParams();
+
+        $this->assertSame([], $params);
     }
 
     /**
