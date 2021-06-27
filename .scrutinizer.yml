@@ -1,0 +1,25 @@
+filter:
+  excluded_paths:
+    - 'vendor/*'
+
+build:
+  environment:
+    php:
+      version: 8.0
+  nodes:
+    analysis:
+      project_setup:
+        override: true
+      tests:
+        override:
+          - php-scrutinizer-run --enable-security-analysis
+    coverage:
+      tests:
+        override:
+          - command: make coverage
+            coverage:
+              file: clover.xml
+
+              # These formats are supported:
+              # clover, cobertura, jacoco, python-cc, ruby-cc, go-cc, lcov
+              format: clover
