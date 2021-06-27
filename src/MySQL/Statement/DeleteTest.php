@@ -9,16 +9,16 @@ use QB\Generic\Statement\DeleteTest as GenericDeleteTest;
 
 class DeleteTest extends GenericDeleteTest
 {
-    public function testDeleteSimple()
+    public function testDeleteComplex()
     {
         $sql = (string)$this->getSut('foo')
-            ->addModifier(Delete::QUICK)
+            ->addModifier(Delete::LOW_PRIORITY, Delete::QUICK, Delete::IGNORE)
             ->addWhere('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']))
             ->addOrderBy('bar.baz', 'DESC')
             ->setLimit(10);
 
         $parts   = [];
-        $parts[] = 'DELETE QUICK FROM foo';
+        $parts[] = 'DELETE LOW_PRIORITY QUICK IGNORE FROM foo';
         $parts[] = 'WHERE foo.bar = "foo-bar" AND bar.foo = ?';
         $parts[] = 'ORDER BY bar.baz DESC';
         $parts[] = 'LIMIT 10';

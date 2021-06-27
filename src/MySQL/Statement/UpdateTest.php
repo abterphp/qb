@@ -12,13 +12,13 @@ class UpdateTest extends GenericUpdateTest
     public function testToStringComplex()
     {
         $sql = (string)$this->getSut('foo')
-            ->addModifier(Update::LOW_PRIORITY)
+            ->addModifier(Update::LOW_PRIORITY, Update::IGNORE)
             ->setValues(['id' => '1234', 'bar_id' => '2345'])
             ->addWhere('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']))
             ->setLimit(10);
 
         $parts   = [];
-        $parts[] = 'UPDATE LOW_PRIORITY foo';
+        $parts[] = 'UPDATE LOW_PRIORITY IGNORE foo';
         $parts[] = 'SET id = ?, bar_id = ?';
         $parts[] = 'WHERE foo.bar = "foo-bar" AND bar.foo = ?';
         $parts[] = 'LIMIT 10';

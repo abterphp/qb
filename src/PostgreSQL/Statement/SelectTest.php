@@ -14,10 +14,9 @@ class SelectTest extends GenericSelectTest
 {
     public function testToStringModifiers()
     {
-        $sql = $this->getSut('foo')
+        $sql = (string)$this->getSut('foo')
             ->addModifier(Select::ALL, Select::DISTINCT)
-            ->addColumns('id', 'bar_id')
-            ->__toString();
+            ->addColumns('id', 'bar_id');
 
         $parts   = [];
         $parts[] = 'SELECT ALL DISTINCT id, bar_id';
@@ -175,10 +174,11 @@ class SelectTest extends GenericSelectTest
             ->setLimit(10)
             ->setOffset(20)
             ->addUnion($unionQuery)
-            ->addExcept($exceptQuery);
+            ->addExcept($exceptQuery)
+            ->setOuterLimit(100);
 
         $parts   = [];
-        $parts[] = 'SELECT DISTINCT COUNT(DISTINCT baz) AS baz_count, (SELECT b FROM quix WHERE id = ?) AS quix_b, NOW() AS now, bar.id AS bar_id'; // nolint
+        $parts[] = '(SELECT DISTINCT COUNT(DISTINCT baz) AS baz_count, (SELECT b FROM quix WHERE id = ?) AS quix_b, NOW() AS now, bar.id AS bar_id'; // nolint
         $parts[] = 'FROM foo, bar';
         $parts[] = 'INNER JOIN quix AS q ON foo.id = q.foo_id';
         $parts[] = 'WHERE foo.bar = "foo-bar" AND bar.foo = ?';
@@ -193,7 +193,8 @@ class SelectTest extends GenericSelectTest
         $parts[] = 'FROM baz';
         $parts[] = 'EXCEPT';
         $parts[] = 'SELECT v, w';
-        $parts[] = 'FROM sec';
+        $parts[] = 'FROM sec)';
+        $parts[] = 'LIMIT 100';
 
         $expectedSql = implode(PHP_EOL, $parts);
 
