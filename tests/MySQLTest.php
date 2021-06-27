@@ -131,7 +131,7 @@ class MySQLTest extends TestCase
             // INSERT
             $query = $this->sut->insert()
                 ->setInto(new Table('offices'))
-                ->addColumns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
+                ->setColumns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
                 ->addValues('abc', 'Berlin', '+49 101 123 4567', '', 'Germany', '10111', 'NA');
 
             $statement = $this->pdo->prepare((string)$query);

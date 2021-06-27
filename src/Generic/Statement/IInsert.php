@@ -12,7 +12,7 @@ interface IInsert extends IStatement
 
     public function addModifier(string ...$modifiers): static;
 
-    public function addColumns(string ...$columns): static;
+    public function setColumns(string ...$columns): static;
 
     public function addValues(...$values): static;
 

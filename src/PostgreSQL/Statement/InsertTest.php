@@ -6,9 +6,20 @@ namespace QB\PostgreSQL\Statement;
 
 use QB\Generic\Clause\Table;
 use QB\Generic\Statement\InsertTest as GenericInsertTest;
+use RuntimeException;
 
 class InsertTest extends GenericInsertTest
 {
+    /**
+     * @suppress PhanNoopCast
+     */
+    public function testToStringThrowsAnExceptionIfNotInitialized()
+    {
+        $this->expectException(RuntimeException::class);
+
+        (string)(new Insert());
+    }
+
     public function testWitDefaultValues()
     {
         $sql = (string)$this->getSut('foo');
@@ -25,7 +36,7 @@ class InsertTest extends GenericInsertTest
     public function testComplex()
     {
         $sql = (string)$this->getSut('foo')
-            ->addColumns('id', 'bar_id', 'baz')
+            ->setColumns('id', 'bar_id', 'baz')
             ->addValues('1234', '2345', 'a')
             ->addValues('3456', '4567', 'b');
 
@@ -43,7 +54,7 @@ class InsertTest extends GenericInsertTest
     {
         $query = $this->getSut('offices')
             ->setInto(new Table('offices'))
-            ->addColumns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
+            ->setColumns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
             ->addValues('abc', 'Berlin', '+49 101 123 4567', '', 'Germany', '10111', 'NA')
             ->addValues('bcd', 'Budapest', '+36 70 101 1234', '', 'Hungary', '1011', 'NA')
             ->addValues('cde', 'Pécs', '+36 70 222 3456', 'Rákóczi út', 'Hungary', '723', 'NA')
@@ -65,7 +76,7 @@ class InsertTest extends GenericInsertTest
     {
         $query = $this->getSut('offices')
             ->setInto(new Table('offices'))
-            ->addColumns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
+            ->setColumns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
             ->addValues('abc', 'Berlin', '+49 101 123 4567', '', 'Germany', '10111', 'NA')
             ->setDoNothing();
 
@@ -83,7 +94,7 @@ class InsertTest extends GenericInsertTest
     {
         $query = $this->getSut('offices')
             ->setInto(new Table('offices'))
-            ->addColumns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
+            ->setColumns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
             ->addValues('abc', 'Berlin', '+49 101 123 4567', '', 'Germany', '10111', 'NA')
             ->setOnConflict('officeCode', 'city')
             ->setDoUpdate('officeCode = EXCLUDED.officeCode', 'city = EXCLUDED.city')

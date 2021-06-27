@@ -49,9 +49,13 @@ class Insert implements IInsert
      *
      * @return $this
      */
-    public function addColumns(string ...$columns): static
+    public function setColumns(string ...$columns): static
     {
-        $this->columns = array_merge($this->columns, $columns);
+        if (count($this->values) > 0 && count($columns) !== count($this->values[0])) {
+            throw new \InvalidArgumentException('number of columns does not match the number of values');
+        }
+
+        $this->columns = $columns;
 
         return $this;
     }
@@ -63,7 +67,7 @@ class Insert implements IInsert
      */
     public function addValues(...$values): static
     {
-        if (count($this->columns) && count($values) !== count($this->columns)) {
+        if (count($this->columns) > 0 && count($values) !== count($this->columns)) {
             throw new \InvalidArgumentException('number of values does not match the number of columns');
         }
 
@@ -81,10 +85,8 @@ class Insert implements IInsert
             throw new \RuntimeException('under-initialized INSERT query');
         }
 
-        $insert = $this->insert();
-
         $sqlParts = array_merge(
-            [$insert],
+            [$this->getCommand()],
             $this->values(),
         );
 
@@ -93,12 +95,15 @@ class Insert implements IInsert
         return implode(PHP_EOL, $sqlParts);
     }
 
+    /**
+     * @return bool
+     */
     public function isValid(): bool
     {
         return count($this->tables) === 1 && count($this->values) > 0;
     }
 
-    protected function insert(): string
+    protected function getCommand(): string
     {
         $sql = [];
         $sql[] = 'INSERT';

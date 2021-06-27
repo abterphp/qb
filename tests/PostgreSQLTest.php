@@ -98,7 +98,7 @@ class PostgreSQLTest extends TestCase
             // INSERT
             $query = $this->sut->insert()
                 ->setInto(new Table('offices'))
-                ->addColumns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
+                ->setColumns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
                 ->addValues('abc', 'Berlin', '+49 101 123 4567', '', 'Germany', '10111', 'NA');
 
             $statement = $this->pdo->prepare((string)$query);
@@ -168,7 +168,7 @@ class PostgreSQLTest extends TestCase
             // INSERT
             $query = $this->sut->insert()
                 ->setInto(new Table('offices'))
-                ->addColumns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
+                ->setColumns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
                 ->addValues('abc', 'Berlin', '+49 101 123 4567', '', 'Germany', '10111', 'NA')
                 ->addValues('bcd', 'Budapest', '+36 70 101 1234', '', 'Hungary', '1011', 'NA')
 
