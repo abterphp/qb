@@ -34,7 +34,7 @@ class Lock
     public function __construct(?string $for = null, array $tables = [], ?string $modifier = null)
     {
         if (!$this->isValid($for, $modifier)) {
-            $data = print_r([$for, $modifier], true) ?? 'print_r failure';
+            $data = (string)print_r([$for, $modifier], true);
             throw new \InvalidArgumentException(
                 sprintf('invalid arguments for %s. arguments: %s', __CLASS__, $data)
             );

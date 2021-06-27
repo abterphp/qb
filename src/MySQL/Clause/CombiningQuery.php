@@ -32,7 +32,7 @@ class CombiningQuery
     public function __construct(string $type, IQueryPart $queryPart, ?string $modifier = null)
     {
         if (!$this->isValid($type, $modifier)) {
-            $data = print_r([$type, $modifier], true) ?? 'print_r failure';
+            $data = (string)print_r([$type, $modifier], true);
             throw new \InvalidArgumentException(
                 sprintf('invalid arguments for %s. arguments: %s', __CLASS__, $data)
             );
