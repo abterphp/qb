@@ -8,7 +8,6 @@ use PHPUnit\Framework\TestCase;
 use QB\Generic\Clause\Column;
 use QB\Generic\Clause\Table;
 use QB\Generic\Expr\Expr;
-use QB\Generic\Expr\SuperExpr;
 use QB\PostgreSQL\Factory\Factory;
 
 class PostgreSQLTest extends TestCase
