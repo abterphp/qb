@@ -8,6 +8,7 @@ use QB\Generic\Clause\Column;
 use QB\Generic\Clause\Table;
 use QB\Generic\Expr\Expr;
 use QB\Generic\Statement\SelectTest as GenericSelectTest;
+use QB\PostgreSQL\Clause\Lock;
 
 class SelectTest extends GenericSelectTest
 {
@@ -71,8 +72,7 @@ class SelectTest extends GenericSelectTest
             ->addGroupBy('q.foo_id', new Expr('q.bar.id'))
             ->addHaving('baz_count > 0')
             ->addOrderBy('baz_count', 'ASC')
-            ->addLock(Select::LOCK_FOR_UPDATE, Select::LOCK_NOWAIT)
-            ->addLockTable('foo')
+            ->setLock(new Lock(Lock::FOR_UPDATE, [], Lock::MODIFIER_NOWAIT))
             ->setLimit(10)
             ->setOffset(20)
             ->addUnion($unionQuery);
@@ -87,7 +87,7 @@ class SelectTest extends GenericSelectTest
         $parts[] = 'ORDER BY baz_count ASC';
         $parts[] = 'OFFSET 20 ROWS';
         $parts[] = 'FETCH FIRST 10 ROWS ONLY';
-        $parts[] = 'FOR UPDATE OF foo NOWAIT';
+        $parts[] = 'FOR UPDATE NOWAIT';
         $parts[] = 'UNION';
         $parts[] = 'SELECT b, f';
         $parts[] = 'FROM baz';
@@ -118,8 +118,7 @@ class SelectTest extends GenericSelectTest
             ->addGroupBy('q.foo_id', new Expr('q.bar.id'))
             ->addHaving('baz_count > 0')
             ->addOrderBy('baz_count', 'ASC')
-            ->addLock(Select::LOCK_FOR_UPDATE, Select::LOCK_NOWAIT)
-            ->addLockTable('foo')
+            ->setLock(new Lock(Lock::FOR_UPDATE, ['foo'], Lock::MODIFIER_NOWAIT))
             ->setLimit(10)
             ->setOffset(20)
             ->addIntersect($intersectQuery);
@@ -168,8 +167,7 @@ class SelectTest extends GenericSelectTest
             ->addGroupBy('q.foo_id', new Expr('q.bar.id'))
             ->addHaving('baz_count > 0')
             ->addOrderBy('baz_count', 'ASC')
-            ->addLock(Select::LOCK_FOR_UPDATE, Select::LOCK_NOWAIT)
-            ->addLockTable('foo')
+            ->setLock(new Lock(Lock::FOR_KEY_SHARE))
             ->setLimit(10)
             ->setOffset(20)
             ->addUnion($unionQuery)
@@ -185,7 +183,7 @@ class SelectTest extends GenericSelectTest
         $parts[] = 'ORDER BY baz_count ASC';
         $parts[] = 'OFFSET 20 ROWS';
         $parts[] = 'FETCH FIRST 10 ROWS ONLY';
-        $parts[] = 'FOR UPDATE OF foo NOWAIT';
+        $parts[] = 'FOR KEY SHARE';
         $parts[] = 'UNION';
         $parts[] = 'SELECT b, f';
         $parts[] = 'FROM baz';

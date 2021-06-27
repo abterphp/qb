@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace QB\MySQL\Statement;
 
 use QB\Generic\Statement\Select as GenericSelect;
+use QB\MySQL\Clause\Lock;
 
 /**
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
@@ -20,11 +21,6 @@ class Select extends GenericSelect
     public const SQL_NO_CACHE        = 'SQL_NO_CACHE';
     public const SQL_CALC_FOUND_ROWS = 'SQL_CALC_FOUND_ROWS';
 
-    public const LOCK_FOR_SHARE   = 'FOR SHARE';
-    public const LOCK_FOR_UPDATE  = 'FOR UPDATE';
-    public const LOCK_NOWAIT      = 'NOWAIT';
-    public const LOCK_SKIP_LOCKED = 'SKIP LOCKED';
-
     protected const GROUP_WITH_ROLLUP = 'WITH ROLLUP';
 
     protected bool $groupWithRollup = false;
@@ -32,8 +28,7 @@ class Select extends GenericSelect
     /** @var Select[] */
     protected array $union = [];
 
-    /** @var string[] */
-    protected array $locks = [];
+    protected ?Lock $lock = null;
 
     protected ?int $outerOffset = null;
 
@@ -42,8 +37,7 @@ class Select extends GenericSelect
     /** @var array<string,string> */
     protected array $outerOrderByParts = [];
 
-    /** @var string[] */
-    protected array $outerLocks = [];
+    protected ?Lock $outerLock = null;
 
     /**
      * @SuppressWarnings("complexity")
@@ -138,26 +132,13 @@ class Select extends GenericSelect
     }
 
     /**
-     * @param string ...$locks
+     * @param Lock $lock
      *
      * @return $this
      */
-    public function addLock(string ...$locks): static
+    public function setLock(Lock $lock): static
     {
-        foreach ($locks as $lock) {
-            switch ($lock) {
-                case static::LOCK_FOR_SHARE:
-                case static::LOCK_FOR_UPDATE:
-                    $this->locks[0] = $lock;
-                    break;
-                case static::LOCK_NOWAIT:
-                case static::LOCK_SKIP_LOCKED:
-                    $this->locks[1] = $lock;
-                    break;
-            }
-        }
-
-        ksort($this->locks);
+        $this->lock = $lock;
 
         return $this;
     }
@@ -175,33 +156,25 @@ class Select extends GenericSelect
     }
 
     /**
-     * @param string ...$locks
+     * @param Lock $lock
      *
      * @return $this
      */
-    public function addOuterLock(string ...$locks): static
+    public function setOuterLock(Lock $lock): static
     {
-        foreach ($locks as $lock) {
-            switch ($lock) {
-                case static::LOCK_FOR_SHARE:
-                case static::LOCK_FOR_UPDATE:
-                    $this->outerLocks[0] = $lock;
-                    break;
-                case static::LOCK_NOWAIT:
-                case static::LOCK_SKIP_LOCKED:
-                    $this->outerLocks[1] = $lock;
-                    break;
-            }
-        }
+        $this->outerLock = $lock;
 
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function __toString(): string
     {
         $parts = array_merge(
             [parent::__toString()],
-            $this->getLocks(),
+            $this->getLock(),
             $this->getUnion()
         );
 
@@ -211,7 +184,7 @@ class Select extends GenericSelect
 
         if (
             $this->outerLimit === null && $this->outerOffset === null && count($this->outerOrderByParts) === 0 &&
-            count($this->outerLocks) === 0
+            $this->outerLock === null
         ) {
             return $sql;
         }
@@ -228,6 +201,9 @@ class Select extends GenericSelect
         return implode(PHP_EOL, $parts);
     }
 
+    /**
+     * @return string[]
+     */
     protected function getGroupBy(): array
     {
         $groupBy = parent::getGroupBy();
@@ -239,6 +215,9 @@ class Select extends GenericSelect
         return $groupBy;
     }
 
+    /**
+     * @return string[]
+     */
     protected function getLimit(): array
     {
         $parts = [];
@@ -251,11 +230,21 @@ class Select extends GenericSelect
         return $parts;
     }
 
-    protected function getLocks(): array
+    /**
+     * @return string[]
+     */
+    protected function getLock(): array
     {
-        return [implode(' ', $this->locks)];
+        if ($this->lock === null) {
+            return [];
+        }
+
+        return [(string)$this->lock];
     }
 
+    /**
+     * @return string[]
+     */
     public function getUnion(): array
     {
         $parts = [];
@@ -266,6 +255,9 @@ class Select extends GenericSelect
         return $parts;
     }
 
+    /**
+     * @return string[]
+     */
     protected function getOuterOrderBy(): array
     {
         if (count($this->outerOrderByParts) === 0) {
@@ -280,6 +272,9 @@ class Select extends GenericSelect
         return ['ORDER BY ' . implode(', ', $parts)];
     }
 
+    /**
+     * @return string[]
+     */
     protected function getOuterLimit(): array
     {
         $parts = [];
@@ -292,8 +287,15 @@ class Select extends GenericSelect
         return $parts;
     }
 
+    /**
+     * @return string[]
+     */
     protected function getOuterLocks(): array
     {
-        return [implode(' ', $this->outerLocks)];
+        if ($this->outerLock === null) {
+            return [];
+        }
+
+        return [(string)$this->outerLock];
     }
 }

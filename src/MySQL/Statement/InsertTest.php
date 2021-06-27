@@ -32,10 +32,11 @@ class InsertTest extends GenericInsertTest
         $select->addColumn(new Expr('1'));
 
         $sql = (string)$this->getSut('foo')
+            ->addModifier(Insert::IGNORE)
             ->setSelect($select);
 
         $parts   = [];
-        $parts[] = 'INSERT INTO foo';
+        $parts[] = 'INSERT IGNORE INTO foo';
         $parts[] = 'SELECT 1';
 
         $expectedSql = implode(PHP_EOL, $parts);

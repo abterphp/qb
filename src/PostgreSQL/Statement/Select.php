@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace QB\PostgreSQL\Statement;
 
 use QB\Generic\Statement\Select as GenericSelect;
+use QB\PostgreSQL\Clause\Lock;
 
 class Select extends GenericSelect
 {
@@ -12,17 +13,9 @@ class Select extends GenericSelect
     protected const INTERSECT = 'intersect';
     protected const EXCEPT    = 'except';
 
-    public const LOCK_FOR_UPDATE        = 'FOR UPDATE';
-    public const LOCK_FOR_NO_KEY_UPDATE = 'FOR NO KEY UPDATE';
-    public const LOCK_FOR_SHARE         = 'FOR SHARE';
-    public const LOCK_FOR_KEY_SHARE     = 'FOR KEY SHARE';
-    public const LOCK_NOWAIT            = 'NOWAIT';
-    public const LOCK_SKIP_LOCKED       = 'SKIP LOCKED';
-
     protected array $unionLikes = [];
 
-    /** @var string[] */
-    protected array $locks = [];
+    protected ?Lock $lock = null;
 
     protected ?string $lockTable = null;
 
@@ -71,40 +64,13 @@ class Select extends GenericSelect
     }
 
     /**
-     * @param string ...$locks
+     * @param Lock $lock
      *
      * @return $this
      */
-    public function addLock(string ...$locks): static
+    public function setLock(Lock $lock): static
     {
-        foreach ($locks as $lock) {
-            switch ($lock) {
-                case static::LOCK_FOR_SHARE:
-                case static::LOCK_FOR_UPDATE:
-                case static::LOCK_FOR_KEY_SHARE:
-                case static::LOCK_FOR_NO_KEY_UPDATE:
-                    $this->locks[0] = $lock;
-                    break;
-                case static::LOCK_NOWAIT:
-                case static::LOCK_SKIP_LOCKED:
-                    $this->locks[1] = $lock;
-                    break;
-            }
-        }
-
-        ksort($this->locks);
-
-        return $this;
-    }
-
-    /**
-     * @param string $lockTable
-     *
-     * @return $this
-     */
-    public function addLockTable(string $lockTable): static
-    {
-        $this->lockTable = $lockTable;
+        $this->lock = $lock;
 
         return $this;
     }
@@ -168,7 +134,7 @@ class Select extends GenericSelect
     {
         $parts = array_merge(
             [parent::__toString()],
-            $this->getLocks(),
+            $this->getLock(),
             $this->getUnionLikes()
         );
 
@@ -191,18 +157,21 @@ class Select extends GenericSelect
         return implode(PHP_EOL, $parts);
     }
 
-    protected function getLocks(): array
+    /**
+     * @return string[]
+     */
+    protected function getLock(): array
     {
-        $locks = [];
-        $locks[] = array_key_exists(0, $this->locks) ? $this->locks[0] : '';
-        $locks[] = $this->lockTable ? 'OF ' . $this->lockTable : '';
-        $locks[] = array_key_exists(1, $this->locks) ? $this->locks[1] : '';
+        if ($this->lock === null) {
+            return [];
+        }
 
-        $locks = array_filter($locks);
-
-        return [implode(' ', $locks)];
+        return [(string)$this->lock];
     }
 
+    /**
+     * @return string[]
+     */
     public function getUnionLikes(): array
     {
         $parts = [];
@@ -230,6 +199,9 @@ class Select extends GenericSelect
         return $parts;
     }
 
+    /**
+     * @return string[]
+     */
     protected function getOuterOrderBy(): array
     {
         if (count($this->outerOrderByParts) === 0) {
@@ -244,6 +216,9 @@ class Select extends GenericSelect
         return ['ORDER BY ' . implode(', ', $parts)];
     }
 
+    /**
+     * @return string[]
+     */
     protected function getOuterLimit(): array
     {
         $parts = [];

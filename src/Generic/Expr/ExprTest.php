@@ -175,7 +175,7 @@ class ExprTest extends TestCase
                 [
                     'foo_0' => ['bar', PDO::PARAM_STR],
                     'foo_1' => ['baz', PDO::PARAM_STR],
-                    'bar' => ['quix', PDO::PARAM_STR],
+                    'bar'   => ['quix', PDO::PARAM_STR],
                     'baz_0' => [17, PDO::PARAM_INT],
                     'baz_1' => [34, PDO::PARAM_INT],
                 ],
@@ -192,7 +192,7 @@ class ExprTest extends TestCase
                 [
                     'foo_0' => ['bar', PDO::PARAM_STR],
                     'foo_1' => ['baz', PDO::PARAM_STR],
-                    'bar' => ['quix', PDO::PARAM_STR],
+                    'bar'   => ['quix', PDO::PARAM_STR],
                     'baz_0' => [17, PDO::PARAM_INT],
                     'baz_1' => [34, PDO::PARAM_STR],
                 ],
@@ -205,7 +205,7 @@ class ExprTest extends TestCase
                 [
                     'foo_0' => ['bar', PDO::PARAM_STR],
                     'foo_1' => ['baz', PDO::PARAM_STR],
-                    'bar' => ['quix', PDO::PARAM_STR],
+                    'bar'   => ['quix', PDO::PARAM_STR],
                     'baz_0' => [17, PDO::PARAM_STR],
                     'baz_1' => [34, PDO::PARAM_STR],
                 ],
@@ -238,10 +238,11 @@ class ExprTest extends TestCase
     public function constructExceptionsProvider(): array
     {
         return [
-            'object parameter'                  => ['foo = ?', [new \stdClass()], Expr::PARAM_ALL_AUTO],
-            'invalid parameter handling'        => ['foo', [0 => null], 123],
-            'string parameter key not expected' => ['foo', [0 => null, 'foo' => null], 123],
-            'int parameter key not expected'    => ['foo', [1 => null], 123],
+            'object parameter'                       => ['foo = ?', [new \stdClass()], Expr::PARAM_ALL_AUTO],
+            'invalid parameter handling'             => ['foo', [0 => null], 123],
+            'string parameter key not expected'      => ['foo', [0 => null, 'foo' => null], 123],
+            'int parameter key not expected'         => ['foo', [1 => null], Expr::PARAM_ALL_AUTO],
+            'missing int parameter key not expected' => ['foo', [0 => null, 2 => null], Expr::PARAM_ALL_AUTO],
         ];
     }
 

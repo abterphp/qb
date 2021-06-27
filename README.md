@@ -21,6 +21,7 @@ QB is a generic query build which currently supports the base commands of MySQL 
 ```php
 use QB\Generic\Clause\Column;
 use QB\Generic\Expr\Expr;
+use QB\MySQL\Clause\Lock;
 use QB\MySQL\Statement\Select;
 
 $columnQuery = (new Select())
@@ -49,7 +50,7 @@ $sql = (string)(new Select())
     ->addOrderBy('baz_count', 'ASC')
     ->setLimit(10)
     ->setOffset(20)
-    ->addLock(Select::LOCK_FOR_UPDATE, Select::LOCK_NOWAIT)
+    ->setLock(new Lock(Lock::FOR_UPDATE, [], Lock::MODIFIER_NOWAIT))
     ->addUnion($unionQuery);
 
 // SELECT DISTINCT COUNT(DISTINCT baz) AS baz_count, (SELECT b FROM quix WHERE id = ?) AS quix_b, NOW() AS now, bar.id AS bar_id

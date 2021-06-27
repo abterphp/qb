@@ -8,18 +8,29 @@ use QB\Generic\Clause\Column;
 use QB\Generic\Clause\Table;
 use QB\Generic\Expr\Expr;
 use QB\Generic\Statement\SelectTest as GenericSelectTest;
+use QB\MySQL\Clause\Lock;
 
 class SelectTest extends GenericSelectTest
 {
     public function testToStringModifiers()
     {
-        $sql = $this->getSut('foo')
-            ->addModifier(Select::ALL, Select::DISTINCT, Select::SQL_CALC_FOUND_ROWS)
-            ->addColumns('id', 'bar_id')
-            ->__toString();
+        $modifiers = [
+            Select::DISTINCT,
+            Select::HIGH_PRIORITY,
+            Select::STRAIGHT_JOIN,
+            Select::SQL_SMALL_RESULT,
+            Select::SQL_BIG_RESULT,
+            Select::SQL_BUFFER_RESULT,
+            Select::SQL_NO_CACHE,
+            Select::SQL_CALC_FOUND_ROWS,
+        ];
+
+        $sql = (string)$this->getSut('foo')
+            ->addModifier(...$modifiers)
+            ->addColumns('id', 'bar_id');
 
         $parts   = [];
-        $parts[] = 'SELECT DISTINCT SQL_CALC_FOUND_ROWS id, bar_id';
+        $parts[] = sprintf('SELECT %s id, bar_id', implode(' ', $modifiers));
         $parts[] = 'FROM foo';
 
         $expectedSql = implode(PHP_EOL, $parts);
@@ -55,11 +66,10 @@ class SelectTest extends GenericSelectTest
         $unionQuery = $this->getSut('baz')
             ->addColumns('id');
 
-        $sql = $this->getSut('foo')
+        $sql = (string)$this->getSut('foo')
             ->addColumns('id')
             ->addUnion($unionQuery)
-            ->addOuterLock(Select::LOCK_FOR_UPDATE, Select::LOCK_NOWAIT)
-            ->__toString();
+            ->setOuterLock(new Lock(Lock::FOR_UPDATE, [], Lock::MODIFIER_NOWAIT));
 
         $parts   = [];
         $parts[] = '(SELECT id';
@@ -68,6 +78,31 @@ class SelectTest extends GenericSelectTest
         $parts[] = 'SELECT id';
         $parts[] = 'FROM baz)';
         $parts[] = 'FOR UPDATE NOWAIT';
+
+        $expectedSql = implode(PHP_EOL, $parts);
+
+        $this->assertSame($expectedSql, $sql);
+    }
+
+    public function testToStringWithLimitAndLock()
+    {
+        $unionQuery = $this->getSut('baz')
+            ->addColumns('id');
+
+        $sql = (string)$this->getSut('foo')
+            ->addColumns('id')
+            ->setLimit(10)
+            ->addUnion($unionQuery)
+            ->setOuterLock(new Lock(Lock::FOR_UPDATE, [], Lock::MODIFIER_SKIP_LOCKED));
+
+        $parts   = [];
+        $parts[] = '(SELECT id';
+        $parts[] = 'FROM foo';
+        $parts[] = 'LIMIT 10';
+        $parts[] = 'UNION';
+        $parts[] = 'SELECT id';
+        $parts[] = 'FROM baz)';
+        $parts[] = 'FOR UPDATE SKIP LOCKED';
 
         $expectedSql = implode(PHP_EOL, $parts);
 
@@ -85,7 +120,7 @@ class SelectTest extends GenericSelectTest
         $unionQuery = $this->getSut('baz')
             ->addColumns('b', 'f');
 
-        $sql = $this->getSut('foo', 'bar')
+        $sql = (string)$this->getSut('foo', 'bar')
             ->addModifier('DISTINCT')
             ->addColumns('COUNT(DISTINCT baz) AS baz_count', new Column($columnQuery, 'quix_b'))
             ->addColumns(new Column($columnExpr, 'now'))
@@ -98,12 +133,13 @@ class SelectTest extends GenericSelectTest
             ->addOrderBy('baz_count', 'ASC')
             ->setLimit(10)
             ->setOffset(20)
-            ->addLock(Select::LOCK_FOR_UPDATE, Select::LOCK_NOWAIT)
+            ->setLock(new Lock(Lock::FOR_UPDATE, [], Lock::MODIFIER_NOWAIT))
             ->addUnion($unionQuery)
-            ->__toString();
+            ->setOuterLimit(25)
+            ->addOuterOrderBy('baz_count', 'DESC');
 
         $parts   = [];
-        $parts[] = 'SELECT DISTINCT COUNT(DISTINCT baz) AS baz_count, (SELECT b FROM quix WHERE id = ?) AS quix_b, NOW() AS now, bar.id AS bar_id'; // nolint
+        $parts[] = '(SELECT DISTINCT COUNT(DISTINCT baz) AS baz_count, (SELECT b FROM quix WHERE id = ?) AS quix_b, NOW() AS now, bar.id AS bar_id'; // nolint
         $parts[] = 'FROM foo, bar';
         $parts[] = 'INNER JOIN quix AS q ON foo.id = q.foo_id';
         $parts[] = 'WHERE foo.bar = "foo-bar" AND bar.foo = ?';
@@ -114,7 +150,9 @@ class SelectTest extends GenericSelectTest
         $parts[] = 'FOR UPDATE NOWAIT';
         $parts[] = 'UNION';
         $parts[] = 'SELECT b, f';
-        $parts[] = 'FROM baz';
+        $parts[] = 'FROM baz)';
+        $parts[] = 'ORDER BY baz_count DESC';
+        $parts[] = 'LIMIT 25';
 
         $expectedSql = implode(PHP_EOL, $parts);
 
