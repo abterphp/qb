@@ -160,7 +160,7 @@ class SelectTest extends GenericSelectTest
             ->setLock(new Lock(Lock::FOR_UPDATE, [], Lock::MODIFIER_NOWAIT))
             ->addUnion($unionQuery)
             ->setOuterLimit(25)
-            ->addOuterOrderBy('baz_count', 'DESC');
+            ->setOuterOrderBy('baz_count', 'DESC');
 
         $parts   = [];
         $parts[] = '(SELECT DISTINCT COUNT(DISTINCT baz) AS baz_count, (SELECT b FROM quix WHERE id = ?) AS quix_b, NOW() AS now, bar.id AS bar_id'; // nolint

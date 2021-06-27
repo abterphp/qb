@@ -44,7 +44,7 @@ class Select implements ISelect
     protected array $havingParts = [];
 
     /** @var array<string,string> */
-    protected array $orderByParts = [];
+    protected array $orderBy = [];
 
     protected ?int $offset = null;
 
@@ -236,7 +236,7 @@ class Select implements ISelect
      */
     public function addOrderBy(string $column, string $direction = 'ASC'): static
     {
-        $this->orderByParts[$column] = $direction;
+        $this->orderBy[$column] = $direction;
 
         return $this;
     }
@@ -403,12 +403,12 @@ class Select implements ISelect
 
     protected function getOrderBy(): array
     {
-        if (count($this->orderByParts) === 0) {
+        if (count($this->orderBy) === 0) {
             return [];
         }
 
         $parts = [];
-        foreach ($this->orderByParts as $column => $direction) {
+        foreach ($this->orderBy as $column => $direction) {
             $parts[] = "$column $direction";
         }
 

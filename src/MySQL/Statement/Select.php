@@ -37,7 +37,7 @@ class Select extends GenericSelect
     protected ?int $outerLimit = null;
 
     /** @var array<string,string> */
-    protected array $outerOrderByParts = [];
+    protected array $outerOrderBy = [];
 
     protected ?Lock $outerLock = null;
 
@@ -126,9 +126,9 @@ class Select extends GenericSelect
      *
      * @return $this
      */
-    public function addOuterOrderBy(string $column, string $direction = 'ASC'): static
+    public function setOuterOrderBy(string $column, string $direction = 'ASC'): static
     {
-        $this->outerOrderByParts[$column] = $direction;
+        $this->outerOrderBy[$column] = $direction;
 
         return $this;
     }
@@ -186,7 +186,7 @@ class Select extends GenericSelect
         $sql = implode(PHP_EOL, $parts);
 
         if (
-            $this->outerLimit === null && $this->outerOffset === null && count($this->outerOrderByParts) === 0 &&
+            $this->outerLimit === null && $this->outerOffset === null && count($this->outerOrderBy) === 0 &&
             $this->outerLock === null
         ) {
             return $sql;
@@ -263,12 +263,12 @@ class Select extends GenericSelect
      */
     protected function getOuterOrderBy(): array
     {
-        if (count($this->outerOrderByParts) === 0) {
+        if (count($this->outerOrderBy) === 0) {
             return [];
         }
 
         $parts = [];
-        foreach ($this->outerOrderByParts as $column => $direction) {
+        foreach ($this->outerOrderBy as $column => $direction) {
             $parts[] = "$column $direction";
         }
 

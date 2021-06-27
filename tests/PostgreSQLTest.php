@@ -72,8 +72,8 @@ class PostgreSQLTest extends TestCase
             ->addWhere(new Expr('employees.jobTitle = ?', ['Sales Rep']))
             ->addWhere('o.city = \'NYC\'')
             ->addUnion($unionQuery)
-            ->addOuterOrderBy('type', 'DESC')
-            ->addOuterOrderBy('lastName')
+            ->setOuterOrderBy('type', 'DESC')
+            ->setOuterOrderBy('lastName')
             ->setOuterLimit($limit);
 
         $statement = $this->pdo->prepare((string)$query);

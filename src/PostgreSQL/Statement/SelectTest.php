@@ -28,7 +28,7 @@ class SelectTest extends GenericSelectTest
         $this->assertSame($expectedSql, $sql);
     }
 
-    public function testToStringWithOuterLimits()
+    public function testToStringComplex()
     {
         $unionQuery = $this->getSut('baz')
             ->addColumns('id');
@@ -36,7 +36,9 @@ class SelectTest extends GenericSelectTest
         $sql = (string)$this->getSut('foo')
             ->addColumns('id')
             ->addUnion($unionQuery)
-            ->setOuterLimit(10);
+            ->setOuterOffset(20)
+            ->setOuterLimit(10)
+            ->setOuterOrderBy('id', 'DESC');
 
         $parts   = [];
         $parts[] = '(SELECT id';
@@ -44,7 +46,9 @@ class SelectTest extends GenericSelectTest
         $parts[] = 'UNION';
         $parts[] = 'SELECT id';
         $parts[] = 'FROM baz)';
+        $parts[] = 'ORDER BY id DESC';
         $parts[] = 'LIMIT 10';
+        $parts[] = 'OFFSET 20 ROWS';
 
         $expectedSql = implode(PHP_EOL, $parts);
 

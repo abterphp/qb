@@ -11,10 +11,6 @@ use QB\PostgreSQL\Clause\Lock;
 
 class Select extends GenericSelect
 {
-    protected const UNION     = 'union';
-    protected const INTERSECT = 'intersect';
-    protected const EXCEPT    = 'except';
-
     /** @var CombiningQuery[] */
     protected array $combiningQueries = [];
 
@@ -27,7 +23,7 @@ class Select extends GenericSelect
     protected ?int $outerLimit = null;
 
     /** @var array<string,string> */
-    protected array $outerOrderByParts = [];
+    protected array $outerOrderBy = [];
 
     /**
      * @param int|null $offset
@@ -59,9 +55,9 @@ class Select extends GenericSelect
      *
      * @return Select
      */
-    public function addOuterOrderBy(string $column, string $direction = 'ASC'): static
+    public function setOuterOrderBy(string $column, string $direction = 'ASC'): static
     {
-        $this->outerOrderByParts[$column] = $direction;
+        $this->outerOrderBy[$column] = $direction;
 
         return $this;
     }
@@ -129,7 +125,7 @@ class Select extends GenericSelect
 
         $sql = implode(PHP_EOL, $parts);
 
-        if ($this->outerLimit === null && $this->outerOffset === null && count($this->outerOrderByParts) === 0) {
+        if ($this->outerLimit === null && $this->outerOffset === null && count($this->outerOrderBy) === 0) {
             return $sql;
         }
 
@@ -174,12 +170,12 @@ class Select extends GenericSelect
      */
     protected function getOuterOrderBy(): array
     {
-        if (count($this->outerOrderByParts) === 0) {
+        if (count($this->outerOrderBy) === 0) {
             return [];
         }
 
         $parts = [];
-        foreach ($this->outerOrderByParts as $column => $direction) {
+        foreach ($this->outerOrderBy as $column => $direction) {
             $parts[] = "$column $direction";
         }
 
@@ -192,10 +188,11 @@ class Select extends GenericSelect
     protected function getOuterLimit(): array
     {
         $parts = [];
-        if ($this->outerLimit !== null && $this->outerOffset !== null) {
-            $parts[] = 'LIMIT ' . $this->outerOffset . ', ' . $this->outerLimit;
-        } elseif ($this->outerLimit !== null) {
-            $parts[] = 'LIMIT ' . $this->outerLimit;
+        if ($this->outerLimit !== null) {
+            $parts[] = sprintf('LIMIT %d', $this->outerLimit);
+        }
+        if ($this->outerOffset !== null) {
+            $parts[] = sprintf('OFFSET %d ROWS', $this->outerOffset);
         }
 
         return $parts;

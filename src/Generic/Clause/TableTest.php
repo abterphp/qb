@@ -32,4 +32,13 @@ class TableTest extends TestCase
 
         $this->assertSame($expectedSql, $actualSql);
     }
+
+    public function testGetParam()
+    {
+        $sut = new Table('foo', 'f');
+
+        $actualParams = $sut->getParams();
+
+        $this->assertSame([], $actualParams);
+    }
 }
