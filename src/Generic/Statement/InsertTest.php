@@ -21,17 +21,18 @@ class InsertTest extends TestCase
         $this->assertSame($expectedSql, $sql);
     }
 
-    public function testInsertComplex()
+    public function testComplex()
     {
         $sql = (string)$this->getSut('foo')
-            ->addColumns('id', 'bar_id')
-            ->addValues('1234', '2345')
-            ->addValues('3456', '4567');
+            ->addModifier('BAR')
+            ->addColumns('id', 'bar_id', 'baz')
+            ->addValues('1234', '2345', 'a')
+            ->addValues('3456', '4567', 'b');
 
         $parts   = [];
-        $parts[] = 'INSERT INTO foo (id, bar_id)';
-        $parts[] = 'VALUES (?, ?),';
-        $parts[] = '(?, ?)';
+        $parts[] = 'INSERT BAR INTO foo (id, bar_id, baz)';
+        $parts[] = 'VALUES (?, ?, ?),';
+        $parts[] = '(?, ?, ?)';
 
         $expectedSql = implode(PHP_EOL, $parts);
 

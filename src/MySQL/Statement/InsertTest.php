@@ -26,7 +26,7 @@ class InsertTest extends GenericInsertTest
         $this->assertSame($expectedSql, $sql);
     }
 
-    public function testInsertSelect()
+    public function testComplex()
     {
         $select = new Select();
         $select->addColumn(new Expr('1'));

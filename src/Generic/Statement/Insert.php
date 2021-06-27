@@ -45,37 +45,13 @@ class Insert implements IInsert
     }
 
     /**
-     * @param string      $column
-     * @param string|null $alias
-     *
-     * @return $this
-     */
-    public function addColumn(string $column, ?string $alias = null): static
-    {
-        if ($alias === null) {
-            $this->columns[] = $column;
-        } else {
-            $this->columns[$alias] = $column;
-        }
-
-        return $this;
-    }
-
-    /**
      * @param string ...$columns
      *
      * @return $this
      */
     public function addColumns(string ...$columns): static
     {
-        foreach ($columns as $rawColumn) {
-            if (strpos($rawColumn, ' AS ')) {
-                $parts                    = explode(' AS ', $rawColumn);
-                $this->columns[$parts[1]] = $parts[0];
-            } else {
-                $this->columns[] = $rawColumn;
-            }
-        }
+        $this->columns = array_merge($this->columns, $columns);
 
         return $this;
     }
@@ -138,16 +114,7 @@ class Insert implements IInsert
             return $sql;
         }
 
-        $columnParts = [];
-        foreach ($this->columns as $alias => $column) {
-            if (is_numeric($alias)) {
-                $columnParts[] = $column;
-            } else {
-                $columnParts[] = "$column AS $alias";
-            }
-        }
-
-        return $sql . ' (' . implode(', ', $columnParts) . ')';
+        return $sql . ' (' . implode(', ', $this->columns) . ')';
     }
 
     protected function getModifiers(): string

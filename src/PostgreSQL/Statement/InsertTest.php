@@ -22,6 +22,23 @@ class InsertTest extends GenericInsertTest
         $this->assertSame($expectedSql, $sql);
     }
 
+    public function testComplex()
+    {
+        $sql = (string)$this->getSut('foo')
+            ->addColumns('id', 'bar_id', 'baz')
+            ->addValues('1234', '2345', 'a')
+            ->addValues('3456', '4567', 'b');
+
+        $parts   = [];
+        $parts[] = 'INSERT INTO foo (id, bar_id, baz)';
+        $parts[] = 'VALUES (?, ?, ?),';
+        $parts[] = '(?, ?, ?)';
+
+        $expectedSql = implode(PHP_EOL, $parts);
+
+        $this->assertSame($expectedSql, $sql);
+    }
+
     public function testAddMultipleRows()
     {
         $query = $this->getSut('offices')
