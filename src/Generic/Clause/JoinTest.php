@@ -59,6 +59,9 @@ class JoinTest extends TestCase
         $this->assertSame($expectedParams, $actualParams);
     }
 
+    /**
+     * @suppress PhanNoopNew
+     */
     public function testInvalidType()
     {
         $this->expectException(\InvalidArgumentException::class);
