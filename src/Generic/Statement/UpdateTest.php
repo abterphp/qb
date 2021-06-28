@@ -55,10 +55,10 @@ class UpdateTest extends TestCase
 
     public function testGetParams()
     {
-        $expectedParams = [['bar-foo', PDO::PARAM_STR]];
+        $expectedParams = [[2345, PDO::PARAM_INT], ['bar-foo', PDO::PARAM_STR]];
 
         $query = $this->getSut('foo')
-            ->setValues(['id' => '1234', 'bar_id' => '2345'])
+            ->setValues(['id' => '1234', 'bar_id' => new Expr('?', [2345])])
             ->addWhere('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']));
 
         $params = $query->getParams();
@@ -68,7 +68,7 @@ class UpdateTest extends TestCase
 
     public function testGetValues()
     {
-        $values = ['id' => '1234', 'bar_id' => '2345'];
+        $values = ['id' => '1234', 'bar_id' =>  new Expr('?', [2345])];
 
         $expectedValues = array_values($values);
 

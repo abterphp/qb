@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace QB\Generic\Statement;
 
 use InvalidArgumentException;
+use PDO;
 use PHPUnit\Framework\TestCase;
 use QB\Generic\Expr\Expr;
 use RuntimeException;
@@ -78,9 +79,9 @@ class InsertTest extends TestCase
 
     public function testGetParams()
     {
-        $expectedParams = [];
+        $expectedParams = [[2345, PDO::PARAM_INT]];
 
-        $values = ['id' => '1234', 'bar_id' => '2345'];
+        $values = ['id' => '1234', 'bar_id' =>  new Expr('?', [2345])];
 
         $query = $this->getSut('foo')
             ->addValues(...array_values($values))
@@ -93,7 +94,7 @@ class InsertTest extends TestCase
 
     public function testValues()
     {
-        $values = ['id' => '1234', 'bar_id' => '2345'];
+        $values = ['id' => '1234', 'bar_id' =>  new Expr('?', [2345])];
 
         $query = $this->getSut('foo')
             ->addValues(...array_values($values))
