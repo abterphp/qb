@@ -5,21 +5,16 @@ declare(strict_types=1);
 namespace QB\Generic\Expr;
 
 use InvalidArgumentException;
-use PDO;
 use QB\Generic\IQueryPart;
+use QB\Generic\Params\Params;
 
 class Expr implements IQueryPart
 {
-    public const PARAM_ALL_STRING = 1;
-    public const PARAM_ALL_AUTO   = 2;
-    public const PARAM_ALL_MANUAL = 4;
-
     protected string $sql;
 
     protected bool $useNamedParams;
 
-    /** @var array<int,array<int,mixed>> */
-    protected array $params = [];
+    protected Params $params;
 
     /** @var int Helps tracking the extensions done on the SQL originally received */
     protected int $extendedBy = 0;
@@ -31,64 +26,13 @@ class Expr implements IQueryPart
      * @param array             $params
      * @param int               $paramHandle
      */
-    public function __construct(string|IQueryPart $sql, array $params = [], int $paramHandle = self::PARAM_ALL_AUTO)
+    public function __construct(string|IQueryPart $sql, array $params = [], int $paramHandle = Params::ALL_AUTO)
     {
-        $this->useNamedParams = !array_key_exists(0, $params);
-
-        $this->validateParamHandle($paramHandle);
-        $this->validateParamKeys(array_keys($params));
-
         $this->sql = (string)$sql;
 
-        $this->bindParams($params, $paramHandle);
-    }
+        $this->useNamedParams = !array_key_exists(0, $params);
 
-    /**
-     * @param int $paramHandle
-     */
-    protected function validateParamHandle(int $paramHandle): void
-    {
-        if (!in_array($paramHandle, [self::PARAM_ALL_STRING, self::PARAM_ALL_AUTO, self::PARAM_ALL_MANUAL])) {
-            throw new InvalidArgumentException(
-                sprintf('invalid param handle received: %d.', $paramHandle)
-            );
-        }
-    }
-
-    /**
-     * @param array $paramKeys
-     */
-    protected function validateParamKeys(array $paramKeys): void
-    {
-        if ($this->useNamedParams) {
-            foreach ($paramKeys as $paramKey) {
-                if (is_int($paramKey)) {
-                    throw new InvalidArgumentException(
-                        sprintf('string param key was expected, int received: %d.', $paramKey)
-                    );
-                }
-            }
-
-            return;
-        }
-
-        $next = 0;
-        foreach ($paramKeys as $paramKey) {
-            if ($paramKey !== $next) {
-                throw new InvalidArgumentException(
-                    sprintf('key was expected to be %d, received: %s.', $next, $paramKey)
-                );
-            }
-            $next++;
-        }
-    }
-
-    /**
-     * @param array $params
-     * @param int   $paramHandle
-     */
-    protected function bindParams(array $params, int $paramHandle = self::PARAM_ALL_AUTO)
-    {
+        $allParams = [];
         foreach ($params as $origKey => $origParam) {
             $fixedParam = $this->toParamArray($origKey, $origParam, $paramHandle);
             if (count($fixedParam) > 1) {
@@ -101,12 +45,14 @@ class Expr implements IQueryPart
 
             foreach ($fixedParam as $fixedKey => $var) {
                 if ($this->useNamedParams) {
-                    $this->params[$fixedKey] = $this->getFinalParam($var, $paramHandle);
+                    $allParams[$fixedKey] = $var;
                 } else {
-                    $this->params[] = $this->getFinalParam($var, $paramHandle);
+                    $allParams[] = $var;
                 }
             }
         }
+
+        $this->params = new Params($allParams, $paramHandle);
     }
 
     /**
@@ -154,7 +100,7 @@ class Expr implements IQueryPart
             throw new InvalidArgumentException(sprintf('param must be scalar or array, %s received.', gettype($param)));
         }
 
-        if (in_array($paramHandle, [self::PARAM_ALL_AUTO, self::PARAM_ALL_STRING], true)) {
+        if (in_array($paramHandle, [Params::ALL_AUTO, Params::ALL_STRING], true)) {
             return true;
         }
 
@@ -200,30 +146,6 @@ class Expr implements IQueryPart
     }
 
     /**
-     * @param     $var
-     * @param int $paramHandle
-     *
-     * @return array
-     */
-    protected function getFinalParam($var, int $paramHandle): array
-    {
-        switch ($paramHandle) {
-            case self::PARAM_ALL_MANUAL:
-                return [$var[0], $var[1]];
-            case self::PARAM_ALL_AUTO:
-                if ($var === null) {
-                    return [$var, PDO::PARAM_NULL];
-                } elseif (is_bool($var)) {
-                    return [$var, PDO::PARAM_BOOL];
-                } elseif (is_int($var)) {
-                    return [$var, PDO::PARAM_INT];
-                }
-        }
-
-        return [$var, PDO::PARAM_STR];
-    }
-
-    /**
      * @return string
      */
     public function __toString(): string
@@ -236,6 +158,6 @@ class Expr implements IQueryPart
      */
     public function getParams(): array
     {
-        return $this->params;
+        return $this->params->getAll();
     }
 }

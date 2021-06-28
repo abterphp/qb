@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace QB\Tests;
 
+use PDO;
 use PHPUnit\Framework\TestCase;
 use QB\Generic\Clause\Column;
 use QB\Generic\Clause\Table;
 use QB\Generic\Expr\Expr;
 use QB\MySQL\Factory\Factory;
 use QB\MySQL\Statement\Select;
+use QB\PDOHelper;
 
 class MySQLTest extends TestCase
 {
@@ -77,18 +79,7 @@ class MySQLTest extends TestCase
             ->setOuterOrderBy('lastName')
             ->setOuterLimit($limit);
 
-        $statement = $this->pdo->prepare((string)$query);
-        foreach ($query->getParams() as $k => $v) {
-            if (is_numeric($k)) {
-                $statement->bindParam($k + 1, $v[0], $v[1]);
-            } else {
-                $statement->bindParam($k, $v[0], $v[1]);
-            }
-        }
-
-        $statement->execute();
-
-        $this->assertCount($limit, $statement->fetchAll(\PDO::FETCH_ASSOC));
+        $this->assertCount($limit, PDOHelper::fetchAll($this->pdo, $query, PDO::FETCH_ASSOC));
     }
 
     /**
@@ -145,43 +136,14 @@ class MySQLTest extends TestCase
                 ->setValues(['territory' => 'Berlin'])
                 ->addWhere('officeCode = \'oc\'');
 
-            $num    = 1;
-            $sql    = (string)$query;
-            $values = $query->getValues();
-            $params = $query->getParams();
-
-            $statement = $this->pdo->prepare($sql);
-            foreach ($values as $value) {
-                $statement->bindParam($num++, $value);
-            }
-            foreach ($params as $k => $v) {
-                if (is_numeric($k)) {
-                    $statement->bindParam($num++, $v[0], $v[1]);
-                } else {
-                    $statement->bindParam($k, $v[0], $v[1]);
-                }
-            }
-            $result = $statement->execute($values);
-            $this->assertTrue($result);
+            $this->assertTrue(PDOHelper::execute($this->pdo, $query));
 
             // DELETE
             $query = $this->sut->delete()
                 ->addFrom(new Table('offices'))
                 ->addWhere(new Expr('officeCode = ?', ['abc']));
 
-            $sql    = (string)$query;
-            $params = $query->getParams();
-
-            $statement = $this->pdo->prepare($sql);
-            foreach ($params as $k => $v) {
-                if (is_numeric($k)) {
-                    $statement->bindParam($k + 1, $v[0], $v[1]);
-                } else {
-                    $statement->bindParam($k, $v[0], $v[1]);
-                }
-            }
-            $result = $statement->execute();
-            $this->assertTrue($result);
+            $this->assertTrue(PDOHelper::execute($this->pdo, $query));
 
             // COMMIT
             $this->pdo->exec('COMMIT');
