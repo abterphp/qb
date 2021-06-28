@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace QB\Generic\Factory;
+namespace QB\Generic\QueryBuilder;
 
-use QB\Generic\Statement\IInsert;
 use QB\Generic\Statement\IDelete;
+use QB\Generic\Statement\IInsert;
 use QB\Generic\Statement\ISelect;
-use QB\Generic\Statement\IUpdate;
 use QB\Generic\Statement\ITruncate;
+use QB\Generic\Statement\IUpdate;
 
-interface IFactory
+interface IQueryBuilder
 {
     public function select(): ISelect;
 

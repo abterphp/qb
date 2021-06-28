@@ -10,13 +10,13 @@ use QB\Extra\PDOWrapper;
 use QB\Generic\Clause\Column;
 use QB\Generic\Clause\Table;
 use QB\Generic\Expr\Expr;
-use QB\MySQL\Factory\Factory;
+use QB\MySQL\QueryBuilder\QueryBuilder;
 use QB\MySQL\Statement\Select;
 
 class MySQLTest extends TestCase
 {
-    /** @var Factory */
-    protected Factory $sut;
+    /** @var QueryBuilder */
+    protected QueryBuilder $sut;
 
     protected PDO $pdo;
 
@@ -28,7 +28,7 @@ class MySQLTest extends TestCase
             $this->markTestSkipped('no db');
         }
 
-        $this->sut = new Factory();
+        $this->sut = new QueryBuilder();
 
         $dns      = sprintf(
             'mysql:dbname=%s;host=%s',

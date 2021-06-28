@@ -10,12 +10,12 @@ use QB\Extra\PDOWrapper;
 use QB\Generic\Clause\Column;
 use QB\Generic\Clause\Table;
 use QB\Generic\Expr\Expr;
-use QB\PostgreSQL\Factory\Factory;
+use QB\PostgreSQL\QueryBuilder\QueryBuilder;
 
 class PostgreSQLTest extends TestCase
 {
-    /** @var Factory */
-    protected Factory $sut;
+    /** @var QueryBuilder */
+    protected QueryBuilder $sut;
 
     protected PDO $pdo;
 
@@ -27,7 +27,7 @@ class PostgreSQLTest extends TestCase
             $this->markTestSkipped('no db');
         }
 
-        $this->sut = new Factory();
+        $this->sut = new QueryBuilder();
 
         $dns      = sprintf(
             'pgsql:dbname=%s;host=%s',

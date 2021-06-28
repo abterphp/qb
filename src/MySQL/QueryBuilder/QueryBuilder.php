@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace QB\MySQL\Factory;
+namespace QB\MySQL\QueryBuilder;
 
+use QB\Generic\QueryBuilder\QueryBuilder as GenericQueryBuilder;
 use QB\Generic\Statement\ISelect;
-use QB\Generic\Factory\Factory as GenericFactory;
 use QB\MySQL\Statement\Select;
 
-class Factory extends GenericFactory
+class QueryBuilder extends GenericQueryBuilder
 {
     /**
      * @return Select

@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace QB\MySQL\Factory;
+namespace QB\MySQL\QueryBuilder;
 
-use QB\Generic\Factory\FactoryTest as GenericFactoryTest;
-use QB\Generic\Factory\IFactory;
+use QB\Generic\QueryBuilder\IQueryBuilder;
+use QB\Generic\QueryBuilder\QueryBuilderTest as GenericQueryBuilderTest;
 use QB\MySQL\Statement\Select;
 
-class FactoryTest extends GenericFactoryTest
+class QueryBuilderTest extends GenericQueryBuilderTest
 {
-    /** @var Factory */
-    protected IFactory $sut;
+    /** @var QueryBuilder */
+    protected IQueryBuilder $sut;
 
     public function setUp(): void
     {
-        $this->sut = new Factory();
+        $this->sut = new QueryBuilder();
     }
 
     public function testSelect()

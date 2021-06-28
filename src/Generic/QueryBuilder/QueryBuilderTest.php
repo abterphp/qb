@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace QB\Generic\Factory;
+namespace QB\Generic\QueryBuilder;
 
 use PHPUnit\Framework\TestCase;
 use QB\Generic\Statement\Delete;
@@ -11,14 +11,14 @@ use QB\Generic\Statement\Select;
 use QB\Generic\Statement\Truncate;
 use QB\Generic\Statement\Update;
 
-class FactoryTest extends TestCase
+class QueryBuilderTest extends TestCase
 {
-    /** @var Factory */
-    protected IFactory $sut;
+    /** @var QueryBuilder */
+    protected IQueryBuilder $sut;
 
     public function setUp(): void
     {
-        $this->sut = new Factory();
+        $this->sut = new QueryBuilder();
     }
 
     public function testSelect()
