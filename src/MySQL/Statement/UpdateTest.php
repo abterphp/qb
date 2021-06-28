@@ -13,13 +13,13 @@ class UpdateTest extends GenericUpdateTest
     {
         $sql = (string)$this->getSut('foo')
             ->addModifier(Update::LOW_PRIORITY, Update::IGNORE)
-            ->setValues(['id' => '1234', 'bar_id' => '2345'])
+            ->setValues(['id' => '1234', 'bar_id' => new Expr('?', [2345])])
             ->addWhere('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']))
             ->setLimit(10);
 
         $parts   = [];
         $parts[] = 'UPDATE LOW_PRIORITY IGNORE foo';
-        $parts[] = 'SET id = ?, bar_id = ?';
+        $parts[] = 'SET id = 1234, bar_id = ?';
         $parts[] = 'WHERE foo.bar = "foo-bar" AND bar.foo = ?';
         $parts[] = 'LIMIT 10';
 

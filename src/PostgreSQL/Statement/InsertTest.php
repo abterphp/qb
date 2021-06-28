@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace QB\PostgreSQL\Statement;
 
 use QB\Generic\Clause\Table;
+use QB\Generic\Expr\Expr;
 use QB\Generic\Statement\InsertTest as GenericInsertTest;
 use RuntimeException;
 
@@ -37,13 +38,13 @@ class InsertTest extends GenericInsertTest
     {
         $sql = (string)$this->getSut('foo')
             ->setColumns('id', 'bar_id', 'baz')
-            ->addValues('1234', '2345', 'a')
-            ->addValues('3456', '4567', 'b');
+            ->addValues('1234', new Expr('?', ['a']), '"a"')
+            ->addValues('3456', '4567', '"b"');
 
         $parts   = [];
         $parts[] = 'INSERT INTO foo (id, bar_id, baz)';
-        $parts[] = 'VALUES (?, ?, ?),';
-        $parts[] = '(?, ?, ?)';
+        $parts[] = 'VALUES (1234, ?, "a"),';
+        $parts[] = '(3456, 4567, "b")';
 
         $expectedSql = implode(PHP_EOL, $parts);
 
@@ -55,16 +56,16 @@ class InsertTest extends GenericInsertTest
         $query = $this->getSut('offices')
             ->setInto(new Table('offices'))
             ->setColumns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
-            ->addValues('abc', 'Berlin', '+49 101 123 4567', '', 'Germany', '10111', 'NA')
-            ->addValues('bcd', 'Budapest', '+36 70 101 1234', '', 'Hungary', '1011', 'NA')
-            ->addValues('cde', 'Pécs', '+36 70 222 3456', 'Rákóczi út', 'Hungary', '723', 'NA')
+            ->addValues('"abc"', '"Berlin"', '"+49 101 123 4567"', '""', '"Germany"', '"10111"', '"NA"')
+            ->addValues('"bcd"', '"Budapest"', '"+36 70 101 1234"', '""', '"Hungary"', '"1011"', '"NA"')
+            ->addValues('"cde"', '"Pécs"', '"+36 70 222 3456"', '"Rákóczi út"', '"Hungary"', '"723"', '"NA"')
             ->setReturning('*');
 
         $parts   = [];
         $parts[] = 'INSERT INTO offices (officeCode, city, phone, addressLine1, country, postalCode, territory)';
-        $parts[] = 'VALUES (?, ?, ?, ?, ?, ?, ?),';
-        $parts[] = '(?, ?, ?, ?, ?, ?, ?),';
-        $parts[] = '(?, ?, ?, ?, ?, ?, ?)';
+        $parts[] = 'VALUES ("abc", "Berlin", "+49 101 123 4567", "", "Germany", "10111", "NA"),';
+        $parts[] = '("bcd", "Budapest", "+36 70 101 1234", "", "Hungary", "1011", "NA"),';
+        $parts[] = '("cde", "Pécs", "+36 70 222 3456", "Rákóczi út", "Hungary", "723", "NA")';
         $parts[] = 'RETURNING *';
 
         $expectedSql = implode(PHP_EOL, $parts);
@@ -77,12 +78,12 @@ class InsertTest extends GenericInsertTest
         $query = $this->getSut('offices')
             ->setInto(new Table('offices'))
             ->setColumns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
-            ->addValues('abc', 'Berlin', '+49 101 123 4567', '', 'Germany', '10111', 'NA')
+            ->addValues('"abc"', '"Berlin"', '"+49 101 123 4567"', '""', '"Germany"', '"10111"', '"NA"')
             ->setDoNothing();
 
         $parts   = [];
         $parts[] = 'INSERT INTO offices (officeCode, city, phone, addressLine1, country, postalCode, territory)';
-        $parts[] = 'VALUES (?, ?, ?, ?, ?, ?, ?)';
+        $parts[] = 'VALUES ("abc", "Berlin", "+49 101 123 4567", "", "Germany", "10111", "NA")';
         $parts[] = 'ON CONFLICT DO NOTHING';
 
         $expectedSql = implode(PHP_EOL, $parts);
@@ -95,14 +96,14 @@ class InsertTest extends GenericInsertTest
         $query = $this->getSut('offices')
             ->setInto(new Table('offices'))
             ->setColumns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
-            ->addValues('abc', 'Berlin', '+49 101 123 4567', '', 'Germany', '10111', 'NA')
+            ->addValues('"abc"', '"Berlin"', '"+49 101 123 4567"', '""', '"Germany"', '"10111"', '"NA"')
             ->setOnConflict('officeCode', 'city')
             ->setDoUpdate('officeCode = EXCLUDED.officeCode', 'city = EXCLUDED.city')
             ->setReturning('*');
 
         $parts   = [];
         $parts[] = 'INSERT INTO offices (officeCode, city, phone, addressLine1, country, postalCode, territory)';
-        $parts[] = 'VALUES (?, ?, ?, ?, ?, ?, ?)';
+        $parts[] = 'VALUES ("abc", "Berlin", "+49 101 123 4567", "", "Germany", "10111", "NA")';
         $parts[] = 'ON CONFLICT (officeCode, city) DO UPDATE';
         $parts[] = 'SET officeCode = EXCLUDED.officeCode, city = EXCLUDED.city';
         $parts[] = 'RETURNING *';

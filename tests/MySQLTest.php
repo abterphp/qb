@@ -61,8 +61,8 @@ class MySQLTest extends TestCase
             ->addColumns('lastName')
             ->addWhere(new Expr('boss.employeeNumber = employees.reportsTo'));
 
-        $customerTypeColumn = new Column(new Expr("'customer'"), 'type');
-        $employeeTypeColumn = new Column(new Expr("'employee'"), 'type');
+        $customerTypeColumn = new Column(new Expr("'customers'"), 'type');
+        $employeeTypeColumn = new Column(new Expr("'employees'"), 'type');
 
         $unionQuery = $this->sut->select()
             ->addFrom('customers')
@@ -123,18 +123,18 @@ class MySQLTest extends TestCase
             $query = $this->sut->insert()
                 ->setInto(new Table('offices'))
                 ->setColumns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
-                ->addValues('abc', 'Berlin', '+49 101 123 4567', '', 'Germany', '10111', 'NA');
+                ->addValues("'abc'", "'Berlin'", "'+49 101 123 4567'", "''", "'Germany'", "'10111'", "'NA'");
 
             $statement = $this->pdo->prepare((string)$query);
 
-            $result = $statement->execute($query->getValues());
+            $result = $statement->execute();
             $this->assertTrue($result);
 
             // UPDATE
             $query = $this->sut->update()
                 ->addFrom(new Table('offices'))
-                ->setValues(['territory' => 'Berlin'])
-                ->addWhere('officeCode = \'oc\'');
+                ->setValues(['territory' => "'Berlin'"])
+                ->addWhere("officeCode = 'abc'");
 
             $this->assertTrue(PDOHelper::execute($this->pdo, $query));
 

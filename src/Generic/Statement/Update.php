@@ -17,7 +17,7 @@ class Update implements IUpdate
     protected array $modifiers = [];
 
     /** @var array<string,mixed> */
-    protected array $values = [];
+    protected array $rawValues = [];
 
     /** @var IQueryPart[] */
     protected array $whereParts = [];
@@ -53,7 +53,7 @@ class Update implements IUpdate
      */
     public function setValues(array $values): static
     {
-        $this->values = $values;
+        $this->rawValues = $values;
 
         return $this;
     }
@@ -94,7 +94,7 @@ class Update implements IUpdate
 
     public function isValid(): bool
     {
-        return count($this->tables) === 1 && count($this->values) > 0 && count($this->whereParts) > 0;
+        return count($this->tables) === 1 && count($this->rawValues) > 0 && count($this->whereParts) > 0;
     }
 
     /**
@@ -118,8 +118,8 @@ class Update implements IUpdate
     protected function getSet(): array
     {
         $values = [];
-        foreach (array_keys($this->values) as $column) {
-            $values[] = sprintf('%s = ?', $column);
+        foreach ($this->rawValues as $column => $value) {
+            $values[] = sprintf('%s = %s', $column, $value);
         }
 
         return ['SET ' . implode(', ', $values)];
@@ -145,6 +145,12 @@ class Update implements IUpdate
     {
         $params = [];
 
+        foreach ($this->rawValues as $values) {
+            if ($values instanceof IQueryPart) {
+                $params = array_merge($params, $values->getParams());
+            }
+        }
+
         foreach ($this->whereParts as $wherePart) {
             $params = array_merge($params, $wherePart->getParams());
         }
@@ -155,8 +161,8 @@ class Update implements IUpdate
     /**
      * @return array
      */
-    public function getValues(): array
+    public function values(): array
     {
-        return array_values($this->values);
+        return array_values($this->rawValues);
     }
 }

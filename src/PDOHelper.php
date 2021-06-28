@@ -22,16 +22,11 @@ class PDOHelper
     {
         $sql    = (string)$query;
         $params = $query->getParams();
-        $values = method_exists($query, 'getValues') ? $query->getValues() : [];
 
         $statement = $pdo->prepare($sql);
-        foreach ($values as $k => $v) {
-            $k2 = is_numeric($k) ? $k + 1 : $k;
-            $statement->bindParam($k2, $v);
-        }
 
         foreach ($params as $k => $v) {
-            $k2 = is_numeric($k) ? $k + 1 + count($values) : $k;
+            $k2 = is_numeric($k) ? $k + 1 : $k;
             $statement->bindParam($k2, $v[0], $v[1]);
         }
 

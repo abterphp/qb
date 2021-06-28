@@ -17,5 +17,5 @@ interface IUpdate extends IStatement
 
     public function addWhere(string|IQueryPart ...$whereParts): static;
 
-    public function getValues(): array;
+    public function values(): array;
 }

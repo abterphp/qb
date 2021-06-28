@@ -16,5 +16,5 @@ interface IInsert extends IStatement
 
     public function addValues(...$values): static;
 
-    public function getValues(): array;
+    public function values(): array;
 }

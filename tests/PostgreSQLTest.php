@@ -60,8 +60,8 @@ class PostgreSQLTest extends TestCase
             ->addColumns('lastName')
             ->addWhere(new Expr('boss.employeeNumber = employees.reportsTo'));
 
-        $customerTypeColumn = new Column(new Expr("'customer'"), 'type');
-        $employeeTypeColumn = new Column(new Expr("'employee'"), 'type');
+        $customerTypeColumn = new Column(new Expr("'customers'"), 'type');
+        $employeeTypeColumn = new Column(new Expr("'employees'"), 'type');
 
         $unionQuery = $this->sut->select()
             ->addFrom('customers')
@@ -90,18 +90,18 @@ class PostgreSQLTest extends TestCase
             $query = $this->sut->insert()
                 ->setInto(new Table('offices'))
                 ->setColumns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
-                ->addValues('abc', 'Berlin', '+49 101 123 4567', '', 'Germany', '10111', 'NA');
+                ->addValues("'abc'", "'Berlin'", "'+49 101 123 4567'", "''", "'Germany'", "'10111'", "'NA'");
 
             $statement = $this->pdo->prepare((string)$query);
 
-            $result = $statement->execute($query->getValues());
+            $result = $statement->execute();
             $this->assertTrue($result);
 
             // UPDATE
             $query = $this->sut->update()
                 ->addFrom(new Table('offices'))
-                ->setValues(['territory' => 'Berlin'])
-                ->addWhere('officeCode = \'oc\'');
+                ->setValues(['territory' => "'Berlin'"])
+                ->addWhere("officeCode = 'oc'");
 
             $this->assertTrue(PDOHelper::execute($this->pdo, $query));
 
@@ -131,18 +131,11 @@ class PostgreSQLTest extends TestCase
             $query = $this->sut->insert()
                 ->setInto(new Table('offices'))
                 ->setColumns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
-                ->addValues('abc', 'Berlin', '+49 101 123 4567', '', 'Germany', '10111', 'NA')
-                ->addValues('bcd', 'Budapest', '+36 70 101 1234', '', 'Hungary', '1011', 'NA')
-
+                ->addValues("'abc'", "'Berlin'", "'+49 101 123 4567'", "''", "'Germany'", "'10111'", "'NA'")
+                ->addValues("'bcd'", "'Budapest'", "'+36 70 101 1234'", "''", "'Hungary'", "'1011'", "'NA'")
                 ->setReturning('*');
-            $sql   = (string)$query;
 
-            $statement = $this->pdo->prepare($sql);
-
-            $result = $statement->execute($query->getValues());
-            $this->assertTrue($result);
-
-            $values = $statement->fetchAll(\PDO::FETCH_ASSOC);
+            $values = PDOHelper::fetchAll($this->pdo, $query, \PDO::FETCH_ASSOC);
 
             $expectedValues = [
                 [
@@ -175,16 +168,7 @@ class PostgreSQLTest extends TestCase
                 ->addFrom(new Table('offices'))
                 ->addWhere(new Expr('officeCode IN (?)', [['abc', 'bcd']]));
 
-            $statement = $this->pdo->prepare((string)$query);
-            foreach ($query->getParams() as $param => $var) {
-                if (is_numeric($param)) {
-                    $statement->bindParam($param + 1, $var[0], $var[1]);
-                } else {
-                    $statement->bindParam($param, $var[0], $var[1]);
-                }
-            }
-            $result = $statement->execute();
-            $this->assertTrue($result);
+            $this->assertTrue(PDOHelper::execute($this->pdo, $query));
 
             // COMMIT
             $this->pdo->exec('COMMIT');

@@ -6,6 +6,7 @@ namespace QB\Generic\Statement;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use QB\Generic\Expr\Expr;
 use RuntimeException;
 
 class InsertTest extends TestCase
@@ -50,7 +51,7 @@ class InsertTest extends TestCase
 
         $parts   = [];
         $parts[] = 'INSERT INTO foo';
-        $parts[] = 'VALUES (?, ?)';
+        $parts[] = 'VALUES (1234, 2345)';
 
         $expectedSql = implode(PHP_EOL, $parts);
 
@@ -62,13 +63,13 @@ class InsertTest extends TestCase
         $sql = (string)$this->getSut('foo')
             ->addModifier('BAR')
             ->setColumns('id', 'bar_id', 'baz')
-            ->addValues('1234', '2345', 'a')
-            ->addValues('3456', '4567', 'b');
+            ->addValues('1234', new Expr('?', ['a']), '"a"')
+            ->addValues('3456', '4567', '"b"');
 
         $parts   = [];
         $parts[] = 'INSERT BAR INTO foo (id, bar_id, baz)';
-        $parts[] = 'VALUES (?, ?, ?),';
-        $parts[] = '(?, ?, ?)';
+        $parts[] = 'VALUES (1234, ?, "a"),';
+        $parts[] = '(3456, 4567, "b")';
 
         $expectedSql = implode(PHP_EOL, $parts);
 
@@ -90,7 +91,7 @@ class InsertTest extends TestCase
         $this->assertSame($expectedParams, $params);
     }
 
-    public function testGetValues()
+    public function testValues()
     {
         $values = ['id' => '1234', 'bar_id' => '2345'];
 
@@ -98,7 +99,7 @@ class InsertTest extends TestCase
             ->addValues(...array_values($values))
             ->setColumns(...array_keys($values));
 
-        $actualValues = $query->getValues();
+        $actualValues = $query->values();
 
         $this->assertSame(array_values($values), $actualValues);
     }

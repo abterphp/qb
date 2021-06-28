@@ -28,7 +28,7 @@ class UpdateTest extends TestCase
 
         $parts   = [];
         $parts[] = 'UPDATE foo';
-        $parts[] = 'SET id = ?, bar_id = ?';
+        $parts[] = 'SET id = 1234, bar_id = 2345';
         $parts[] = 'WHERE foo.bar = "foo-bar" AND bar.foo = ?';
 
         $expectedSql = implode(PHP_EOL, $parts);
@@ -40,12 +40,12 @@ class UpdateTest extends TestCase
     {
         $sql = (string)$this->getSut('foo')
             ->addModifier('BAR')
-            ->setValues(['id' => '1234', 'bar_id' => '2345'])
+            ->setValues(['id' => '1234', 'bar_id' => new Expr('?', [2345])])
             ->addWhere('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']));
 
         $parts   = [];
         $parts[] = 'UPDATE BAR foo';
-        $parts[] = 'SET id = ?, bar_id = ?';
+        $parts[] = 'SET id = 1234, bar_id = ?';
         $parts[] = 'WHERE foo.bar = "foo-bar" AND bar.foo = ?';
 
         $expectedSql = implode(PHP_EOL, $parts);
@@ -76,7 +76,7 @@ class UpdateTest extends TestCase
             ->setValues($values)
             ->addWhere('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']));
 
-        $actualValues = $query->getValues();
+        $actualValues = $query->values();
 
         $this->assertSame($expectedValues, $actualValues);
     }

@@ -18,7 +18,7 @@ class InsertTest extends GenericInsertTest
 
         $parts   = [];
         $parts[] = 'INSERT HIGH_PRIORITY INTO foo';
-        $parts[] = 'VALUES (?, ?)';
+        $parts[] = 'VALUES (1234, 2345)';
         $parts[] = 'ON DUPLICATE KEY UPDATE bar = bar + 1';
 
         $expectedSql = implode(PHP_EOL, $parts);

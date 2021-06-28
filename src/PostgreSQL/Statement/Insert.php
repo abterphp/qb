@@ -129,12 +129,12 @@ class Insert extends GenericInsert
     /**
      * @return string[]
      */
-    protected function values(): array
+    protected function getRawValues(): array
     {
-        if (count($this->values) == 0) {
+        if (count($this->rawValues) == 0) {
             return [self::DEFAULT_VALUES];
         }
 
-        return parent::values();
+        return parent::getRawValues();
     }
 }

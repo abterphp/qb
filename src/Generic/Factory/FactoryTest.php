@@ -33,22 +33,22 @@ class FactoryTest extends TestCase
 
     public function testInsert()
     {
-        $insert = $this->sut->insert()->setInto('foo')->addValues(['bar' => 'Bar']);
+        $insert = $this->sut->insert()->setInto('foo')->setColumns('bar')->addValues("'Bar'");
 
         $sql = (string)$insert;
 
         $this->assertInstanceOf(Insert::class, $insert);
-        $this->assertSame("INSERT INTO foo\nVALUES (?)", $sql);
+        $this->assertSame("INSERT INTO foo (bar)\nVALUES ('Bar')", $sql);
     }
 
     public function testUpdate()
     {
-        $update = $this->sut->update()->addFrom('foo')->setValues(['bar' => 'Bar'])->addWhere('1');
+        $update = $this->sut->update()->addFrom('foo')->setValues(['bar' => "'Bar'"])->addWhere('1');
 
         $sql = (string)$update;
 
         $this->assertInstanceOf(Update::class, $update);
-        $this->assertSame("UPDATE foo\nSET bar = ?\nWHERE 1", $sql);
+        $this->assertSame("UPDATE foo\nSET bar = 'Bar'\nWHERE 1", $sql);
     }
 
     public function testDelete()

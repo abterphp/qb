@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace QB\Generic\Statement;
 
 use QB\Generic\Clause\Table;
+use QB\Generic\IQueryPart;
 
 class Insert implements IInsert
 {
@@ -18,7 +19,7 @@ class Insert implements IInsert
     protected array $columns = [];
 
     /** @var array<int,mixed> */
-    protected array $values = [];
+    protected array $rawValues = [];
 
     /**
      * @param string|Table $table
@@ -51,7 +52,7 @@ class Insert implements IInsert
      */
     public function setColumns(string ...$columns): static
     {
-        if (count($this->values) > 0 && count($columns) !== count($this->values[0])) {
+        if (count($this->rawValues) > 0 && count($columns) !== count($this->rawValues[0])) {
             throw new \InvalidArgumentException('number of columns does not match the number of values');
         }
 
@@ -71,7 +72,7 @@ class Insert implements IInsert
             throw new \InvalidArgumentException('number of values does not match the number of columns');
         }
 
-        $this->values[] = $values;
+        $this->rawValues[] = $values;
 
         return $this;
     }
@@ -87,7 +88,7 @@ class Insert implements IInsert
 
         $sqlParts = array_merge(
             [$this->getCommand()],
-            $this->values(),
+            $this->getRawValues(),
         );
 
         $sqlParts = array_filter($sqlParts);
@@ -100,7 +101,7 @@ class Insert implements IInsert
      */
     public function isValid(): bool
     {
-        return count($this->tables) === 1 && count($this->values) > 0;
+        return count($this->tables) === 1 && count($this->rawValues) > 0;
     }
 
     protected function getCommand(): string
@@ -131,17 +132,21 @@ class Insert implements IInsert
         return implode(' ', $this->modifiers);
     }
 
-    protected function values(): array
+    /**
+     * @return string[]
+     */
+    protected function getRawValues(): array
     {
-        $columnCount = count($this->columns) > 0 ? count($this->columns) : count($this->values[0]);
+        $lines = [];
+        foreach ($this->rawValues as $values) {
+            $line = [];
+            foreach ($values as $value) {
+                $line[] = (string)$value;
+            }
+            $lines[] = '(' . implode(', ', $line) . ')';
+        }
 
-        $values = array_fill(0, $columnCount, '?');
-
-        $row = sprintf('(%s)', implode(', ', $values));
-
-        $rows = array_fill(0, count($this->values), $row);
-
-        return ['VALUES ' . implode(",\n", $rows)];
+        return ['VALUES ' . implode(",\n", $lines)];
     }
 
     /**
@@ -149,14 +154,24 @@ class Insert implements IInsert
      */
     public function getParams(): array
     {
-        return [];
+        $params = [];
+
+        foreach ($this->rawValues as $values) {
+            foreach ($values as $value) {
+                if ($value instanceof IQueryPart) {
+                    $params = array_merge($params, $value->getParams());
+                }
+            }
+        }
+
+        return $params;
     }
 
     /**
      * @return array
      */
-    public function getValues(): array
+    public function values(): array
     {
-        return array_merge(...$this->values);
+        return array_merge(...$this->rawValues);
     }
 }
