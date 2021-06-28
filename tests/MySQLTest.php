@@ -6,19 +6,21 @@ namespace QB\Tests;
 
 use PDO;
 use PHPUnit\Framework\TestCase;
+use QB\Extra\PDOWrapper;
 use QB\Generic\Clause\Column;
 use QB\Generic\Clause\Table;
 use QB\Generic\Expr\Expr;
 use QB\MySQL\Factory\Factory;
 use QB\MySQL\Statement\Select;
-use QB\PDOHelper;
 
 class MySQLTest extends TestCase
 {
     /** @var Factory */
     protected Factory $sut;
 
-    protected \PDO $pdo;
+    protected PDO $pdo;
+
+    protected PDOWrapper $pdoWrapper;
 
     public function setUp(): void
     {
@@ -37,7 +39,9 @@ class MySQLTest extends TestCase
         $password = $_ENV['MYSQL_PASSWORD'];
         $options  = null;
 
-        $this->pdo = new \PDO($dns, $username, $password, $options);
+        $this->pdo = new PDO($dns, $username, $password, $options);
+
+        $this->pdoWrapper = new PDOWrapper($this->pdo);
     }
 
     public function testSelectOneCustomer()
@@ -79,7 +83,7 @@ class MySQLTest extends TestCase
             ->setOuterOrderBy('lastName')
             ->setOuterLimit($limit);
 
-        $this->assertCount($limit, PDOHelper::fetchAll($this->pdo, $query, PDO::FETCH_ASSOC));
+        $this->assertCount($limit, $this->pdoWrapper->fetchAll($query, PDO::FETCH_ASSOC));
     }
 
     /**
@@ -136,14 +140,14 @@ class MySQLTest extends TestCase
                 ->setValues(['territory' => "'Berlin'"])
                 ->addWhere("officeCode = 'abc'");
 
-            $this->assertTrue(PDOHelper::execute($this->pdo, $query));
+            $this->assertTrue($this->pdoWrapper->execute($query));
 
             // DELETE
             $query = $this->sut->delete()
                 ->addFrom(new Table('offices'))
                 ->addWhere(new Expr('officeCode = ?', ['abc']));
 
-            $this->assertTrue(PDOHelper::execute($this->pdo, $query));
+            $this->assertTrue($this->pdoWrapper->execute($query));
 
             // COMMIT
             $this->pdo->exec('COMMIT');

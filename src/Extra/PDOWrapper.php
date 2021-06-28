@@ -2,28 +2,47 @@
 
 declare(strict_types=1);
 
-namespace QB;
+namespace QB\Extra;
 
 use PDO;
 use PDOStatement;
 use QB\Generic\IQueryPart;
 
-class PDOHelper
+class PDOWrapper
 {
+    protected PDO $pdo;
+
+    /**
+     * Wrapper constructor.
+     *
+     * @param \PDO $pdo
+     */
+    public function __construct(PDO $pdo)
+    {
+        $this->pdo = $pdo;
+    }
+
+    /**
+     * @return \PDO
+     */
+    public function getPdo(): PDO
+    {
+        return $this->pdo;
+    }
+
     /**
      * @suppress PhanUndeclaredMethod
      *
-     * @param PDO        $pdo
      * @param IQueryPart $query
      *
      * @return PDOStatement
      */
-    public static function prepare(PDO $pdo, IQueryPart $query): PDOStatement
+    public function prepare(IQueryPart $query): PDOStatement
     {
         $sql    = (string)$query;
         $params = $query->getParams();
 
-        $statement = $pdo->prepare($sql);
+        $statement = $this->pdo->prepare($sql);
 
         foreach ($params as $k => $v) {
             $k2 = is_numeric($k) ? $k + 1 : $k;
@@ -34,29 +53,27 @@ class PDOHelper
     }
 
     /**
-     * @param PDO        $pdo
      * @param IQueryPart $query
      *
      * @return bool
      */
-    public static function execute(PDO $pdo, IQueryPart $query): bool
+    public function execute(IQueryPart $query): bool
     {
-        $statement = static::prepare($pdo, $query);
+        $statement = $this->prepare($query);
 
         return $statement->execute();
     }
 
     /**
-     * @param PDO        $pdo
      * @param IQueryPart $query
      * @param int        $mode
      * @param mixed      ...$args
      *
      * @return array
      */
-    public static function fetchAll(PDO $pdo, IQueryPart $query, int $mode = PDO::FETCH_BOTH, ...$args): array
+    public function fetchAll(IQueryPart $query, int $mode = PDO::FETCH_BOTH, ...$args): array
     {
-        $statement = static::prepare($pdo, $query);
+        $statement = $this->prepare($query);
 
         $statement->execute();
 
@@ -64,15 +81,14 @@ class PDOHelper
     }
 
     /**
-     * @param PDO        $pdo
      * @param IQueryPart $query
      * @param int        $column
      *
      * @return array|int|bool|float|null
      */
-    public static function fetchColumn(PDO $pdo, IQueryPart $query, int $column = 0)
+    public function fetchColumn(IQueryPart $query, int $column = 0)
     {
-        $statement = static::prepare($pdo, $query);
+        $statement = $this->prepare($query);
 
         $statement->execute();
 
@@ -80,7 +96,6 @@ class PDOHelper
     }
 
     /**
-     * @param PDO        $pdo
      * @param IQueryPart $query
      * @param int        $column
      * @param int        $orientation
@@ -88,14 +103,13 @@ class PDOHelper
      *
      * @return array
      */
-    public static function fetch(
-        PDO $pdo,
+    public function fetch(
         IQueryPart $query,
         int $column = 0,
         int $orientation = PDO::FETCH_ORI_NEXT,
         int $offset = 0
     ): array {
-        $statement = static::prepare($pdo, $query);
+        $statement = $this->prepare($query);
 
         $statement->execute();
 
