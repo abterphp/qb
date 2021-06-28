@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace QB\Generic\Statement;
 
 use InvalidArgumentException;
-use PDO;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -78,7 +77,7 @@ class InsertTest extends TestCase
 
     public function testGetParams()
     {
-        $expectedParams = [['1234', PDO::PARAM_STR], ['2345', PDO::PARAM_STR]];
+        $expectedParams = [];
 
         $values = ['id' => '1234', 'bar_id' => '2345'];
 

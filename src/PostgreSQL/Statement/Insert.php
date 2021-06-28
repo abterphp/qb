@@ -78,26 +78,44 @@ class Insert extends GenericInsert
      */
     public function __toString(): string
     {
-        $parts = [parent::__toString()];
-
-        if ($this->doNothing || count($this->doUpdate) > 0) {
-            $action = $this->doNothing ? static::CONFLICT_DO_NOTHING : static::CONFLICT_DO_UPDATE;
-            if (count($this->onConflict) > 0) {
-                $parts[] = sprintf('ON CONFLICT (%s) %s', implode(', ', $this->onConflict), $action);
-            } else {
-                $parts[] = sprintf('ON CONFLICT %s', $action);
-            }
-
-            if (count($this->doUpdate) > 0) {
-                $parts[] = sprintf('SET %s', implode(', ', $this->doUpdate));
-            }
-        }
-
-        if (count($this->returning) > 0) {
-            $parts[] = sprintf('RETURNING %s', implode(',', $this->returning));
-        }
+        $parts = array_merge(
+            [parent::__toString()],
+            $this->getOnConflict(),
+            $this->getReturning(),
+        );
 
         return implode(PHP_EOL, $parts);
+    }
+
+    protected function getOnConflict(): array
+    {
+        if (!$this->doNothing && count($this->doUpdate) == 0) {
+            return [];
+        }
+
+        $parts = [];
+
+        $action = $this->doNothing ? static::CONFLICT_DO_NOTHING : static::CONFLICT_DO_UPDATE;
+        if (count($this->onConflict) > 0) {
+            $parts[] = sprintf('ON CONFLICT (%s) %s', implode(', ', $this->onConflict), $action);
+        } else {
+            $parts[] = sprintf('ON CONFLICT %s', $action);
+        }
+
+        if (count($this->doUpdate) > 0) {
+            $parts[] = sprintf('SET %s', implode(', ', $this->doUpdate));
+        }
+
+        return $parts;
+    }
+
+    protected function getReturning(): array
+    {
+        if (count($this->returning) == 0) {
+            return [];
+        }
+
+        return [sprintf('RETURNING %s', implode(',', $this->returning))];
     }
 
     /**

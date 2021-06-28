@@ -7,11 +7,12 @@ namespace QB;
 use PDO;
 use PDOStatement;
 use QB\Generic\IQueryPart;
-use QB\Generic\Statement\IUpdate;
 
 class PDOHelper
 {
     /**
+     * @suppress PhanUndeclaredMethod
+     *
      * @param PDO        $pdo
      * @param IQueryPart $query
      *
@@ -21,7 +22,7 @@ class PDOHelper
     {
         $sql    = (string)$query;
         $params = $query->getParams();
-        $values = ($query instanceof IUpdate) ? $query->getValues() : [];
+        $values = method_exists($query, 'getValues') ? $query->getValues() : [];
 
         $statement = $pdo->prepare($sql);
         foreach ($values as $k => $v) {

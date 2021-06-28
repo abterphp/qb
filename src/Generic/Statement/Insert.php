@@ -149,15 +149,7 @@ class Insert implements IInsert
      */
     public function getParams(): array
     {
-        $params = [];
-
-        foreach ($this->values as $values) {
-            foreach ($values as $value) {
-                $params[] = [$value, \PDO::PARAM_STR];
-            }
-        }
-
-        return $params;
+        return [];
     }
 
     /**
