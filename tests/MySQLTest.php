@@ -135,8 +135,7 @@ class MySQLTest extends TestCase
             $this->assertTrue($result);
 
             // UPDATE
-            $query = $this->sut->update()
-                ->addFrom(new Table('offices'))
+            $query = $this->sut->update(new Table('offices'))
                 ->setValues(['territory' => "'Berlin'"])
                 ->addWhere("officeCode = 'abc'");
 

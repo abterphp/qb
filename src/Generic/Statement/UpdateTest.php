@@ -88,6 +88,6 @@ class UpdateTest extends TestCase
      */
     protected function getSut(string ...$tables): IUpdate
     {
-        return (new Update())->addFrom(...$tables);
+        return new Update(...$tables);
     }
 }

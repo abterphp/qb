@@ -24,14 +24,10 @@ class Update implements IUpdate
 
     /**
      * @param string|Table ...$tables
-     *
-     * @return $this
      */
-    public function addFrom(string|Table ...$tables): static
+    public function __construct(string|Table ...$tables)
     {
         $this->tables = array_merge($this->tables, $tables);
-
-        return $this;
     }
 
     /**

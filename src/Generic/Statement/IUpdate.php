@@ -9,7 +9,7 @@ use QB\Generic\IQueryPart;
 
 interface IUpdate extends IStatement
 {
-    public function addFrom(string|Table ...$tables): static;
+    public function __construct(string|Table ...$tables);
 
     public function addModifier(string ...$modifiers): static;
 

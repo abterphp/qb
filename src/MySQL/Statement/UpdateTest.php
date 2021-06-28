@@ -35,6 +35,6 @@ class UpdateTest extends GenericUpdateTest
      */
     protected function getSut(string ...$tables): Update
     {
-        return (new Update())->addFrom(...$tables);
+        return new Update(...$tables);
     }
 }

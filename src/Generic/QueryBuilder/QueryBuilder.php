@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace QB\Generic\QueryBuilder;
 
+use QB\Generic\Clause\Table;
 use QB\Generic\Statement\Delete;
 use QB\Generic\Statement\IDelete;
 use QB\Generic\Statement\IInsert;
@@ -34,11 +35,13 @@ class QueryBuilder implements IQueryBuilder
     }
 
     /**
+     * @param string|Table ...$tables
+     *
      * @return IUpdate
      */
-    public function update(): IUpdate
+    public function update(string|Table ...$tables): IUpdate
     {
-        return new Update();
+        return new Update(...$tables);
     }
 
     /**

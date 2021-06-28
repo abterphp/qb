@@ -43,7 +43,7 @@ class QueryBuilderTest extends TestCase
 
     public function testUpdate()
     {
-        $update = $this->sut->update()->addFrom('foo')->setValues(['bar' => "'Bar'"])->addWhere('1');
+        $update = $this->sut->update('foo')->setValues(['bar' => "'Bar'"])->addWhere('1');
 
         $sql = (string)$update;
 
