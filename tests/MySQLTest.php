@@ -78,10 +78,10 @@ class MySQLTest extends TestCase
             ->innerJoin(new Table('offices', 'o'), 'employees.officeCode = o.officeCode')
             ->where(new Expr('employees.jobTitle = ?', ['Sales Rep']))
             ->where('o.city = \'NYC\'')
-            ->addUnion($unionQuery)
-            ->setOuterOrderBy('type', 'DESC')
-            ->setOuterOrderBy('lastName')
-            ->setOuterLimit($limit);
+            ->union($unionQuery)
+            ->outerOrderBy('type', Select::DIRECTION_DESC)
+            ->outerOrderBy('lastName')
+            ->outerLimit($limit);
 
         $this->assertCount($limit, $this->pdoWrapper->fetchAll($query, PDO::FETCH_ASSOC));
     }

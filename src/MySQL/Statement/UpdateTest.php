@@ -15,7 +15,7 @@ class UpdateTest extends GenericUpdateTest
             ->modifier(Update::LOW_PRIORITY, Update::IGNORE)
             ->values(['id' => '1234', 'bar_id' => new Expr('?', [2345])])
             ->where('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']))
-            ->setLimit(10);
+            ->limit(10);
 
         $parts   = [];
         $parts[] = 'UPDATE LOW_PRIORITY IGNORE foo';

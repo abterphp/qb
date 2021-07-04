@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace QB\MySQL\Clause;
 
+use InvalidArgumentException;
 use QB\Generic\IQueryPart;
 
 class CombiningQuery
@@ -33,7 +34,7 @@ class CombiningQuery
     {
         if (!$this->isValid($type, $modifier)) {
             $data = (string)print_r([$type, $modifier], true);
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 sprintf('invalid arguments for %s. arguments: %s', __CLASS__, $data)
             );
         }

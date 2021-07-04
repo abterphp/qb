@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace QB\MySQL\Clause;
 
+use InvalidArgumentException;
+
 class Lock
 {
     public const LOCK_IN_SHARE_MODE = 'LOCK IN SHARE MODE';
@@ -35,7 +37,7 @@ class Lock
     {
         if (!$this->isValid($for, $modifier)) {
             $data = (string)print_r([$for, $modifier], true);
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 sprintf('invalid arguments for %s. arguments: %s', __CLASS__, $data)
             );
         }

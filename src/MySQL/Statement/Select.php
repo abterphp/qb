@@ -89,7 +89,7 @@ class Select extends GenericSelect
     /**
      * @return $this
      */
-    public function setGroupWithRollup(): static
+    public function groupWithRollup(): static
     {
         $this->groupWithRollup = true;
 
@@ -101,7 +101,7 @@ class Select extends GenericSelect
      *
      * @return $this
      */
-    public function setOuterOffset(?int $offset): static
+    public function outerOffset(?int $offset): static
     {
         $this->outerOffset = $offset;
 
@@ -113,7 +113,7 @@ class Select extends GenericSelect
      *
      * @return $this
      */
-    public function setOuterLimit(?int $limit): static
+    public function outerLimit(?int $limit): static
     {
         $this->outerLimit = $limit;
 
@@ -126,7 +126,7 @@ class Select extends GenericSelect
      *
      * @return $this
      */
-    public function setOuterOrderBy(string $column, string $direction = 'ASC'): static
+    public function outerOrderBy(string $column, string $direction = 'ASC'): static
     {
         $this->outerOrderBy[$column] = $direction;
 
@@ -138,7 +138,7 @@ class Select extends GenericSelect
      *
      * @return $this
      */
-    public function setLock(Lock $lock): static
+    public function lock(Lock $lock): static
     {
         $this->lock = $lock;
 
@@ -151,7 +151,7 @@ class Select extends GenericSelect
      *
      * @return $this
      */
-    public function addUnion(IQueryPart $select, ?string $modifier = null): static
+    public function union(IQueryPart $select, ?string $modifier = null): static
     {
         $this->combiningQueries[] = new CombiningQuery(CombiningQuery::TYPE_UNION, $select, $modifier);
 
@@ -163,7 +163,7 @@ class Select extends GenericSelect
      *
      * @return $this
      */
-    public function setOuterLock(Lock $lock): static
+    public function outerLock(Lock $lock): static
     {
         $this->outerLock = $lock;
 

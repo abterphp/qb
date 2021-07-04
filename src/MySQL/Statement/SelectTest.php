@@ -45,8 +45,8 @@ class SelectTest extends GenericSelectTest
 
         $sql = (string)$this->getSut('foo')
             ->columns('id')
-            ->addUnion($unionQuery)
-            ->setOuterLimit(10);
+            ->union($unionQuery)
+            ->outerLimit(10);
 
         $parts   = [];
         $parts[] = '(SELECT id';
@@ -68,9 +68,9 @@ class SelectTest extends GenericSelectTest
 
         $sql = (string)$this->getSut('foo')
             ->columns('id')
-            ->addUnion($unionQuery)
-            ->setOuterLimit(10)
-            ->setOuterOffset(20);
+            ->union($unionQuery)
+            ->outerLimit(10)
+            ->outerOffset(20);
 
         $parts   = [];
         $parts[] = '(SELECT id';
@@ -92,8 +92,8 @@ class SelectTest extends GenericSelectTest
 
         $sql = (string)$this->getSut('foo')
             ->columns('id')
-            ->addUnion($unionQuery)
-            ->setOuterLock(new Lock(Lock::FOR_UPDATE, [], Lock::MODIFIER_NOWAIT));
+            ->union($unionQuery)
+            ->outerLock(new Lock(Lock::FOR_UPDATE, [], Lock::MODIFIER_NOWAIT));
 
         $parts   = [];
         $parts[] = '(SELECT id';
@@ -116,8 +116,8 @@ class SelectTest extends GenericSelectTest
         $sql = (string)$this->getSut('foo')
             ->columns('id')
             ->limit(10)
-            ->addUnion($unionQuery)
-            ->setOuterLock(new Lock(Lock::FOR_UPDATE, [], Lock::MODIFIER_SKIP_LOCKED));
+            ->union($unionQuery)
+            ->outerLock(new Lock(Lock::FOR_UPDATE, [], Lock::MODIFIER_SKIP_LOCKED));
 
         $parts   = [];
         $parts[] = '(SELECT id';
@@ -152,15 +152,15 @@ class SelectTest extends GenericSelectTest
             ->innerJoin(new Table('quix', 'q'), 'foo.id = q.foo_id')
             ->where('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']))
             ->groupBy('q.foo_id', new Expr('q.bar.id'))
-            ->setGroupWithRollup()
+            ->groupWithRollup()
             ->having('baz_count > 0')
-            ->orderBy('baz_count', 'ASC')
+            ->orderBy('baz_count')
             ->limit(10)
             ->offset(20)
-            ->setLock(new Lock(Lock::FOR_UPDATE, [], Lock::MODIFIER_NOWAIT))
-            ->addUnion($unionQuery)
-            ->setOuterLimit(25)
-            ->setOuterOrderBy('baz_count', 'DESC');
+            ->lock(new Lock(Lock::FOR_UPDATE, [], Lock::MODIFIER_NOWAIT))
+            ->union($unionQuery)
+            ->outerLimit(25)
+            ->outerOrderBy('baz_count', Select::DIRECTION_DESC);
 
         $parts   = [];
         $parts[] = '(SELECT DISTINCT COUNT(DISTINCT baz) AS baz_count, (SELECT b FROM quix WHERE id = ?) AS quix_b, NOW() AS now, bar.id AS bar_id'; // nolint

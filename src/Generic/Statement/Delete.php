@@ -7,6 +7,7 @@ namespace QB\Generic\Statement;
 use QB\Generic\Clause\Table;
 use QB\Generic\Expr\Expr;
 use QB\Generic\IQueryPart;
+use RuntimeException;
 
 class Delete implements IDelete
 {
@@ -53,7 +54,7 @@ class Delete implements IDelete
     public function __toString(): string
     {
         if (!$this->isValid()) {
-            throw new \RuntimeException('Under-initialized DELETE query. Table and where are necessary');
+            throw new RuntimeException('Under-initialized DELETE query. Table and where are necessary');
         }
 
         $delete = $this->delete();

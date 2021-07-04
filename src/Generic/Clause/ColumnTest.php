@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace QB\Generic\Clause;
 
+use PDO;
 use PHPUnit\Framework\TestCase;
 use QB\Generic\Expr\Expr;
 
@@ -64,7 +65,7 @@ class ColumnTest extends TestCase
 
         $sut = new Column($expr, $column);
 
-        $expectedParams = [':word' => ['foobar', \PDO::PARAM_STR]];
+        $expectedParams = [':word' => ['foobar', PDO::PARAM_STR]];
         $actualParams   = $sut->getParams();
 
         $this->assertSame($expectedParams, $actualParams);

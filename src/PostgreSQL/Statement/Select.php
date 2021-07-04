@@ -30,7 +30,7 @@ class Select extends GenericSelect
      *
      * @return $this
      */
-    public function setOuterOffset(?int $offset): static
+    public function outerOffset(?int $offset): static
     {
         $this->outerOffset = $offset;
 
@@ -42,7 +42,7 @@ class Select extends GenericSelect
      *
      * @return $this
      */
-    public function setOuterLimit(?int $limit): static
+    public function outerLimit(?int $limit): static
     {
         $this->outerLimit = $limit;
 
@@ -55,7 +55,7 @@ class Select extends GenericSelect
      *
      * @return Select
      */
-    public function setOuterOrderBy(string $column, string $direction = 'ASC'): static
+    public function outerOrderBy(string $column, string $direction = 'ASC'): static
     {
         $this->outerOrderBy[$column] = $direction;
 
@@ -67,7 +67,7 @@ class Select extends GenericSelect
      *
      * @return $this
      */
-    public function setLock(Lock $lock): static
+    public function lock(Lock $lock): static
     {
         $this->lock = $lock;
 
@@ -80,7 +80,7 @@ class Select extends GenericSelect
      *
      * @return $this
      */
-    public function addUnion(IQueryPart $select, ?string $modifier = null): static
+    public function union(IQueryPart $select, ?string $modifier = null): static
     {
         $this->combiningQueries[] = new CombiningQuery(CombiningQuery::TYPE_UNION, $select, $modifier);
 
@@ -93,7 +93,7 @@ class Select extends GenericSelect
      *
      * @return $this
      */
-    public function addIntersect(IQueryPart $select, ?string $modifier = null): static
+    public function intersect(IQueryPart $select, ?string $modifier = null): static
     {
         $this->combiningQueries[] = new CombiningQuery(CombiningQuery::TYPE_INTERSECT, $select, $modifier);
 
@@ -106,7 +106,7 @@ class Select extends GenericSelect
      *
      * @return $this
      */
-    public function addExcept(IQueryPart $select, ?string $modifier = null): static
+    public function except(IQueryPart $select, ?string $modifier = null): static
     {
         $this->combiningQueries[] = new CombiningQuery(CombiningQuery::TYPE_EXCEPT, $select, $modifier);
 

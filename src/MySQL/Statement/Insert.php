@@ -61,7 +61,7 @@ class Insert extends GenericInsert
      *
      * @return $this
      */
-    public function setSelect(Select $select): static
+    public function select(Select $select): static
     {
         $this->select = $select;
 

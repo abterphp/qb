@@ -161,7 +161,7 @@ class SelectTest extends TestCase
             ->where('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']))
             ->groupBy('q.foo_id', new Expr('q.bar.id'))
             ->having('baz_count > 0')
-            ->orderBy('baz_count', 'ASC')
+            ->orderBy('baz_count')
             ->limit(10)
             ->offset(20);
 

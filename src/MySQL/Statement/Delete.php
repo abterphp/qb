@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace QB\MySQL\Statement;
 
 use QB\Generic\Statement\Delete as GenericDelete;
+use QB\Generic\Statement\ISelect;
 
 class Delete extends GenericDelete
 {
@@ -25,7 +26,7 @@ class Delete extends GenericDelete
      *
      * @return $this
      */
-    public function addModifier(string ...$modifiers): static
+    public function modifier(string ...$modifiers): static
     {
         foreach ($modifiers as $modifier) {
             switch ($modifier) {
@@ -50,7 +51,7 @@ class Delete extends GenericDelete
      *
      * @return $this
      */
-    public function addOrderBy(string $column, string $direction = 'ASC'): static
+    public function orderBy(string $column, string $direction = ISelect::DIRECTION_ASC): static
     {
         $this->orderByParts[$column] = $direction;
 
@@ -62,7 +63,7 @@ class Delete extends GenericDelete
      *
      * @return $this
      */
-    public function setLimit(?int $limit): static
+    public function limit(?int $limit): static
     {
         $this->limit = $limit;
 

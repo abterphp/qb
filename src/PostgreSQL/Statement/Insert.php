@@ -30,7 +30,7 @@ class Insert extends GenericInsert
      *
      * @return $this
      */
-    public function setOnConflict(string ...$columns): static
+    public function onConflict(string ...$columns): static
     {
         $this->onConflict = $columns;
 
@@ -42,7 +42,7 @@ class Insert extends GenericInsert
      *
      * @return $this
      */
-    public function setDoUpdate(string ...$columns): static
+    public function doUpdate(string ...$columns): static
     {
         $this->doNothing = false;
         $this->doUpdate  = $columns;
@@ -53,7 +53,7 @@ class Insert extends GenericInsert
     /**
      * @return $this
      */
-    public function setDoNothing(): static
+    public function doNothing(): static
     {
         $this->doNothing = true;
         $this->doUpdate  = [];
@@ -66,7 +66,7 @@ class Insert extends GenericInsert
      *
      * @return $this
      */
-    public function setReturning(string ...$columns): static
+    public function returning(string ...$columns): static
     {
         $this->returning = $columns;
 
@@ -87,6 +87,9 @@ class Insert extends GenericInsert
         return implode(PHP_EOL, $parts);
     }
 
+    /**
+     * @return string[]
+     */
     protected function getOnConflict(): array
     {
         if (!$this->doNothing && count($this->doUpdate) == 0) {
@@ -109,6 +112,9 @@ class Insert extends GenericInsert
         return $parts;
     }
 
+    /**
+     * @return string[]
+     */
     protected function getReturning(): array
     {
         if (count($this->returning) == 0) {

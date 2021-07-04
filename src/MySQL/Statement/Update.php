@@ -42,7 +42,7 @@ class Update extends GenericUpdate
      *
      * @return $this
      */
-    public function setLimit(?int $limit): static
+    public function limit(?int $limit): static
     {
         $this->limit = $limit;
 
@@ -62,6 +62,9 @@ class Update extends GenericUpdate
         return implode(PHP_EOL, $parts);
     }
 
+    /**
+     * @return string[]
+     */
     protected function getLimit(): array
     {
         $parts = [];

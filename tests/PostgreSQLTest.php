@@ -11,6 +11,7 @@ use QB\Generic\Clause\Column;
 use QB\Generic\Clause\Table;
 use QB\Generic\Expr\Expr;
 use QB\PostgreSQL\QueryBuilder\QueryBuilder;
+use QB\PostgreSQL\Statement\Select;
 
 class PostgreSQLTest extends TestCase
 {
@@ -77,10 +78,10 @@ class PostgreSQLTest extends TestCase
             ->innerJoin(new Table('offices', 'o'), 'employees.officeCode = o.officeCode')
             ->where(new Expr('employees.jobTitle = ?', ['Sales Rep']))
             ->where('o.city = \'NYC\'')
-            ->addUnion($unionQuery)
-            ->setOuterOrderBy('type', 'DESC')
-            ->setOuterOrderBy('lastName')
-            ->setOuterLimit($limit);
+            ->union($unionQuery)
+            ->outerOrderBy('type', Select::DIRECTION_DESC)
+            ->outerOrderBy('lastName')
+            ->outerLimit($limit);
 
         $this->assertCount($limit, $this->pdoWrapper->fetchAll($query, PDO::FETCH_ASSOC));
     }
@@ -136,7 +137,7 @@ class PostgreSQLTest extends TestCase
                 ->columns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
                 ->values("'abc'", "'Berlin'", "'+49 101 123 4567'", "''", "'Germany'", "'10111'", "'NA'")
                 ->values("'bcd'", "'Budapest'", "'+36 70 101 1234'", "''", "'Hungary'", "'1011'", "'NA'")
-                ->setReturning('*');
+                ->returning('*');
 
             $values = $this->pdoWrapper->fetchAll($query, \PDO::FETCH_ASSOC);
 

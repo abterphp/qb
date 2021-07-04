@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace QB\Generic\Statement;
 
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class TruncateTest extends TestCase
 {
@@ -13,7 +14,7 @@ class TruncateTest extends TestCase
      */
     public function testToStringThrowsAnExceptionIfNotInitialized()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
 
         (string)$this->getSut();
     }

@@ -33,7 +33,7 @@ class InsertTest extends GenericInsertTest
 
         $sql = (string)$this->getSut('foo')
             ->modifier(Insert::IGNORE)
-            ->setSelect($select);
+            ->select($select);
 
         $parts   = [];
         $parts[] = 'INSERT IGNORE INTO foo';

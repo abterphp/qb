@@ -12,6 +12,9 @@ use QB\Generic\IQueryPart;
 
 interface ISelect extends IWhereStatement
 {
+    public const DIRECTION_ASC = 'ASC';
+    public const DIRECTION_DESC = 'DESC';
+
     public function __construct(string|IColumn ...$columns);
 
     public function from(string|Table ...$tables): static;
@@ -36,7 +39,7 @@ interface ISelect extends IWhereStatement
 
     public function having(string|IQueryPart ...$havingParts): static;
 
-    public function orderBy(string $column, string $direction = 'ASC'): static;
+    public function orderBy(string $column, string $direction = self::DIRECTION_ASC): static;
 
     public function offset(?int $offset): static;
 

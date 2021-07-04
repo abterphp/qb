@@ -15,7 +15,7 @@ class PDOWrapper
     /**
      * Wrapper constructor.
      *
-     * @param \PDO $pdo
+     * @param PDO $pdo
      */
     public function __construct(PDO $pdo)
     {
@@ -23,7 +23,7 @@ class PDOWrapper
     }
 
     /**
-     * @return \PDO
+     * @return PDO
      */
     public function getPdo(): PDO
     {

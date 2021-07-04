@@ -7,6 +7,7 @@ namespace QB\Generic\Statement;
 use PDO;
 use PHPUnit\Framework\TestCase;
 use QB\Generic\Expr\Expr;
+use RuntimeException;
 
 class DeleteTest extends TestCase
 {
@@ -15,7 +16,7 @@ class DeleteTest extends TestCase
      */
     public function testToStringThrowsAnExceptionIfNotInitialized()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
 
         (string)$this->getSut();
     }

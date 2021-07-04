@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace QB\Generic\Statement;
 
+use InvalidArgumentException;
 use QB\Generic\Clause\ITable;
 use QB\Generic\IQueryPart;
 
@@ -52,7 +53,7 @@ class Insert implements IInsert
     public function columns(string ...$columns): static
     {
         if (count($this->rawValues) > 0 && count($columns) !== count($this->rawValues[0])) {
-            throw new \InvalidArgumentException('number of columns does not match the number of values');
+            throw new InvalidArgumentException('number of columns does not match the number of values');
         }
 
         $this->columns = $columns;

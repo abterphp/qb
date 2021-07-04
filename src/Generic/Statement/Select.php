@@ -12,6 +12,7 @@ use QB\Generic\Clause\Join;
 use QB\Generic\Clause\Table;
 use QB\Generic\Expr\Expr;
 use QB\Generic\IQueryPart;
+use RuntimeException;
 
 /**
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
@@ -241,7 +242,7 @@ class Select implements ISelect
      *
      * @return $this
      */
-    public function orderBy(string $column, string $direction = 'ASC'): static
+    public function orderBy(string $column, string $direction = self::DIRECTION_ASC): static
     {
         $this->orderBy[$column] = $direction;
 
@@ -278,7 +279,7 @@ class Select implements ISelect
     public function __toString(): string
     {
         if (!$this->isValid()) {
-            throw new \RuntimeException('under-initialized SELECT query');
+            throw new RuntimeException('under-initialized SELECT query');
         }
 
         $select = $this->getSelect();

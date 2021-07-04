@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace QB\MySQL\Clause;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use QB\Generic\IQueryPart;
 use QB\MySQL\Statement\Select;
@@ -64,7 +65,7 @@ class CombiningQueryTest extends TestCase
      */
     public function testConstructValidation(string $type, ?string $modifier)
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         new CombiningQuery($type, $this->queryPart, $modifier);
     }

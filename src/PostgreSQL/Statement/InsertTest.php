@@ -59,7 +59,7 @@ class InsertTest extends GenericInsertTest
             ->values('"abc"', '"Berlin"', '"+49 101 123 4567"', '""', '"Germany"', '"10111"', '"NA"')
             ->values('"bcd"', '"Budapest"', '"+36 70 101 1234"', '""', '"Hungary"', '"1011"', '"NA"')
             ->values('"cde"', '"Pécs"', '"+36 70 222 3456"', '"Rákóczi út"', '"Hungary"', '"723"', '"NA"')
-            ->setReturning('*');
+            ->returning('*');
 
         $parts   = [];
         $parts[] = 'INSERT INTO offices (officeCode, city, phone, addressLine1, country, postalCode, territory)';
@@ -79,7 +79,7 @@ class InsertTest extends GenericInsertTest
             ->into(new Table('offices'))
             ->columns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
             ->values('"abc"', '"Berlin"', '"+49 101 123 4567"', '""', '"Germany"', '"10111"', '"NA"')
-            ->setDoNothing();
+            ->doNothing();
 
         $parts   = [];
         $parts[] = 'INSERT INTO offices (officeCode, city, phone, addressLine1, country, postalCode, territory)';
@@ -97,9 +97,9 @@ class InsertTest extends GenericInsertTest
             ->into(new Table('offices'))
             ->columns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
             ->values('"abc"', '"Berlin"', '"+49 101 123 4567"', '""', '"Germany"', '"10111"', '"NA"')
-            ->setOnConflict('officeCode', 'city')
-            ->setDoUpdate('officeCode = EXCLUDED.officeCode', 'city = EXCLUDED.city')
-            ->setReturning('*');
+            ->onConflict('officeCode', 'city')
+            ->doUpdate('officeCode = EXCLUDED.officeCode', 'city = EXCLUDED.city')
+            ->returning('*');
 
         $parts   = [];
         $parts[] = 'INSERT INTO offices (officeCode, city, phone, addressLine1, country, postalCode, territory)';

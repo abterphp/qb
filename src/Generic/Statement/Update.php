@@ -7,6 +7,7 @@ namespace QB\Generic\Statement;
 use QB\Generic\Clause\Table;
 use QB\Generic\Expr\Expr;
 use QB\Generic\IQueryPart;
+use RuntimeException;
 
 class Update implements IUpdate
 {
@@ -74,7 +75,7 @@ class Update implements IUpdate
     public function __toString(): string
     {
         if (!$this->isValid()) {
-            throw new \RuntimeException('Under-initialized UPDATE query. Table, values and where are necessary');
+            throw new RuntimeException('Under-initialized UPDATE query. Table, values and where are necessary');
         }
 
         $sqlParts = array_merge(

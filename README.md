@@ -45,13 +45,13 @@ $sql = (string)(new Select('COUNT(DISTINCT baz) AS baz_count', new Column($colum
     ->where('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']))
     ->where(new Expr('bar.foo IN (?)', [['bar', 'foo']]))
     ->groupBy('q.foo_id', new Expr('q.bar.id'))
-    ->setGroupWithRollup()
+    ->groupWithRollup()
     ->having('baz_count > 0')
     ->orderBy('baz_count', 'ASC')
     ->limit(10)
     ->offset(20)
-    ->setLock(new Lock(Lock::FOR_UPDATE, ['foo'], Lock::MODIFIER_NOWAIT))
-    ->addUnion($unionQuery, CombiningQuery::MODIFIER_DISTINCT);
+    ->lock(new Lock(Lock::FOR_UPDATE, ['foo'], Lock::MODIFIER_NOWAIT))
+    ->union($unionQuery, CombiningQuery::MODIFIER_DISTINCT);
 
 // SELECT DISTINCT COUNT(DISTINCT baz) AS baz_count, (SELECT b FROM quix WHERE id = ?) AS quix_b, NOW() AS now, bar.id AS bar_id
 // FROM foo, bar
@@ -78,9 +78,9 @@ $sql = (string)(new Insert())
     ->columns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
     ->values('abc', 'Berlin', '+49 101 123 4567', '', 'Germany', '10111', 'NA')
     ->values('bcd', 'Budapest', '+36 70 101 1234', '', 'Hungary', '1011', 'NA')
-    ->setOnConflict('officeCode', 'city')
-    ->setDoUpdate('officeCode = EXCLUDED.officeCode', 'city = EXCLUDED.city')
-    ->setReturning('*');
+    ->onConflict('officeCode', 'city')
+    ->doUpdate('officeCode = EXCLUDED.officeCode', 'city = EXCLUDED.city')
+    ->returning('*');
     
 // INSERT INTO offices (officeCode, city, phone, addressLine1, country, postalCode, territory)
 // VALUES (?, ?, ?, ?, ?, ?, ?),

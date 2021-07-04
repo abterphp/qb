@@ -8,6 +8,7 @@ use InvalidArgumentException;
 use PDO;
 use PHPUnit\Framework\TestCase;
 use QB\Generic\Params\Params;
+use stdClass;
 
 class ExprTest extends TestCase
 {
@@ -239,7 +240,7 @@ class ExprTest extends TestCase
     public function constructExceptionsProvider(): array
     {
         return [
-            'object parameter'                  => ['foo = ?', [new \stdClass()], Params::ALL_AUTO],
+            'object parameter'                  => ['foo = ?', [new stdClass()], Params::ALL_AUTO],
             'invalid parameter handling'        => ['foo', [0 => null], 123],
             'string parameter key not expected' => ['foo', [0 => null, 'foo' => null], 123],
             'int parameter key not expected'    => ['foo', [1 => null], Params::ALL_AUTO],
