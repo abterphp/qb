@@ -9,17 +9,17 @@ use QB\Generic\Statement\Select;
 
 class Column implements IColumn
 {
-    protected string|IQueryPart $expr;
+    protected IQueryPart|string $expr;
 
     protected ?string $alias = null;
 
     /**
      * Expr constructor.
      *
-     * @param string|IQueryPart $expr column name or expression to be used
+     * @param IQueryPart|string $expr column name or expression to be used
      * @param string|null       $alias
      */
-    public function __construct(string|IQueryPart $expr, ?string $alias = null)
+    public function __construct(IQueryPart|string $expr, ?string $alias = null)
     {
         $this->expr  = $expr;
         $this->alias = $alias;

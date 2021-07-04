@@ -22,11 +22,11 @@ class Expr implements IQueryPart
     /**
      * Expr constructor.
      *
-     * @param string|IQueryPart $sql
+     * @param IQueryPart|string $sql
      * @param array             $params
      * @param int               $paramHandle
      */
-    public function __construct(string|IQueryPart $sql, array $params = [], int $paramHandle = Params::ALL_AUTO)
+    public function __construct(IQueryPart|string $sql, array $params = [], int $paramHandle = Params::ALL_AUTO)
     {
         $this->sql = (string)$sql;
 

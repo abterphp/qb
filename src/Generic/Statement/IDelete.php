@@ -8,5 +8,5 @@ use QB\Generic\Clause\Table;
 
 interface IDelete extends IWhereStatement
 {
-    public function from(string|Table ...$tables): static;
+    public function from(Table|string ...$tables): static;
 }

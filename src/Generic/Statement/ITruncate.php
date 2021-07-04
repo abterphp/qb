@@ -8,5 +8,5 @@ use QB\Generic\Clause\Table;
 
 interface ITruncate extends IStatement
 {
-    public function from(string|Table ...$tables): static;
+    public function from(Table|string ...$tables): static;
 }

@@ -11,7 +11,7 @@ use RuntimeException;
 
 class Delete implements IDelete
 {
-    /** @var array<int,string|Table> */
+    /** @var array<int,Table|string> */
     protected array $tables = [];
 
     /** @var string[] */
@@ -21,11 +21,11 @@ class Delete implements IDelete
     protected array $whereParts = [];
 
     /**
-     * @param string|Table ...$tables
+     * @param Table|string ...$tables
      *
      * @return $this
      */
-    public function from(string|Table ...$tables): static
+    public function from(Table|string ...$tables): static
     {
         $this->tables = array_merge($this->tables, $tables);
 
@@ -33,11 +33,11 @@ class Delete implements IDelete
     }
 
     /**
-     * @param string|IQueryPart ...$whereParts
+     * @param IQueryPart|string ...$whereParts
      *
      * @return $this
      */
-    public function where(string|IQueryPart ...$whereParts): static
+    public function where(IQueryPart|string ...$whereParts): static
     {
         foreach ($whereParts as $wherePart) {
             $wherePart = is_string($wherePart) ? new Expr($wherePart) : $wherePart;

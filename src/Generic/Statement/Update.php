@@ -11,7 +11,7 @@ use RuntimeException;
 
 class Update implements IUpdate
 {
-    /** @var array<int,string|Table> */
+    /** @var array<int,Table|string> */
     protected array $tables = [];
 
     /** @var string[] */
@@ -24,9 +24,9 @@ class Update implements IUpdate
     protected array $whereParts = [];
 
     /**
-     * @param string|Table ...$tables
+     * @param Table|string ...$tables
      */
-    public function __construct(string|Table ...$tables)
+    public function __construct(Table|string ...$tables)
     {
         $this->tables = array_merge($this->tables, $tables);
     }
@@ -56,11 +56,11 @@ class Update implements IUpdate
     }
 
     /**
-     * @param string|IQueryPart ...$whereParts
+     * @param IQueryPart|string ...$whereParts
      *
      * @return $this
      */
-    public function where(string|IQueryPart ...$whereParts): static
+    public function where(IQueryPart|string ...$whereParts): static
     {
         foreach ($whereParts as $wherePart) {
             $this->whereParts[] = is_string($wherePart) ? new Expr($wherePart) : $wherePart;

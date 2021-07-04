@@ -8,5 +8,5 @@ use QB\Generic\IQueryPart;
 
 interface IWhereStatement extends IStatement
 {
-    public function where(string|IQueryPart ...$whereParts): static;
+    public function where(IQueryPart|string ...$whereParts): static;
 }

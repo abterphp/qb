@@ -8,7 +8,7 @@ use QB\Generic\Clause\Table;
 
 interface IUpdate extends IWhereStatement
 {
-    public function __construct(string|Table ...$tables);
+    public function __construct(Table|string ...$tables);
 
     public function modifier(string ...$modifiers): static;
 

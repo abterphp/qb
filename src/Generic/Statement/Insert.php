@@ -22,11 +22,11 @@ class Insert implements IInsert
     protected array $rawValues = [];
 
     /**
-     * @param string|ITable $table
+     * @param ITable|string $table
      *
      * @return $this
      */
-    public function into(string|ITable $table): static
+    public function into(ITable|string $table): static
     {
         $this->table = $table;
 

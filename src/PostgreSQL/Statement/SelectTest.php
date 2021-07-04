@@ -202,11 +202,11 @@ class SelectTest extends GenericSelectTest
     }
 
     /**
-     * @param string|Table ...$tables
+     * @param Table|string ...$tables
      *
      * @return Select
      */
-    protected function getSut(string|Table ...$tables): Select
+    protected function getSut(Table|string ...$tables): Select
     {
         return (new Select())->from(...$tables);
     }

@@ -24,7 +24,7 @@ class Select implements ISelect
     public const ALL      = 'ALL';
     public const DISTINCT = 'DISTINCT';
 
-    /** @var array<int,string|Table> */
+    /** @var array<int,Table|string> */
     protected array $tables = [];
 
     /** @var string[] */
@@ -55,19 +55,19 @@ class Select implements ISelect
     /**
      * Select constructor.
      *
-     * @param string|IColumn ...$columns
+     * @param IColumn|string ...$columns
      */
-    public function __construct(string|IColumn ...$columns)
+    public function __construct(IColumn|string ...$columns)
     {
         $this->columns(...$columns);
     }
 
     /**
-     * @param string|Table ...$tables
+     * @param ITable|string ...$tables
      *
      * @return $this
      */
-    public function from(string|Table ...$tables): static
+    public function from(ITable|string ...$tables): static
     {
         $this->tables = array_merge($this->tables, $tables);
 
@@ -87,11 +87,11 @@ class Select implements ISelect
     }
 
     /**
-     * @param string|IColumn ...$columns
+     * @param IColumn|string ...$columns
      *
      * @return $this
      */
-    public function columns(string|IColumn ...$columns): static
+    public function columns(IColumn|string ...$columns): static
     {
         foreach ($columns as $column) {
             if ($column instanceof IColumn) {
@@ -176,11 +176,11 @@ class Select implements ISelect
     }
 
     /**
-     * @param string|IQueryPart ...$whereParts
+     * @param IQueryPart|string ...$whereParts
      *
      * @return $this
      */
-    public function where(string|IQueryPart ...$whereParts): static
+    public function where(IQueryPart|string ...$whereParts): static
     {
         foreach ($whereParts as $wherePart) {
             $wherePart = is_string($wherePart) ? new Expr($wherePart) : $wherePart;
@@ -192,11 +192,11 @@ class Select implements ISelect
     }
 
     /**
-     * @param string|IQueryPart ...$groupByParts
+     * @param IQueryPart|string ...$groupByParts
      *
      * @return $this
      */
-    public function groupBy(string|IQueryPart ...$groupByParts): static
+    public function groupBy(IQueryPart|string ...$groupByParts): static
     {
         foreach ($groupByParts as $groupByPart) {
             $groupByPart = is_string($groupByPart) ? new Expr($groupByPart) : $groupByPart;
@@ -208,11 +208,11 @@ class Select implements ISelect
     }
 
     /**
-     * @param string|IQueryPart ...$havingParts
+     * @param IQueryPart|string ...$havingParts
      *
      * @return $this
      */
-    public function having(string|IQueryPart ...$havingParts): static
+    public function having(IQueryPart|string ...$havingParts): static
     {
         foreach ($havingParts as $havingPart) {
             $havingPart = is_string($havingPart) ? new Expr($havingPart) : $havingPart;

@@ -9,15 +9,15 @@ use RuntimeException;
 
 class Truncate implements ITruncate
 {
-    /** @var array<int,string|Table> */
+    /** @var array<int,Table|string> */
     protected array $tables = [];
 
     /**
-     * @param string|Table ...$tables
+     * @param Table|string ...$tables
      *
      * @return $this
      */
-    public function from(string|Table ...$tables): static
+    public function from(Table|string ...$tables): static
     {
         $this->tables = array_merge($this->tables, $tables);
 

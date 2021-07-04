@@ -24,11 +24,11 @@ interface IQueryBuilder
     public function insert(): IInsert;
 
     /**
-     * @param string|Table ...$tables
+     * @param Table|string ...$tables
      *
      * @return IUpdate
      */
-    public function update(string|Table ...$tables): IUpdate;
+    public function update(Table|string ...$tables): IUpdate;
 
     /**
      * @return IDelete

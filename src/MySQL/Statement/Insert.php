@@ -82,11 +82,17 @@ class Insert extends GenericInsert
         return implode(PHP_EOL, $parts);
     }
 
+    /**
+     * @return bool
+     */
     public function isValid(): bool
     {
         return !empty($this->table) && (count($this->rawValues) > 0 || $this->select !== null);
     }
 
+    /**
+     * @return string[]
+     */
     protected function getRawValues(): array
     {
         if ($this->select !== null) {

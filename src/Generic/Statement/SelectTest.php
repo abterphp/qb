@@ -204,11 +204,11 @@ class SelectTest extends TestCase
     }
 
     /**
-     * @param string|Table ...$tables
+     * @param Table|string ...$tables
      *
      * @return ISelect
      */
-    protected function getSut(string|Table ...$tables): ISelect
+    protected function getSut(Table|string ...$tables): ISelect
     {
         return (new Select())->from(...$tables);
     }

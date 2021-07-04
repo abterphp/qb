@@ -7,7 +7,6 @@ namespace QB\Generic\Statement;
 use QB\Generic\Clause\IColumn;
 use QB\Generic\Clause\IJoin;
 use QB\Generic\Clause\ITable;
-use QB\Generic\Clause\Table;
 use QB\Generic\IQueryPart;
 
 interface ISelect extends IWhereStatement
@@ -15,9 +14,9 @@ interface ISelect extends IWhereStatement
     public const DIRECTION_ASC = 'ASC';
     public const DIRECTION_DESC = 'DESC';
 
-    public function __construct(string|IColumn ...$columns);
+    public function __construct(IColumn|string ...$columns);
 
-    public function from(string|Table ...$tables): static;
+    public function from(ITable|string ...$tables): static;
 
     public function modifier(string ...$modifiers): static;
 
@@ -33,9 +32,9 @@ interface ISelect extends IWhereStatement
 
     public function join(IJoin ...$joins): static;
 
-    public function groupBy(string|IQueryPart ...$groupByParts): static;
+    public function groupBy(IQueryPart|string ...$groupByParts): static;
 
-    public function having(string|IQueryPart ...$havingParts): static;
+    public function having(IQueryPart|string ...$havingParts): static;
 
     public function orderBy(string $column, string $direction = self::DIRECTION_ASC): static;
 

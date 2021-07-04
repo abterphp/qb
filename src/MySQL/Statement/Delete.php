@@ -84,6 +84,9 @@ class Delete extends GenericDelete
         return implode(PHP_EOL, $parts);
     }
 
+    /**
+     * @return string[]
+     */
     protected function getOrderBy(): array
     {
         if (count($this->orderByParts) === 0) {
