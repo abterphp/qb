@@ -11,13 +11,15 @@ use QB\Generic\IQueryPart;
 
 interface ISelect extends IWhereStatement
 {
+    public function __construct(string|IColumn ...$columns);
+
     public function from(string|Table ...$tables): static;
 
     public function modifier(string ...$modifiers): static;
 
     public function addColumn(string $column, ?string $alias = null): static;
 
-    public function addColumns(string|IColumn ...$columns): static;
+    public function columns(string|IColumn ...$columns): static;
 
     public function innerJoin(string $table, string|IQueryPart $on, ?string $alias = null): static;
 

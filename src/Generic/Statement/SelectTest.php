@@ -155,7 +155,7 @@ class SelectTest extends TestCase
         $sql = (string)$this->getSut()
             ->from('foo', 'bar')
             ->modifier('DISTINCT')
-            ->addColumns('COUNT(DISTINCT baz) AS baz_count', 'q.foo_id')
+            ->columns('COUNT(DISTINCT baz) AS baz_count', 'q.foo_id')
             ->innerJoin('quix', 'foo.id = q.foo_id', 'q')
             ->where('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']))
             ->groupBy('q.foo_id', new Expr('q.bar.id'))
@@ -184,7 +184,7 @@ class SelectTest extends TestCase
     {
         $query = $this->getSut()
             ->from('foo', 'bar')
-            ->addColumns(new Column(new Expr('COUNT(*) + ?', [2]), 'cpp'))
+            ->columns(new Column(new Expr('COUNT(*) + ?', [2]), 'cpp'))
             ->leftJoin('baz', new Expr('b.c < ?', [3]), 'b')
             ->where(new Expr('foo.a IN (?)', [[4], [5]]))
             ->groupBy(new Expr('foo.c > ?', [6]))

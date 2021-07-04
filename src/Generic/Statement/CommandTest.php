@@ -26,7 +26,7 @@ class CommandTest extends TestCase
     {
         $command = 'EXPLAIN %s';
 
-        $query = (new Select())->addColumns(new Column(new Expr('?', [2])));
+        $query = (new Select())->columns(new Column(new Expr('?', [2])));
 
         $query = new Command($command, $query);
 

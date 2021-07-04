@@ -27,20 +27,18 @@ use QB\MySQL\Statement\Select;
 
 $columnQuery = (new Select())
     ->from('quix')
-    ->addColumns('b')
+    ->columns('b')
     ->where(new Expr('id = ?', [7]));
 
 $columnExpr = new Expr('NOW()');
 
-$unionQuery = (new Select())
-    ->from('baz')
-    ->addColumns('b', 'f');
+$unionQuery = (new Select('b', 'f'))
+    ->from('baz');
 
-$sql = (string)(new Select())
+$sql = (string)(new Select('COUNT(DISTINCT baz) AS baz_count', new Column($columnQuery, 'quix_b')))
     ->from('foo', 'bar')
     ->modifier('DISTINCT')
-    ->addColumns('COUNT(DISTINCT baz) AS baz_count', new Column($columnQuery, 'quix_b'))
-    ->addColumns(new Column($columnExpr, 'now'))
+    ->columns(new Column($columnExpr, 'now'))
     ->addColumn('bar.id', 'bar_id')
     ->innerJoin('quix', 'foo.id = q.foo_id', 'q')
     ->where('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']))
@@ -99,7 +97,7 @@ use QB\Generic\Statement\Command;
 
 $select = (new Select())
     ->from('quix')
-    ->addColumns('b');
+    ->columns('b');
 
 $sql = (string)(new Command('EXPLAIN %s', $select));
     

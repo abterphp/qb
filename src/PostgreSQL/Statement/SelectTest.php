@@ -16,7 +16,7 @@ class SelectTest extends GenericSelectTest
     {
         $sql = (string)$this->getSut('foo')
             ->modifier(Select::ALL, Select::DISTINCT)
-            ->addColumns('id', 'bar_id');
+            ->columns('id', 'bar_id');
 
         $parts   = [];
         $parts[] = 'SELECT ALL DISTINCT id, bar_id';
@@ -30,10 +30,10 @@ class SelectTest extends GenericSelectTest
     public function testToStringComplex()
     {
         $unionQuery = $this->getSut('baz')
-            ->addColumns('id');
+            ->columns('id');
 
         $sql = (string)$this->getSut('foo')
-            ->addColumns('id')
+            ->columns('id')
             ->addUnion($unionQuery)
             ->setOuterOffset(20)
             ->setOuterLimit(10)
@@ -57,18 +57,18 @@ class SelectTest extends GenericSelectTest
     public function testToStringComplexWithUnion()
     {
         $columnQuery = $this->getSut('quix')
-            ->addColumns('b')
+            ->columns('b')
             ->where(new Expr('id = ?', [7]));
 
         $columnExpr = new Expr('NOW()');
 
         $unionQuery = $this->getSut('baz')
-            ->addColumns('b', 'f');
+            ->columns('b', 'f');
 
         $sql = (string)$this->getSut('foo', 'bar')
             ->modifier('DISTINCT')
-            ->addColumns('COUNT(DISTINCT baz) AS baz_count', new Column($columnQuery, 'quix_b'))
-            ->addColumns(new Column($columnExpr, 'now'))
+            ->columns('COUNT(DISTINCT baz) AS baz_count', new Column($columnQuery, 'quix_b'))
+            ->columns(new Column($columnExpr, 'now'))
             ->addColumn('bar.id', 'bar_id')
             ->innerJoin('quix', 'foo.id = q.foo_id', 'q')
             ->where('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']))
@@ -103,18 +103,18 @@ class SelectTest extends GenericSelectTest
     public function testToStringComplexWithIntersect()
     {
         $columnQuery = $this->getSut('quix')
-            ->addColumns('b')
+            ->columns('b')
             ->where(new Expr('id = ?', [7]));
 
         $columnExpr = new Expr('NOW()');
 
         $intersectQuery = $this->getSut('baz')
-            ->addColumns('b', 'f');
+            ->columns('b', 'f');
 
         $sql = (string)$this->getSut('foo', 'bar')
             ->modifier('DISTINCT')
-            ->addColumns('COUNT(DISTINCT baz) AS baz_count', new Column($columnQuery, 'quix_b'))
-            ->addColumns(new Column($columnExpr, 'now'))
+            ->columns('COUNT(DISTINCT baz) AS baz_count', new Column($columnQuery, 'quix_b'))
+            ->columns(new Column($columnExpr, 'now'))
             ->addColumn('bar.id', 'bar_id')
             ->innerJoin('quix', 'foo.id = q.foo_id', 'q')
             ->where('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']))
@@ -149,21 +149,21 @@ class SelectTest extends GenericSelectTest
     public function testToStringComplexWithUnionAndExcept()
     {
         $columnQuery = $this->getSut('quix')
-            ->addColumns('b')
+            ->columns('b')
             ->where(new Expr('id = ?', [7]));
 
         $columnExpr = new Expr('NOW()');
 
         $unionQuery = $this->getSut('baz')
-            ->addColumns('b', 'f');
+            ->columns('b', 'f');
 
         $exceptQuery = $this->getSut('sec')
-            ->addColumns('v', 'w');
+            ->columns('v', 'w');
 
         $sql = (string)$this->getSut('foo', 'bar')
             ->modifier('DISTINCT')
-            ->addColumns('COUNT(DISTINCT baz) AS baz_count', new Column($columnQuery, 'quix_b'))
-            ->addColumns(new Column($columnExpr, 'now'))
+            ->columns('COUNT(DISTINCT baz) AS baz_count', new Column($columnQuery, 'quix_b'))
+            ->columns(new Column($columnExpr, 'now'))
             ->addColumn('bar.id', 'bar_id')
             ->innerJoin('quix', 'foo.id = q.foo_id', 'q')
             ->where('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']))

@@ -48,7 +48,7 @@ class MySQLTest extends TestCase
     {
         $sql = (string)$this->sut->select()
             ->from('customers')
-            ->addColumns('customerName')
+            ->columns('customerName')
             ->limit(1);
 
         $statement = $this->pdo->query($sql);
@@ -62,7 +62,7 @@ class MySQLTest extends TestCase
 
         $columnQuery = $this->sut->select()
             ->from(new Table('employees', 'boss'))
-            ->addColumns('lastName')
+            ->columns('lastName')
             ->where(new Expr('boss.employeeNumber = employees.reportsTo'));
 
         $customerTypeColumn = new Column(new Expr("'customers'"), 'type');
@@ -70,11 +70,11 @@ class MySQLTest extends TestCase
 
         $unionQuery = $this->sut->select()
             ->from('customers')
-            ->addColumns('contactLastName', 'NULL', $customerTypeColumn);
+            ->columns('contactLastName', 'NULL', $customerTypeColumn);
 
         $query = $this->sut->select()
             ->from('employees')
-            ->addColumns('lastName', new Column($columnQuery, 'bossLastName'), $employeeTypeColumn)
+            ->columns('lastName', new Column($columnQuery, 'bossLastName'), $employeeTypeColumn)
             ->innerJoin('offices', 'employees.officeCode = o.officeCode', 'o')
             ->where(new Expr('employees.jobTitle = ?', ['Sales Rep']))
             ->where('o.city = \'NYC\'')
@@ -103,7 +103,7 @@ class MySQLTest extends TestCase
         $sql = (string)$this->sut->select()
             ->from('customers')
             ->modifier(Select::SQL_CALC_FOUND_ROWS)
-            ->addColumns('customerName')
+            ->columns('customerName')
             ->limit($limit);
 
         $statement = $this->pdo->query($sql);

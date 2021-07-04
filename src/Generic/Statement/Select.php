@@ -51,6 +51,16 @@ class Select implements ISelect
     protected ?int $limit = null;
 
     /**
+     * Select constructor.
+     *
+     * @param string|IColumn ...$columns
+     */
+    public function __construct(string|IColumn ...$columns)
+    {
+        $this->columns(...$columns);
+    }
+
+    /**
      * @param string|Table ...$tables
      *
      * @return $this
@@ -92,7 +102,7 @@ class Select implements ISelect
      *
      * @return $this
      */
-    public function addColumns(string|IColumn ...$columns): static
+    public function columns(string|IColumn ...$columns): static
     {
         foreach ($columns as $column) {
             if ($column instanceof IColumn) {

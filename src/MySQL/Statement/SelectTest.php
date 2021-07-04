@@ -27,7 +27,7 @@ class SelectTest extends GenericSelectTest
 
         $sql = (string)$this->getSut('foo')
             ->modifier(...$modifiers)
-            ->addColumns('id', 'bar_id');
+            ->columns('id', 'bar_id');
 
         $parts   = [];
         $parts[] = sprintf('SELECT %s id, bar_id', implode(' ', $modifiers));
@@ -41,10 +41,10 @@ class SelectTest extends GenericSelectTest
     public function testToStringWithOuterLimits()
     {
         $unionQuery = $this->getSut('baz')
-            ->addColumns('id');
+            ->columns('id');
 
         $sql = (string)$this->getSut('foo')
-            ->addColumns('id')
+            ->columns('id')
             ->addUnion($unionQuery)
             ->setOuterLimit(10);
 
@@ -64,10 +64,10 @@ class SelectTest extends GenericSelectTest
     public function testToStringWithOuterOffsetAndLimits()
     {
         $unionQuery = $this->getSut('baz')
-            ->addColumns('id');
+            ->columns('id');
 
         $sql = (string)$this->getSut('foo')
-            ->addColumns('id')
+            ->columns('id')
             ->addUnion($unionQuery)
             ->setOuterLimit(10)
             ->setOuterOffset(20);
@@ -88,10 +88,10 @@ class SelectTest extends GenericSelectTest
     public function testToStringWithOuterLock()
     {
         $unionQuery = $this->getSut('baz')
-            ->addColumns('id');
+            ->columns('id');
 
         $sql = (string)$this->getSut('foo')
-            ->addColumns('id')
+            ->columns('id')
             ->addUnion($unionQuery)
             ->setOuterLock(new Lock(Lock::FOR_UPDATE, [], Lock::MODIFIER_NOWAIT));
 
@@ -111,10 +111,10 @@ class SelectTest extends GenericSelectTest
     public function testToStringWithLimitAndLock()
     {
         $unionQuery = $this->getSut('baz')
-            ->addColumns('id');
+            ->columns('id');
 
         $sql = (string)$this->getSut('foo')
-            ->addColumns('id')
+            ->columns('id')
             ->limit(10)
             ->addUnion($unionQuery)
             ->setOuterLock(new Lock(Lock::FOR_UPDATE, [], Lock::MODIFIER_SKIP_LOCKED));
@@ -136,18 +136,18 @@ class SelectTest extends GenericSelectTest
     public function testToStringComplex()
     {
         $columnQuery = $this->getSut('quix')
-            ->addColumns('b')
+            ->columns('b')
             ->where(new Expr('id = ?', [7]));
 
         $columnExpr = new Expr('NOW()');
 
         $unionQuery = $this->getSut('baz')
-            ->addColumns('b', 'f');
+            ->columns('b', 'f');
 
         $sql = (string)$this->getSut('foo', 'bar')
             ->modifier('DISTINCT')
-            ->addColumns('COUNT(DISTINCT baz) AS baz_count', new Column($columnQuery, 'quix_b'))
-            ->addColumns(new Column($columnExpr, 'now'))
+            ->columns('COUNT(DISTINCT baz) AS baz_count', new Column($columnQuery, 'quix_b'))
+            ->columns(new Column($columnExpr, 'now'))
             ->addColumn('bar.id', 'bar_id')
             ->innerJoin('quix', 'foo.id = q.foo_id', 'q')
             ->where('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']))
