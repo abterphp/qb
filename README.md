@@ -20,6 +20,7 @@ QB is a generic query build which currently supports the base commands of MySQL 
 
 ```php
 use QB\Generic\Clause\Column;
+use QB\Generic\Clause\Table;
 use QB\Generic\Expr\Expr;
 use QB\MySQL\Clause\CombiningQuery;
 use QB\MySQL\Clause\Lock;
@@ -40,7 +41,7 @@ $sql = (string)(new Select('COUNT(DISTINCT baz) AS baz_count', new Column($colum
     ->modifier('DISTINCT')
     ->columns(new Column($columnExpr, 'now'))
     ->addColumn('bar.id', 'bar_id')
-    ->innerJoin('quix', 'foo.id = q.foo_id', 'q')
+    ->innerJoin(new Table('quix', 'q'), 'foo.id = q.foo_id')
     ->where('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']))
     ->where(new Expr('bar.foo IN (?)', [['bar', 'foo']]))
     ->groupBy('q.foo_id', new Expr('q.bar.id'))

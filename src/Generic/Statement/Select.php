@@ -7,6 +7,7 @@ namespace QB\Generic\Statement;
 use QB\Generic\Clause\Column;
 use QB\Generic\Clause\IColumn;
 use QB\Generic\Clause\IJoin;
+use QB\Generic\Clause\ITable;
 use QB\Generic\Clause\Join;
 use QB\Generic\Clause\Table;
 use QB\Generic\Expr\Expr;
@@ -123,57 +124,53 @@ class Select implements ISelect
     }
 
     /**
-     * @param string            $table
-     * @param string|IQueryPart $on
-     * @param string|null       $alias
+     * @param ITable|string     $table
+     * @param IQueryPart|string $on
      *
      * @return $this
      */
-    public function innerJoin(string $table, string|IQueryPart $on, ?string $alias = null): static
+    public function innerJoin(ITable|string $table, IQueryPart|string $on): static
     {
-        $this->joins[] = new Join(IJoin::TYPE_INNER_JOIN, $table, $on, $alias);
+        $this->joins[] = new Join(IJoin::TYPE_INNER_JOIN, $table, $on);
 
         return $this;
     }
 
     /**
-     * @param string            $table
-     * @param string|IQueryPart $on
-     * @param string|null       $alias
+     * @param ITable|string     $table
+     * @param IQueryPart|string $on
      *
      * @return $this
      */
-    public function leftJoin(string $table, string|IQueryPart $on, ?string $alias = null): static
+    public function leftJoin(ITable|string $table, IQueryPart|string $on): static
     {
-        $this->joins[] = new Join(IJoin::TYPE_LEFT_JOIN, $table, $on, $alias);
+        $this->joins[] = new Join(IJoin::TYPE_LEFT_JOIN, $table, $on);
 
         return $this;
     }
 
     /**
-     * @param string            $table
-     * @param string|IQueryPart $on
-     * @param string|null       $alias
+     * @param ITable|string     $table
+     * @param IQueryPart|string $on
      *
      * @return $this
      */
-    public function rightJoin(string $table, string|IQueryPart $on, ?string $alias = null): static
+    public function rightJoin(ITable|string $table, IQueryPart|string $on): static
     {
-        $this->joins[] = new Join(IJoin::TYPE_RIGHT_JOIN, $table, $on, $alias);
+        $this->joins[] = new Join(IJoin::TYPE_RIGHT_JOIN, $table, $on);
 
         return $this;
     }
 
     /**
-     * @param string            $table
-     * @param string|IQueryPart $on
-     * @param string|null       $alias
+     * @param ITable|string     $table
+     * @param IQueryPart|string $on
      *
      * @return $this
      */
-    public function fullJoin(string $table, string|IQueryPart $on, ?string $alias = null): static
+    public function fullJoin(ITable|string $table, IQueryPart|string $on): static
     {
-        $this->joins[] = new Join(IJoin::TYPE_FULL_JOIN, $table, $on, $alias);
+        $this->joins[] = new Join(IJoin::TYPE_FULL_JOIN, $table, $on);
 
         return $this;
     }

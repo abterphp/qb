@@ -4,33 +4,31 @@ declare(strict_types=1);
 
 namespace QB\Generic\Clause;
 
+use InvalidArgumentException;
 use QB\Generic\IQueryPart;
 
 class Join implements IJoin
 {
     public string $type;
-    public string $tableName;
-    public string|IQueryPart $on;
-    public ?string $alias;
+    public ITable|string $table;
+    public IQueryPart|string|null $on;
 
     /**
      * Join constructor.
      *
-     * @param string            $type
-     * @param string            $tableName
-     * @param string|IQueryPart $on
-     * @param string|null       $alias
+     * @param string                 $type
+     * @param ITable|string          $table
+     * @param IQueryPart|string|null $on
      */
-    public function __construct(string $type, string $tableName, string|IQueryPart $on, ?string $alias = null)
+    public function __construct(string $type, ITable|string $table, IQueryPart|string|null $on)
     {
         if (!in_array($type, IJoin::VALID_TYPES)) {
-            throw new \InvalidArgumentException(sprintf('Invalid join type: %s', $type));
+            throw new InvalidArgumentException(sprintf('invalid join type: %s', $type));
         }
 
-        $this->type      = $type;
-        $this->tableName = $tableName;
-        $this->on        = $on;
-        $this->alias     = $alias;
+        $this->type  = $type;
+        $this->table = $table;
+        $this->on    = $on;
     }
 
     /**
@@ -38,11 +36,11 @@ class Join implements IJoin
      */
     public function __toString(): string
     {
-        if ($this->alias) {
-            return sprintf('%s %s AS %s ON %s', $this->type, $this->tableName, $this->alias, (string)$this->on);
+        if ($this->on) {
+            return sprintf('%s %s ON %s', $this->type, (string)$this->table, (string)$this->on);
         }
 
-        return sprintf('%s %s ON %s', $this->type, $this->tableName, (string)$this->on);
+        return sprintf('%s %s', $this->type, (string)$this->table);
     }
 
     /**
@@ -50,10 +48,14 @@ class Join implements IJoin
      */
     public function getParams(): array
     {
+        $params = [];
+        if ($this->table instanceof ITable) {
+            $params = array_merge($params, $this->table->getParams());
+        }
         if ($this->on instanceof IQueryPart) {
-            return $this->on->getParams();
+            $params = array_merge($params, $this->on->getParams());
         }
 
-        return [];
+        return $params;
     }
 }

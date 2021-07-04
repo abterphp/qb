@@ -84,7 +84,7 @@ class Insert extends GenericInsert
 
     public function isValid(): bool
     {
-        return count($this->tables) === 1 && (count($this->rawValues) > 0 || $this->select !== null);
+        return !empty($this->table) && (count($this->rawValues) > 0 || $this->select !== null);
     }
 
     protected function getRawValues(): array

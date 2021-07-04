@@ -149,7 +149,7 @@ class SelectTest extends GenericSelectTest
             ->columns('COUNT(DISTINCT baz) AS baz_count', new Column($columnQuery, 'quix_b'))
             ->columns(new Column($columnExpr, 'now'))
             ->addColumn('bar.id', 'bar_id')
-            ->innerJoin('quix', 'foo.id = q.foo_id', 'q')
+            ->innerJoin(new Table('quix', 'q'), 'foo.id = q.foo_id')
             ->where('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']))
             ->groupBy('q.foo_id', new Expr('q.bar.id'))
             ->setGroupWithRollup()

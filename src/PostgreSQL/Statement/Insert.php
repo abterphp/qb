@@ -123,7 +123,7 @@ class Insert extends GenericInsert
      */
     public function isValid(): bool
     {
-        return count($this->tables) === 1;
+        return !empty($this->table);
     }
 
     /**

@@ -4,16 +4,14 @@ declare(strict_types=1);
 
 namespace QB\Generic\Clause;
 
-use QB\Generic\IQueryPart;
-
-class Table implements IQueryPart
+class Table implements ITable
 {
     protected string $tableName;
 
     protected ?string $alias = null;
 
     /**
-     * Expr constructor.
+     * Table constructor.
      *
      * @param string      $tableName table name
      * @param string|null $alias

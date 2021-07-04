@@ -74,7 +74,7 @@ class PostgreSQLTest extends TestCase
         $query = $this->sut->select()
             ->from('employees')
             ->columns('lastName', new Column($columnQuery, 'bossLastName'), $employeeTypeColumn)
-            ->innerJoin('offices', 'employees.officeCode = o.officeCode', 'o')
+            ->innerJoin(new Table('offices', 'o'), 'employees.officeCode = o.officeCode')
             ->where(new Expr('employees.jobTitle = ?', ['Sales Rep']))
             ->where('o.city = \'NYC\'')
             ->addUnion($unionQuery)

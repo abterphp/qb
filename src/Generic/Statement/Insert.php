@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace QB\Generic\Statement;
 
-use QB\Generic\Clause\Table;
+use QB\Generic\Clause\ITable;
 use QB\Generic\IQueryPart;
 
 class Insert implements IInsert
 {
-    /** @var array<int,string|Table> */
-    protected array $tables = [];
+    protected ITable|string $table;
 
     /** @var string[] */
     protected array $modifiers = [];
@@ -22,13 +21,13 @@ class Insert implements IInsert
     protected array $rawValues = [];
 
     /**
-     * @param string|Table $table
+     * @param string|ITable $table
      *
      * @return $this
      */
-    public function into(string|Table $table): static
+    public function into(string|ITable $table): static
     {
-        $this->tables = [$table];
+        $this->table = $table;
 
         return $this;
     }
@@ -101,7 +100,7 @@ class Insert implements IInsert
      */
     public function isValid(): bool
     {
-        return count($this->tables) === 1 && count($this->rawValues) > 0;
+        return $this->table && count($this->rawValues) > 0;
     }
 
     protected function getCommand(): string
@@ -110,7 +109,7 @@ class Insert implements IInsert
         $sql[] = 'INSERT';
         $sql[] = $this->getModifiers();
         $sql[] = 'INTO';
-        $sql[] = $this->tables[0];
+        $sql[] = $this->table;
 
         $sql = array_filter($sql);
 

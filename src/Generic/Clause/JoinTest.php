@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace QB\Generic\Clause;
 
+use InvalidArgumentException;
+use PDO;
 use PHPUnit\Framework\TestCase;
 use QB\Generic\Expr\Expr;
 use QB\Generic\IQueryPart;
+use QB\Generic\Statement\Select;
 
 class JoinTest extends TestCase
 {
@@ -15,17 +18,22 @@ class JoinTest extends TestCase
         return [
             [
                 IJoin::TYPE_INNER_JOIN,
-                'foo',
+                new Table('foo', 'f'),
                 new Expr('f.id = bar.foo_id AND ?', [1]),
-                'f',
                 'INNER JOIN foo AS f ON f.id = bar.foo_id AND ?',
-                [[1, \PDO::PARAM_INT]],
+                [[1, PDO::PARAM_INT]],
+            ],
+            [
+                IJoin::TYPE_FULL_JOIN,
+                new QueryAsTable(new Select(new Column(new Expr('?', [123]))), 'f'),
+                null,
+                'FULL JOIN (SELECT ?) AS f',
+                [[123, PDO::PARAM_INT]],
             ],
             [
                 IJoin::TYPE_LEFT_JOIN,
                 'foo',
                 'foo.id = bar.foo_id',
-                null,
                 'LEFT JOIN foo ON foo.id = bar.foo_id',
                 [],
             ],
@@ -35,22 +43,20 @@ class JoinTest extends TestCase
     /**
      * @dataProvider toStringGetParamsProvider
      *
-     * @param string            $type
-     * @param string            $tableName
-     * @param IQueryPart|string $on
-     * @param string|null       $alias
-     * @param string            $expectedSql
-     * @param array             $expectedParams
+     * @param string                 $type
+     * @param ITable|string          $table
+     * @param IQueryPart|string|null $on
+     * @param string                 $expectedSql
+     * @param array                  $expectedParams
      */
     public function testToStringGetParamsProvider(
         string $type,
-        string $tableName,
-        IQueryPart|string $on,
-        ?string $alias,
+        ITable|string $table,
+        IQueryPart|string|null $on,
         string $expectedSql,
         array $expectedParams
     ) {
-        $sut = new Join($type, $tableName, $on, $alias);
+        $sut = new Join($type, $table, $on);
 
         $actualSql    = (string)$sut;
         $actualParams = $sut->getParams();
@@ -64,8 +70,8 @@ class JoinTest extends TestCase
      */
     public function testInvalidType()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
-        new Join('foo', 'bar', 'bar.id = foo.bar_id', 'b');
+        new Join('foo', new Table('bar', 'b'), 'bar.id = foo.bar_id');
     }
 }

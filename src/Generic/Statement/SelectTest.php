@@ -11,6 +11,7 @@ use QB\Generic\Clause\IJoin;
 use QB\Generic\Clause\Join;
 use QB\Generic\Clause\Table;
 use QB\Generic\Expr\Expr;
+use RuntimeException;
 
 /**
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
@@ -22,7 +23,7 @@ class SelectTest extends TestCase
      */
     public function testToStringThrowsAnExceptionIfNotInitialized()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
 
         (string)$this->getSut();
     }
@@ -86,7 +87,7 @@ class SelectTest extends TestCase
     public function testToStringWithLeftJoin()
     {
         $sql = (string)$this->getSut('foo')
-            ->leftJoin('baz', new Expr('foo.id = b.foo_id'), 'b');
+            ->leftJoin(new Table('baz', 'b'), new Expr('foo.id = b.foo_id'));
 
         $parts   = [];
         $parts[] = "SELECT *";
@@ -101,7 +102,7 @@ class SelectTest extends TestCase
     public function testToStringWithRightJoin()
     {
         $sql = (string)$this->getSut(new Table('foo', 'f'))
-            ->rightJoin('baz', new Expr('f.id = b.foo_id'), 'b');
+            ->rightJoin(new Table('baz', 'b'), new Expr('f.id = b.foo_id'));
 
         $parts   = [];
         $parts[] = "SELECT *";
@@ -116,7 +117,7 @@ class SelectTest extends TestCase
     public function testToStringWithFullJoin()
     {
         $sql = (string)$this->getSut(new Table('foo', 'f'))
-            ->fullJoin('baz', new Expr('f.id = b.foo_id'), 'b');
+            ->fullJoin(new Table('baz', 'b'), new Expr('f.id = b.foo_id'));
 
         $parts   = [];
         $parts[] = "SELECT *";
@@ -130,9 +131,9 @@ class SelectTest extends TestCase
 
     public function testToStringWithManyJoins()
     {
-        $join0 = new Join(IJoin::TYPE_INNER_JOIN, 'bar', 'b0.foo_id = foo.id', 'b0');
-        $join1 = new Join(IJoin::TYPE_LEFT_JOIN, 'bar', 'b1.foo_id = foo.id AND FALSE', 'b1');
-        $join2 = new Join(IJoin::TYPE_LEFT_JOIN, 'bar', 'b2.foo_id = foo.id AND 0', 'b2');
+        $join0 = new Join(IJoin::TYPE_INNER_JOIN, new Table('bar', 'b0'), 'b0.foo_id = foo.id');
+        $join1 = new Join(IJoin::TYPE_LEFT_JOIN, new Table('bar', 'b1'), 'b1.foo_id = foo.id AND FALSE');
+        $join2 = new Join(IJoin::TYPE_LEFT_JOIN, new Table('bar', 'b2'), 'b2.foo_id = foo.id AND 0');
 
         $sql = (string)$this->getSut('foo')
             ->addColumn('foo.*')
@@ -156,7 +157,7 @@ class SelectTest extends TestCase
             ->from('foo', 'bar')
             ->modifier('DISTINCT')
             ->columns('COUNT(DISTINCT baz) AS baz_count', 'q.foo_id')
-            ->innerJoin('quix', 'foo.id = q.foo_id', 'q')
+            ->innerJoin(new Table('quix', 'q'), 'foo.id = q.foo_id')
             ->where('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']))
             ->groupBy('q.foo_id', new Expr('q.bar.id'))
             ->having('baz_count > 0')
@@ -185,7 +186,7 @@ class SelectTest extends TestCase
         $query = $this->getSut()
             ->from('foo', 'bar')
             ->columns(new Column(new Expr('COUNT(*) + ?', [2]), 'cpp'))
-            ->leftJoin('baz', new Expr('b.c < ?', [3]), 'b')
+            ->leftJoin(new Table('baz', 'b'), new Expr('b.c < ?', [3]))
             ->where(new Expr('foo.a IN (?)', [[4], [5]]))
             ->groupBy(new Expr('foo.c > ?', [6]))
             ->having(new Expr('foo.maybe = ?', [7]));

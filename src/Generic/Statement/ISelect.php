@@ -6,6 +6,7 @@ namespace QB\Generic\Statement;
 
 use QB\Generic\Clause\IColumn;
 use QB\Generic\Clause\IJoin;
+use QB\Generic\Clause\ITable;
 use QB\Generic\Clause\Table;
 use QB\Generic\IQueryPart;
 
@@ -19,15 +20,15 @@ interface ISelect extends IWhereStatement
 
     public function addColumn(string $column, ?string $alias = null): static;
 
-    public function columns(string|IColumn ...$columns): static;
+    public function columns(IColumn|string ...$columns): static;
 
-    public function innerJoin(string $table, string|IQueryPart $on, ?string $alias = null): static;
+    public function innerJoin(ITable|string $table, IQueryPart|string $on): static;
 
-    public function leftJoin(string $table, string|IQueryPart $on, ?string $alias = null): static;
+    public function leftJoin(ITable|string $table, IQueryPart|string $on): static;
 
-    public function rightJoin(string $table, string|IQueryPart $on, ?string $alias = null): static;
+    public function rightJoin(ITable|string $table, IQueryPart|string $on): static;
 
-    public function fullJoin(string $table, string|IQueryPart $on, ?string $alias = null): static;
+    public function fullJoin(ITable|string $table, IQueryPart|string $on): static;
 
     public function join(IJoin ...$joins): static;
 
