@@ -9,7 +9,7 @@ use QB\Generic\Clause\IJoin;
 use QB\Generic\Clause\Table;
 use QB\Generic\IQueryPart;
 
-interface ISelect extends IStatement, IWhereStatement
+interface ISelect extends IWhereStatement
 {
     public function from(string|Table ...$tables): static;
 
@@ -28,8 +28,6 @@ interface ISelect extends IStatement, IWhereStatement
     public function fullJoin(string $table, string|IQueryPart $on, ?string $alias = null): static;
 
     public function join(IJoin ...$joins): static;
-
-    public function where(string|IQueryPart ...$whereParts): static;
 
     public function groupBy(string|IQueryPart ...$groupByParts): static;
 
