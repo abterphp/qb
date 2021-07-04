@@ -12,6 +12,10 @@ precommit:
 	XDEBUG_MODE=off ./vendor/bin/phpmd src text .phpmd.xml
 
 install:
+ifeq (,$(wildcard /usr/local/bin/composer))
+	./bin/composer-install.sh
+	mv composer.phar /usr/local/bin/composer
+endif
 	XDEBUG_MODE=off composer install --no-progress --prefer-dist --optimize-autoloader
 
 update:

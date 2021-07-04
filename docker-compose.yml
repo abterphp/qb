@@ -23,8 +23,8 @@ services:
     volumes:
       - ./docker/postgres/init:/docker-entrypoint-initdb.d
 
-  fpm:
-    image: abtercms/php:80
+  cli:
+    image: abtercms/php:80-dev
     links:
       - mysql
       - postgres
@@ -37,6 +37,8 @@ services:
       - POSTGRES_PASSWORD=Y2yUc9jN4GNXfC6Y
     volumes:
       - .:/qb
+      - ./docker/php/conf.d/ast-on.ini:/usr/local/etc/php/conf.d/ast-on.ini:ro
+      - ./docker/php/conf.d/xdebug-on.ini:/usr/local/etc/php/conf.d/xdebug-on.ini:ro
       - ./docker/php/conf.d/zzz_020_general.ini:/usr/local/etc/php/conf.d/zzz_020_general.ini:ro
       - ./docker/php/conf.d/zzz_500_local.ini:/usr/local/etc/php/conf.d/zzz_500_local.ini:ro
     working_dir: /qb
