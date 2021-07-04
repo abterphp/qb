@@ -13,7 +13,7 @@ class InsertTest extends GenericInsertTest
     {
         $sql = (string)$this->getSut('foo')
             ->modifier(Insert::HIGH_PRIORITY)
-            ->addValues('1234', '2345')
+            ->values('1234', '2345')
             ->setOnDuplicateKeyUpdate(new Expr('bar = bar + 1'));
 
         $parts   = [];

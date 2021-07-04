@@ -38,8 +38,8 @@ class InsertTest extends GenericInsertTest
     {
         $sql = (string)$this->getSut('foo')
             ->columns('id', 'bar_id', 'baz')
-            ->addValues('1234', new Expr('?', ['a']), '"a"')
-            ->addValues('3456', '4567', '"b"');
+            ->values('1234', new Expr('?', ['a']), '"a"')
+            ->values('3456', '4567', '"b"');
 
         $parts   = [];
         $parts[] = 'INSERT INTO foo (id, bar_id, baz)';
@@ -56,9 +56,9 @@ class InsertTest extends GenericInsertTest
         $query = $this->getSut('offices')
             ->into(new Table('offices'))
             ->columns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
-            ->addValues('"abc"', '"Berlin"', '"+49 101 123 4567"', '""', '"Germany"', '"10111"', '"NA"')
-            ->addValues('"bcd"', '"Budapest"', '"+36 70 101 1234"', '""', '"Hungary"', '"1011"', '"NA"')
-            ->addValues('"cde"', '"Pécs"', '"+36 70 222 3456"', '"Rákóczi út"', '"Hungary"', '"723"', '"NA"')
+            ->values('"abc"', '"Berlin"', '"+49 101 123 4567"', '""', '"Germany"', '"10111"', '"NA"')
+            ->values('"bcd"', '"Budapest"', '"+36 70 101 1234"', '""', '"Hungary"', '"1011"', '"NA"')
+            ->values('"cde"', '"Pécs"', '"+36 70 222 3456"', '"Rákóczi út"', '"Hungary"', '"723"', '"NA"')
             ->setReturning('*');
 
         $parts   = [];
@@ -78,7 +78,7 @@ class InsertTest extends GenericInsertTest
         $query = $this->getSut('offices')
             ->into(new Table('offices'))
             ->columns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
-            ->addValues('"abc"', '"Berlin"', '"+49 101 123 4567"', '""', '"Germany"', '"10111"', '"NA"')
+            ->values('"abc"', '"Berlin"', '"+49 101 123 4567"', '""', '"Germany"', '"10111"', '"NA"')
             ->setDoNothing();
 
         $parts   = [];
@@ -96,7 +96,7 @@ class InsertTest extends GenericInsertTest
         $query = $this->getSut('offices')
             ->into(new Table('offices'))
             ->columns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
-            ->addValues('"abc"', '"Berlin"', '"+49 101 123 4567"', '""', '"Germany"', '"10111"', '"NA"')
+            ->values('"abc"', '"Berlin"', '"+49 101 123 4567"', '""', '"Germany"', '"10111"', '"NA"')
             ->setOnConflict('officeCode', 'city')
             ->setDoUpdate('officeCode = EXCLUDED.officeCode', 'city = EXCLUDED.city')
             ->setReturning('*');

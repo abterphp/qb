@@ -66,7 +66,7 @@ class Insert implements IInsert
      *
      * @return $this
      */
-    public function addValues(...$values): static
+    public function values(...$values): static
     {
         if (count($this->columns) > 0 && count($values) !== count($this->columns)) {
             throw new \InvalidArgumentException('number of values does not match the number of columns');

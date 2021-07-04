@@ -23,7 +23,7 @@ class PostgreSQLTest extends TestCase
 
     public function setUp(): void
     {
-        if (!array_key_exists('POSTGRES_USER', $_ENV)) {
+        if (!getenv('POSTGRES_USER')) {
             $this->markTestSkipped('no db');
         }
 
@@ -31,11 +31,11 @@ class PostgreSQLTest extends TestCase
 
         $dns      = sprintf(
             'pgsql:dbname=%s;host=%s',
-            $_ENV['POSTGRES_DB'],
+            getenv('POSTGRES_DB'),
             'postgres'
         );
-        $username = $_ENV['POSTGRES_USER'];
-        $password = $_ENV['POSTGRES_PASSWORD'];
+        $username = getenv('POSTGRES_USER');
+        $password = getenv('POSTGRES_PASSWORD');
         $options  = null;
 
         $this->pdo = new PDO($dns, $username, $password, $options);
@@ -94,7 +94,7 @@ class PostgreSQLTest extends TestCase
             $query = $this->sut->insert()
                 ->into(new Table('offices'))
                 ->columns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
-                ->addValues("'abc'", "'Berlin'", "'+49 101 123 4567'", "''", "'Germany'", "'10111'", "'NA'");
+                ->values("'abc'", "'Berlin'", "'+49 101 123 4567'", "''", "'Germany'", "'10111'", "'NA'");
 
             $statement = $this->pdo->prepare((string)$query);
 
@@ -103,7 +103,7 @@ class PostgreSQLTest extends TestCase
 
             // UPDATE
             $query = $this->sut->update(new Table('offices'))
-                ->setValues(['territory' => "'Berlin'"])
+                ->values(['territory' => "'Berlin'"])
                 ->where("officeCode = 'oc'");
 
             $this->assertTrue($this->pdoWrapper->execute($query));
@@ -134,8 +134,8 @@ class PostgreSQLTest extends TestCase
             $query = $this->sut->insert()
                 ->into(new Table('offices'))
                 ->columns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
-                ->addValues("'abc'", "'Berlin'", "'+49 101 123 4567'", "''", "'Germany'", "'10111'", "'NA'")
-                ->addValues("'bcd'", "'Budapest'", "'+36 70 101 1234'", "''", "'Hungary'", "'1011'", "'NA'")
+                ->values("'abc'", "'Berlin'", "'+49 101 123 4567'", "''", "'Germany'", "'10111'", "'NA'")
+                ->values("'bcd'", "'Budapest'", "'+36 70 101 1234'", "''", "'Hungary'", "'1011'", "'NA'")
                 ->setReturning('*');
 
             $values = $this->pdoWrapper->fetchAll($query, \PDO::FETCH_ASSOC);

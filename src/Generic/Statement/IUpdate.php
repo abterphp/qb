@@ -12,5 +12,5 @@ interface IUpdate extends IWhereStatement
 
     public function modifier(string ...$modifiers): static;
 
-    public function setValues(array $values): static;
+    public function values(array $values): static;
 }

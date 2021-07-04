@@ -33,7 +33,7 @@ class QueryBuilderTest extends TestCase
 
     public function testInsert()
     {
-        $insert = $this->sut->insert()->into('foo')->columns('bar')->addValues("'Bar'");
+        $insert = $this->sut->insert()->into('foo')->columns('bar')->values("'Bar'");
 
         $sql = (string)$insert;
 
@@ -43,7 +43,7 @@ class QueryBuilderTest extends TestCase
 
     public function testUpdate()
     {
-        $update = $this->sut->update('foo')->setValues(['bar' => "'Bar'"])->where('1');
+        $update = $this->sut->update('foo')->values(['bar' => "'Bar'"])->where('1');
 
         $sql = (string)$update;
 

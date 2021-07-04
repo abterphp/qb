@@ -23,7 +23,7 @@ class UpdateTest extends TestCase
     public function testToStringSimple()
     {
         $sql = (string)$this->getSut('foo')
-            ->setValues(['id' => '1234', 'bar_id' => '2345'])
+            ->values(['id' => '1234', 'bar_id' => '2345'])
             ->where('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']));
 
         $parts   = [];
@@ -40,7 +40,7 @@ class UpdateTest extends TestCase
     {
         $sql = (string)$this->getSut('foo')
             ->modifier('BAR')
-            ->setValues(['id' => '1234', 'bar_id' => new Expr('?', [2345])])
+            ->values(['id' => '1234', 'bar_id' => new Expr('?', [2345])])
             ->where('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']));
 
         $parts   = [];
@@ -58,7 +58,7 @@ class UpdateTest extends TestCase
         $expectedParams = [[2345, PDO::PARAM_INT], ['bar-foo', PDO::PARAM_STR]];
 
         $query = $this->getSut('foo')
-            ->setValues(['id' => '1234', 'bar_id' => new Expr('?', [2345])])
+            ->values(['id' => '1234', 'bar_id' => new Expr('?', [2345])])
             ->where('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']));
 
         $params = $query->getParams();

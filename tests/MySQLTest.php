@@ -24,7 +24,7 @@ class MySQLTest extends TestCase
 
     public function setUp(): void
     {
-        if (!array_key_exists('MYSQL_USER', $_ENV)) {
+        if (!getenv('MYSQL_USER')) {
             $this->markTestSkipped('no db');
         }
 
@@ -32,11 +32,11 @@ class MySQLTest extends TestCase
 
         $dns      = sprintf(
             'mysql:dbname=%s;host=%s',
-            $_ENV['MYSQL_DATABASE'],
+            getenv('MYSQL_DATABASE'),
             'mysql'
         );
-        $username = $_ENV['MYSQL_USER'];
-        $password = $_ENV['MYSQL_PASSWORD'];
+        $username = getenv('MYSQL_USER');
+        $password =getenv('MYSQL_PASSWORD');
         $options  = null;
 
         $this->pdo = new PDO($dns, $username, $password, $options);
@@ -127,7 +127,7 @@ class MySQLTest extends TestCase
             $query = $this->sut->insert()
                 ->into(new Table('offices'))
                 ->columns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
-                ->addValues("'abc'", "'Berlin'", "'+49 101 123 4567'", "''", "'Germany'", "'10111'", "'NA'");
+                ->values("'abc'", "'Berlin'", "'+49 101 123 4567'", "''", "'Germany'", "'10111'", "'NA'");
 
             $statement = $this->pdo->prepare((string)$query);
 
@@ -136,7 +136,7 @@ class MySQLTest extends TestCase
 
             // UPDATE
             $query = $this->sut->update(new Table('offices'))
-                ->setValues(['territory' => "'Berlin'"])
+                ->values(['territory' => "'Berlin'"])
                 ->where("officeCode = 'abc'");
 
             $this->assertTrue($this->pdoWrapper->execute($query));

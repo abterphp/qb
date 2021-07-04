@@ -31,7 +31,7 @@ class InsertTest extends TestCase
 
         $this->getSut('foo')
             ->columns('a', 'b')
-            ->addValues('A');
+            ->values('A');
     }
 
     /**
@@ -42,13 +42,13 @@ class InsertTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         $this->getSut('foo')
-            ->addValues('A')
+            ->values('A')
             ->columns('a', 'b');
     }
 
     public function testInsertSimple()
     {
-        $sql = (string)$this->getSut('foo')->addValues('1234', '2345');
+        $sql = (string)$this->getSut('foo')->values('1234', '2345');
 
         $parts   = [];
         $parts[] = 'INSERT INTO foo';
@@ -64,8 +64,8 @@ class InsertTest extends TestCase
         $sql = (string)$this->getSut('foo')
             ->modifier('BAR')
             ->columns('id', 'bar_id', 'baz')
-            ->addValues('1234', new Expr('?', ['a']), '"a"')
-            ->addValues('3456', '4567', '"b"');
+            ->values('1234', new Expr('?', ['a']), '"a"')
+            ->values('3456', '4567', '"b"');
 
         $parts   = [];
         $parts[] = 'INSERT BAR INTO foo (id, bar_id, baz)';
@@ -84,7 +84,7 @@ class InsertTest extends TestCase
         $values = ['id' => '1234', 'bar_id' =>  new Expr('?', [2345])];
 
         $query = $this->getSut('foo')
-            ->addValues(...array_values($values))
+            ->values(...array_values($values))
             ->columns(...array_keys($values));
 
         $params = $query->getParams();

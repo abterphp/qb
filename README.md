@@ -77,8 +77,8 @@ use QB\PostgreSQL\Statement\Insert;
 $sql = (string)(new Insert())
     ->into(new Table('offices'))
     ->columns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
-    ->addValues('abc', 'Berlin', '+49 101 123 4567', '', 'Germany', '10111', 'NA')
-    ->addValues('bcd', 'Budapest', '+36 70 101 1234', '', 'Hungary', '1011', 'NA')
+    ->values('abc', 'Berlin', '+49 101 123 4567', '', 'Germany', '10111', 'NA')
+    ->values('bcd', 'Budapest', '+36 70 101 1234', '', 'Hungary', '1011', 'NA')
     ->setOnConflict('officeCode', 'city')
     ->setDoUpdate('officeCode = EXCLUDED.officeCode', 'city = EXCLUDED.city')
     ->setReturning('*');

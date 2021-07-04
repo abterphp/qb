@@ -47,7 +47,7 @@ class Update implements IUpdate
      *
      * @return $this
      */
-    public function setValues(array $values): static
+    public function values(array $values): static
     {
         $this->rawValues = $values;
 
