@@ -66,21 +66,6 @@ class UpdateTest extends TestCase
         $this->assertSame($expectedParams, $params);
     }
 
-    public function testGetValues()
-    {
-        $values = ['id' => '1234', 'bar_id' =>  new Expr('?', [2345])];
-
-        $expectedValues = array_values($values);
-
-        $query = $this->getSut('foo')
-            ->setValues($values)
-            ->where('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']));
-
-        $actualValues = $query->values();
-
-        $this->assertSame($expectedValues, $actualValues);
-    }
-
     /**
      * @param string ...$tables
      *

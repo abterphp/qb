@@ -92,19 +92,6 @@ class InsertTest extends TestCase
         $this->assertSame($expectedParams, $params);
     }
 
-    public function testValues()
-    {
-        $values = ['id' => '1234', 'bar_id' =>  new Expr('?', [2345])];
-
-        $query = $this->getSut('foo')
-            ->addValues(...array_values($values))
-            ->columns(...array_keys($values));
-
-        $actualValues = $query->values();
-
-        $this->assertSame(array_values($values), $actualValues);
-    }
-
     /**
      * @param string $table
      *

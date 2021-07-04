@@ -153,12 +153,4 @@ class Update implements IUpdate
 
         return $params;
     }
-
-    /**
-     * @return array
-     */
-    public function values(): array
-    {
-        return array_values($this->rawValues);
-    }
 }

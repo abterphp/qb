@@ -166,12 +166,4 @@ class Insert implements IInsert
 
         return $params;
     }
-
-    /**
-     * @return array
-     */
-    public function values(): array
-    {
-        return array_merge(...$this->rawValues);
-    }
 }
