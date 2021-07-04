@@ -30,14 +30,14 @@ class SelectTest extends TestCase
 
     public function testToStringConstant()
     {
-        $sql = (string)$this->getSut()->addColumn('1');
+        $sql = (string)$this->getSut()->columns('1');
 
         $this->assertSame('SELECT 1', $sql);
     }
 
     public function testToStringExpressions()
     {
-        $sql = (string)$this->getSut()->addColumn('COUNT(foo)', 'foo_count');
+        $sql = (string)$this->getSut()->columns(new Column('COUNT(foo)', 'foo_count'));
 
         $this->assertSame('SELECT COUNT(foo) AS foo_count', $sql);
     }
@@ -136,7 +136,7 @@ class SelectTest extends TestCase
         $join2 = new Join(IJoin::TYPE_LEFT_JOIN, new Table('bar', 'b2'), 'b2.foo_id = foo.id AND 0');
 
         $sql = (string)$this->getSut('foo')
-            ->addColumn('foo.*')
+            ->columns('foo.*')
             ->join($join0, $join1, $join2);
 
         $parts   = [];

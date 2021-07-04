@@ -111,7 +111,7 @@ class MySQLTest extends TestCase
         $this->assertCount($limit, $statement->fetchAll());
 
         $sql = (string)$this->sut->select()
-            ->addColumn(new Expr('FOUND_ROWS()'));
+            ->columns('FOUND_ROWS()');
 
         $statement = $this->pdo->query($sql);
 

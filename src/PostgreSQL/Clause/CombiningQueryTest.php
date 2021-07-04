@@ -14,7 +14,7 @@ class CombiningQueryTest extends TestCase
 
     public function setUp(): void
     {
-        $this->queryPart = (new Select())->addColumn('2');
+        $this->queryPart = (new Select())->columns('2');
     }
 
     /**

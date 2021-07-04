@@ -20,6 +20,7 @@ QB is a generic query build which currently supports the base commands of MySQL 
 
 ```php
 use QB\Generic\Clause\Column;
+use QB\Generic\Clause\QueryAsTable;
 use QB\Generic\Clause\Table;
 use QB\Generic\Expr\Expr;
 use QB\MySQL\Clause\CombiningQuery;
@@ -33,15 +34,17 @@ $columnQuery = (new Select())
 
 $columnExpr = new Expr('NOW()');
 
-$unionQuery = (new Select('b', 'f'))
-    ->from('baz');
+$joinQuery = (new Select())->from(new Table('quix', 'q2'))->where('q2.foo_id = foo.id');
+
+$unionQuery = (new Select('b', 'f'))->from('baz');
 
 $sql = (string)(new Select('COUNT(DISTINCT baz) AS baz_count', new Column($columnQuery, 'quix_b')))
     ->from('foo', 'bar')
     ->modifier('DISTINCT')
     ->columns(new Column($columnExpr, 'now'))
-    ->addColumn('bar.id', 'bar_id')
+    ->columns(new Column('bar.id', 'bar_id'))
     ->innerJoin(new Table('quix', 'q'), 'foo.id = q.foo_id')
+    ->innerJoin(new QueryAsTable($joinQuery, 'q2'))
     ->where('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']))
     ->where(new Expr('bar.foo IN (?)', [['bar', 'foo']]))
     ->groupBy('q.foo_id', new Expr('q.bar.id'))
@@ -56,6 +59,7 @@ $sql = (string)(new Select('COUNT(DISTINCT baz) AS baz_count', new Column($colum
 // SELECT DISTINCT COUNT(DISTINCT baz) AS baz_count, (SELECT b FROM quix WHERE id = ?) AS quix_b, NOW() AS now, bar.id AS bar_id
 // FROM foo, bar
 // INNER JOIN quix AS q ON foo.id = q.foo_id
+// INNER JOIN (SELECT * FROM quix AS q2 WHERE foo.id = q2.foo_id) AS q2
 // WHERE foo.bar = "foo-bar" AND bar.foo = ? AND bar.foo IN (?, ?)
 // GROUP BY q.foo_id, q.bar.id WITH ROLLUP
 // HAVING baz_count > 0

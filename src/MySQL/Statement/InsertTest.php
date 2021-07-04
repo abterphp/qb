@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace QB\MySQL\Statement;
 
+use QB\Generic\Clause\Column;
 use QB\Generic\Expr\Expr;
 use QB\Generic\Statement\InsertTest as GenericInsertTest;
 
@@ -29,7 +30,7 @@ class InsertTest extends GenericInsertTest
     public function testComplex()
     {
         $select = new Select();
-        $select->addColumn(new Expr('1'));
+        $select->columns(new Column('1', 'f'));
 
         $sql = (string)$this->getSut('foo')
             ->modifier(Insert::IGNORE)
@@ -37,7 +38,7 @@ class InsertTest extends GenericInsertTest
 
         $parts   = [];
         $parts[] = 'INSERT IGNORE INTO foo';
-        $parts[] = 'SELECT 1';
+        $parts[] = 'SELECT 1 AS f';
 
         $expectedSql = implode(PHP_EOL, $parts);
 

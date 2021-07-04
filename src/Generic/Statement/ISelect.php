@@ -21,17 +21,15 @@ interface ISelect extends IWhereStatement
 
     public function modifier(string ...$modifiers): static;
 
-    public function addColumn(string $column, ?string $alias = null): static;
-
     public function columns(IColumn|string ...$columns): static;
 
-    public function innerJoin(ITable|string $table, IQueryPart|string $on): static;
+    public function innerJoin(ITable|string $table, IQueryPart|string|null $on): static;
 
-    public function leftJoin(ITable|string $table, IQueryPart|string $on): static;
+    public function leftJoin(ITable|string $table, IQueryPart|string|null $on): static;
 
-    public function rightJoin(ITable|string $table, IQueryPart|string $on): static;
+    public function rightJoin(ITable|string $table, IQueryPart|string|null $on): static;
 
-    public function fullJoin(ITable|string $table, IQueryPart|string $on): static;
+    public function fullJoin(ITable|string $table, IQueryPart|string|null $on): static;
 
     public function join(IJoin ...$joins): static;
 

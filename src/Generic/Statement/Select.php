@@ -87,19 +87,6 @@ class Select implements ISelect
     }
 
     /**
-     * @param string|IQueryPart $column
-     * @param string|null       $alias
-     *
-     * @return $this
-     */
-    public function addColumn(string|IQueryPart $column, ?string $alias = null): static
-    {
-        $this->columns[] = new Column($column, $alias);
-
-        return $this;
-    }
-
-    /**
      * @param string|IColumn ...$columns
      *
      * @return $this
@@ -125,12 +112,12 @@ class Select implements ISelect
     }
 
     /**
-     * @param ITable|string     $table
-     * @param IQueryPart|string $on
+     * @param ITable|string          $table
+     * @param IQueryPart|string|null $on
      *
      * @return $this
      */
-    public function innerJoin(ITable|string $table, IQueryPart|string $on): static
+    public function innerJoin(ITable|string $table, IQueryPart|string|null $on = null): static
     {
         $this->joins[] = new Join(IJoin::TYPE_INNER_JOIN, $table, $on);
 
@@ -138,12 +125,12 @@ class Select implements ISelect
     }
 
     /**
-     * @param ITable|string     $table
-     * @param IQueryPart|string $on
+     * @param ITable|string          $table
+     * @param IQueryPart|string|null $on
      *
      * @return $this
      */
-    public function leftJoin(ITable|string $table, IQueryPart|string $on): static
+    public function leftJoin(ITable|string $table, IQueryPart|string|null $on = null): static
     {
         $this->joins[] = new Join(IJoin::TYPE_LEFT_JOIN, $table, $on);
 
@@ -151,12 +138,12 @@ class Select implements ISelect
     }
 
     /**
-     * @param ITable|string     $table
-     * @param IQueryPart|string $on
+     * @param ITable|string          $table
+     * @param IQueryPart|string|null $on
      *
      * @return $this
      */
-    public function rightJoin(ITable|string $table, IQueryPart|string $on): static
+    public function rightJoin(ITable|string $table, IQueryPart|string|null $on = null): static
     {
         $this->joins[] = new Join(IJoin::TYPE_RIGHT_JOIN, $table, $on);
 
@@ -164,12 +151,12 @@ class Select implements ISelect
     }
 
     /**
-     * @param ITable|string     $table
-     * @param IQueryPart|string $on
+     * @param ITable|string          $table
+     * @param IQueryPart|string|null $on
      *
      * @return $this
      */
-    public function fullJoin(ITable|string $table, IQueryPart|string $on): static
+    public function fullJoin(ITable|string $table, IQueryPart|string|null $on = null): static
     {
         $this->joins[] = new Join(IJoin::TYPE_FULL_JOIN, $table, $on);
 
