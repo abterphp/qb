@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace QB\Generic\QueryBuilder;
 
+use QB\Generic\Clause\IColumn;
 use QB\Generic\Clause\Table;
 use QB\Generic\Statement\IDelete;
 use QB\Generic\Statement\IInsert;
@@ -16,7 +17,7 @@ interface IQueryBuilder
     /**
      * @return ISelect
      */
-    public function select(): ISelect;
+    public function select(IColumn|string ...$columns): ISelect;
 
     /**
      * @return IInsert
