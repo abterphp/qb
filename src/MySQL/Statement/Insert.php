@@ -26,7 +26,7 @@ class Insert extends GenericInsert
      *
      * @return $this
      */
-    public function addModifier(string ...$modifiers): static
+    public function modifier(string ...$modifiers): static
     {
         foreach ($modifiers as $modifier) {
             switch ($modifier) {

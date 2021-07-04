@@ -35,7 +35,7 @@ class DeleteTest extends TestCase
     public function testToStringComplex()
     {
         $sql = (string)$this->getSut('foo')
-            ->addWhere('foo.bar = "foo-bar"', 'bar.foo = 17');
+            ->where('foo.bar = "foo-bar"', 'bar.foo = 17');
 
         $parts   = [];
         $parts[] = 'DELETE FROM foo';
@@ -50,7 +50,7 @@ class DeleteTest extends TestCase
     {
         $expectedParams = [['bar-foo', PDO::PARAM_STR]];
         $query = $this->getSut('foo')
-            ->addWhere('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']));
+            ->where('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']));
 
         $params = $query->getParams();
 
@@ -64,6 +64,6 @@ class DeleteTest extends TestCase
      */
     protected function getSut(string ...$tables): IDelete
     {
-        return (new Delete())->addFrom(...$tables);
+        return (new Delete())->from(...$tables);
     }
 }

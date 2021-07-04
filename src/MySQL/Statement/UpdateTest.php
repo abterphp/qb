@@ -12,9 +12,9 @@ class UpdateTest extends GenericUpdateTest
     public function testToStringComplex()
     {
         $sql = (string)$this->getSut('foo')
-            ->addModifier(Update::LOW_PRIORITY, Update::IGNORE)
+            ->modifier(Update::LOW_PRIORITY, Update::IGNORE)
             ->setValues(['id' => '1234', 'bar_id' => new Expr('?', [2345])])
-            ->addWhere('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']))
+            ->where('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']))
             ->setLimit(10);
 
         $parts   = [];

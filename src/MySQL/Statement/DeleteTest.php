@@ -13,7 +13,7 @@ class DeleteTest extends GenericDeleteTest
     {
         $sql = (string)$this->getSut('foo')
             ->addModifier(Delete::LOW_PRIORITY, Delete::QUICK, Delete::IGNORE)
-            ->addWhere('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']))
+            ->where('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']))
             ->addOrderBy('bar.baz', 'DESC')
             ->setLimit(10);
 
@@ -35,6 +35,6 @@ class DeleteTest extends GenericDeleteTest
      */
     protected function getSut(string ...$tables): Delete
     {
-        return (new Delete())->addFrom(...$tables);
+        return (new Delete())->from(...$tables);
     }
 }

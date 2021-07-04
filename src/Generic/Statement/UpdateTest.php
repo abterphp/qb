@@ -24,7 +24,7 @@ class UpdateTest extends TestCase
     {
         $sql = (string)$this->getSut('foo')
             ->setValues(['id' => '1234', 'bar_id' => '2345'])
-            ->addWhere('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']));
+            ->where('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']));
 
         $parts   = [];
         $parts[] = 'UPDATE foo';
@@ -39,9 +39,9 @@ class UpdateTest extends TestCase
     public function testToStringComplex()
     {
         $sql = (string)$this->getSut('foo')
-            ->addModifier('BAR')
+            ->modifier('BAR')
             ->setValues(['id' => '1234', 'bar_id' => new Expr('?', [2345])])
-            ->addWhere('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']));
+            ->where('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']));
 
         $parts   = [];
         $parts[] = 'UPDATE BAR foo';
@@ -59,7 +59,7 @@ class UpdateTest extends TestCase
 
         $query = $this->getSut('foo')
             ->setValues(['id' => '1234', 'bar_id' => new Expr('?', [2345])])
-            ->addWhere('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']));
+            ->where('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']));
 
         $params = $query->getParams();
 
@@ -74,7 +74,7 @@ class UpdateTest extends TestCase
 
         $query = $this->getSut('foo')
             ->setValues($values)
-            ->addWhere('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']));
+            ->where('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']));
 
         $actualValues = $query->values();
 

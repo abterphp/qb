@@ -9,7 +9,7 @@ use QB\Generic\IQueryPart;
 
 interface IDelete extends IStatement
 {
-    public function addFrom(string|Table ...$tables): static;
+    public function from(string|Table ...$tables): static;
 
-    public function addWhere(string|IQueryPart ...$whereParts): static;
+    public function where(string|IQueryPart ...$whereParts): static;
 }

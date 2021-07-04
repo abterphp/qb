@@ -55,7 +55,7 @@ class Select implements ISelect
      *
      * @return $this
      */
-    public function addFrom(string|Table ...$tables): static
+    public function from(string|Table ...$tables): static
     {
         $this->tables = array_merge($this->tables, $tables);
 
@@ -67,7 +67,7 @@ class Select implements ISelect
      *
      * @return $this
      */
-    public function addModifier(string ...$modifiers): static
+    public function modifier(string ...$modifiers): static
     {
         $this->modifiers = array_merge($this->modifiers, $modifiers);
 
@@ -119,7 +119,7 @@ class Select implements ISelect
      *
      * @return $this
      */
-    public function addInnerJoin(string $table, string|IQueryPart $on, ?string $alias = null): static
+    public function innerJoin(string $table, string|IQueryPart $on, ?string $alias = null): static
     {
         $this->joins[] = new Join(IJoin::TYPE_INNER_JOIN, $table, $on, $alias);
 
@@ -133,7 +133,7 @@ class Select implements ISelect
      *
      * @return $this
      */
-    public function addLeftJoin(string $table, string|IQueryPart $on, ?string $alias = null): static
+    public function leftJoin(string $table, string|IQueryPart $on, ?string $alias = null): static
     {
         $this->joins[] = new Join(IJoin::TYPE_LEFT_JOIN, $table, $on, $alias);
 
@@ -147,7 +147,7 @@ class Select implements ISelect
      *
      * @return $this
      */
-    public function addRightJoin(string $table, string|IQueryPart $on, ?string $alias = null): static
+    public function rightJoin(string $table, string|IQueryPart $on, ?string $alias = null): static
     {
         $this->joins[] = new Join(IJoin::TYPE_RIGHT_JOIN, $table, $on, $alias);
 
@@ -161,7 +161,7 @@ class Select implements ISelect
      *
      * @return $this
      */
-    public function addFullJoin(string $table, string|IQueryPart $on, ?string $alias = null): static
+    public function fullJoin(string $table, string|IQueryPart $on, ?string $alias = null): static
     {
         $this->joins[] = new Join(IJoin::TYPE_FULL_JOIN, $table, $on, $alias);
 
@@ -173,7 +173,7 @@ class Select implements ISelect
      *
      * @return $this
      */
-    public function addJoin(IJoin ...$joins): static
+    public function join(IJoin ...$joins): static
     {
         $this->joins = array_merge($this->joins, $joins);
 
@@ -185,7 +185,7 @@ class Select implements ISelect
      *
      * @return $this
      */
-    public function addWhere(string|IQueryPart ...$whereParts): static
+    public function where(string|IQueryPart ...$whereParts): static
     {
         foreach ($whereParts as $wherePart) {
             $wherePart = is_string($wherePart) ? new Expr($wherePart) : $wherePart;
@@ -201,7 +201,7 @@ class Select implements ISelect
      *
      * @return $this
      */
-    public function addGroupBy(string|IQueryPart ...$groupByParts): static
+    public function groupBy(string|IQueryPart ...$groupByParts): static
     {
         foreach ($groupByParts as $groupByPart) {
             $groupByPart = is_string($groupByPart) ? new Expr($groupByPart) : $groupByPart;
@@ -217,7 +217,7 @@ class Select implements ISelect
      *
      * @return $this
      */
-    public function addHaving(string|IQueryPart ...$havingParts): static
+    public function having(string|IQueryPart ...$havingParts): static
     {
         foreach ($havingParts as $havingPart) {
             $havingPart = is_string($havingPart) ? new Expr($havingPart) : $havingPart;
@@ -234,7 +234,7 @@ class Select implements ISelect
      *
      * @return $this
      */
-    public function addOrderBy(string $column, string $direction = 'ASC'): static
+    public function orderBy(string $column, string $direction = 'ASC'): static
     {
         $this->orderBy[$column] = $direction;
 
@@ -246,7 +246,7 @@ class Select implements ISelect
      *
      * @return $this
      */
-    public function setOffset(?int $offset): static
+    public function offset(?int $offset): static
     {
         $this->offset = $offset;
 
@@ -258,7 +258,7 @@ class Select implements ISelect
      *
      * @return $this
      */
-    public function setLimit(?int $limit): static
+    public function limit(?int $limit): static
     {
         $this->limit = $limit;
 

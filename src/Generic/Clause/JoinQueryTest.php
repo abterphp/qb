@@ -12,10 +12,10 @@ class JoinQueryTest extends TestCase
 {
     public function toStringGetParamsProvider(): array
     {
-        $select1 = (new Select())->addFrom('foo');
+        $select1 = (new Select())->from('foo');
         $on1     = new Expr('f.id = bar.foo_id AND ?', [1]);
 
-        $select2 = (new Select())->addFrom('foo')->addWhere(new Expr('bar = ?', ['baz']));
+        $select2 = (new Select())->from('foo')->where(new Expr('bar = ?', ['baz']));
         $on2     = $on1;
 
         return [

@@ -11,11 +11,11 @@ interface IUpdate extends IStatement
 {
     public function __construct(string|Table ...$tables);
 
-    public function addModifier(string ...$modifiers): static;
+    public function modifier(string ...$modifiers): static;
 
     public function setValues(array $values): static;
 
-    public function addWhere(string|IQueryPart ...$whereParts): static;
+    public function where(string|IQueryPart ...$whereParts): static;
 
     public function values(): array;
 }

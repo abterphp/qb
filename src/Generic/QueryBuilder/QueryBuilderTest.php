@@ -23,7 +23,7 @@ class QueryBuilderTest extends TestCase
 
     public function testSelect()
     {
-        $select = $this->sut->select()->addFrom('foo');
+        $select = $this->sut->select()->from('foo');
 
         $sql = (string)$select;
 
@@ -33,7 +33,7 @@ class QueryBuilderTest extends TestCase
 
     public function testInsert()
     {
-        $insert = $this->sut->insert()->setInto('foo')->setColumns('bar')->addValues("'Bar'");
+        $insert = $this->sut->insert()->into('foo')->columns('bar')->addValues("'Bar'");
 
         $sql = (string)$insert;
 
@@ -43,7 +43,7 @@ class QueryBuilderTest extends TestCase
 
     public function testUpdate()
     {
-        $update = $this->sut->update('foo')->setValues(['bar' => "'Bar'"])->addWhere('1');
+        $update = $this->sut->update('foo')->setValues(['bar' => "'Bar'"])->where('1');
 
         $sql = (string)$update;
 
@@ -53,7 +53,7 @@ class QueryBuilderTest extends TestCase
 
     public function testDelete()
     {
-        $delete = $this->sut->delete()->addFrom('foo')->addWhere('1');
+        $delete = $this->sut->delete()->from('foo')->where('1');
 
         $sql = (string)$delete;
 
@@ -63,7 +63,7 @@ class QueryBuilderTest extends TestCase
 
     public function testTruncate()
     {
-        $truncate = $this->sut->truncate()->addFrom('foo');
+        $truncate = $this->sut->truncate()->from('foo');
 
         $sql = (string)$truncate;
 

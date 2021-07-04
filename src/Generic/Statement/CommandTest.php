@@ -47,6 +47,6 @@ class CommandTest extends TestCase
      */
     protected function getSut(string ...$tables): IDelete
     {
-        return (new Delete())->addFrom(...$tables);
+        return (new Delete())->from(...$tables);
     }
 }

@@ -20,7 +20,7 @@ class QueryBuilderTest extends GenericQueryBuilderTest
 
     public function testSelect()
     {
-        $select = $this->sut->select()->addFrom('foo');
+        $select = $this->sut->select()->from('foo');
 
         $this->assertInstanceOf(Select::class, $select);
         $this->assertSame("SELECT *\nFROM foo", (string)$select);

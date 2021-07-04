@@ -24,7 +24,7 @@ class Delete implements IDelete
      *
      * @return $this
      */
-    public function addFrom(string|Table ...$tables): static
+    public function from(string|Table ...$tables): static
     {
         $this->tables = array_merge($this->tables, $tables);
 
@@ -36,7 +36,7 @@ class Delete implements IDelete
      *
      * @return $this
      */
-    public function addWhere(string|IQueryPart ...$whereParts): static
+    public function where(string|IQueryPart ...$whereParts): static
     {
         foreach ($whereParts as $wherePart) {
             $wherePart = is_string($wherePart) ? new Expr($wherePart) : $wherePart;

@@ -35,7 +35,7 @@ class Update implements IUpdate
      *
      * @return $this
      */
-    public function addModifier(string ...$modifiers): static
+    public function modifier(string ...$modifiers): static
     {
         $this->modifiers = array_merge($this->modifiers, $modifiers);
 
@@ -59,7 +59,7 @@ class Update implements IUpdate
      *
      * @return $this
      */
-    public function addWhere(string|IQueryPart ...$whereParts): static
+    public function where(string|IQueryPart ...$whereParts): static
     {
         foreach ($whereParts as $wherePart) {
             $this->whereParts[] = is_string($wherePart) ? new Expr($wherePart) : $wherePart;

@@ -16,7 +16,7 @@ class Truncate implements ITruncate
      *
      * @return $this
      */
-    public function addFrom(string|Table ...$tables): static
+    public function from(string|Table ...$tables): static
     {
         $this->tables = array_merge($this->tables, $tables);
 

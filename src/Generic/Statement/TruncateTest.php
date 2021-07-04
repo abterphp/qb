@@ -46,6 +46,6 @@ class TruncateTest extends TestCase
      */
     protected function getSut(string ...$tables): ITruncate
     {
-        return (new Truncate())->addFrom(...$tables);
+        return (new Truncate())->from(...$tables);
     }
 }

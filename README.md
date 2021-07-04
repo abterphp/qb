@@ -26,31 +26,31 @@ use QB\MySQL\Clause\Lock;
 use QB\MySQL\Statement\Select;
 
 $columnQuery = (new Select())
-    ->addFrom('quix')
+    ->from('quix')
     ->addColumns('b')
-    ->addWhere(new Expr('id = ?', [7]));
+    ->where(new Expr('id = ?', [7]));
 
 $columnExpr = new Expr('NOW()');
 
 $unionQuery = (new Select())
-    ->addFrom('baz')
+    ->from('baz')
     ->addColumns('b', 'f');
 
 $sql = (string)(new Select())
-    ->addFrom('foo', 'bar')
-    ->addModifier('DISTINCT')
+    ->from('foo', 'bar')
+    ->modifier('DISTINCT')
     ->addColumns('COUNT(DISTINCT baz) AS baz_count', new Column($columnQuery, 'quix_b'))
     ->addColumns(new Column($columnExpr, 'now'))
     ->addColumn('bar.id', 'bar_id')
-    ->addInnerJoin('quix', 'foo.id = q.foo_id', 'q')
-    ->addWhere('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']))
-    ->addWhere(new Expr('bar.foo IN (?)', [['bar', 'foo']]))
-    ->addGroupBy('q.foo_id', new Expr('q.bar.id'))
+    ->innerJoin('quix', 'foo.id = q.foo_id', 'q')
+    ->where('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']))
+    ->where(new Expr('bar.foo IN (?)', [['bar', 'foo']]))
+    ->groupBy('q.foo_id', new Expr('q.bar.id'))
     ->setGroupWithRollup()
-    ->addHaving('baz_count > 0')
-    ->addOrderBy('baz_count', 'ASC')
-    ->setLimit(10)
-    ->setOffset(20)
+    ->having('baz_count > 0')
+    ->orderBy('baz_count', 'ASC')
+    ->limit(10)
+    ->offset(20)
     ->setLock(new Lock(Lock::FOR_UPDATE, ['foo'], Lock::MODIFIER_NOWAIT))
     ->addUnion($unionQuery, CombiningQuery::MODIFIER_DISTINCT);
 
@@ -75,8 +75,8 @@ use QB\Generic\Clause\Table;
 use QB\PostgreSQL\Statement\Insert;
 
 $sql = (string)(new Insert())
-    ->setInto(new Table('offices'))
-    ->setColumns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
+    ->into(new Table('offices'))
+    ->columns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
     ->addValues('abc', 'Berlin', '+49 101 123 4567', '', 'Germany', '10111', 'NA')
     ->addValues('bcd', 'Budapest', '+36 70 101 1234', '', 'Hungary', '1011', 'NA')
     ->setOnConflict('officeCode', 'city')
@@ -98,7 +98,7 @@ use QB\Generic\Statement\Select;
 use QB\Generic\Statement\Command;
 
 $select = (new Select())
-    ->addFrom('quix')
+    ->from('quix')
     ->addColumns('b');
 
 $sql = (string)(new Command('EXPLAIN %s', $select));

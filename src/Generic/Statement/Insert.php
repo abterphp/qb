@@ -26,7 +26,7 @@ class Insert implements IInsert
      *
      * @return $this
      */
-    public function setInto(string|Table $table): static
+    public function into(string|Table $table): static
     {
         $this->tables = [$table];
 
@@ -38,7 +38,7 @@ class Insert implements IInsert
      *
      * @return $this
      */
-    public function addModifier(string ...$modifiers): static
+    public function modifier(string ...$modifiers): static
     {
         $this->modifiers = array_merge($this->modifiers, $modifiers);
 
@@ -50,7 +50,7 @@ class Insert implements IInsert
      *
      * @return $this
      */
-    public function setColumns(string ...$columns): static
+    public function columns(string ...$columns): static
     {
         if (count($this->rawValues) > 0 && count($columns) !== count($this->rawValues[0])) {
             throw new \InvalidArgumentException('number of columns does not match the number of values');

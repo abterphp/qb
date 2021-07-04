@@ -37,7 +37,7 @@ class InsertTest extends GenericInsertTest
     public function testComplex()
     {
         $sql = (string)$this->getSut('foo')
-            ->setColumns('id', 'bar_id', 'baz')
+            ->columns('id', 'bar_id', 'baz')
             ->addValues('1234', new Expr('?', ['a']), '"a"')
             ->addValues('3456', '4567', '"b"');
 
@@ -54,8 +54,8 @@ class InsertTest extends GenericInsertTest
     public function testAddMultipleRows()
     {
         $query = $this->getSut('offices')
-            ->setInto(new Table('offices'))
-            ->setColumns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
+            ->into(new Table('offices'))
+            ->columns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
             ->addValues('"abc"', '"Berlin"', '"+49 101 123 4567"', '""', '"Germany"', '"10111"', '"NA"')
             ->addValues('"bcd"', '"Budapest"', '"+36 70 101 1234"', '""', '"Hungary"', '"1011"', '"NA"')
             ->addValues('"cde"', '"Pécs"', '"+36 70 222 3456"', '"Rákóczi út"', '"Hungary"', '"723"', '"NA"')
@@ -76,8 +76,8 @@ class InsertTest extends GenericInsertTest
     public function testAddOnConflictDoNothing()
     {
         $query = $this->getSut('offices')
-            ->setInto(new Table('offices'))
-            ->setColumns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
+            ->into(new Table('offices'))
+            ->columns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
             ->addValues('"abc"', '"Berlin"', '"+49 101 123 4567"', '""', '"Germany"', '"10111"', '"NA"')
             ->setDoNothing();
 
@@ -94,8 +94,8 @@ class InsertTest extends GenericInsertTest
     public function testAddOnConflictDoUpdate()
     {
         $query = $this->getSut('offices')
-            ->setInto(new Table('offices'))
-            ->setColumns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
+            ->into(new Table('offices'))
+            ->columns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
             ->addValues('"abc"', '"Berlin"', '"+49 101 123 4567"', '""', '"Germany"', '"10111"', '"NA"')
             ->setOnConflict('officeCode', 'city')
             ->setDoUpdate('officeCode = EXCLUDED.officeCode', 'city = EXCLUDED.city')
@@ -120,6 +120,6 @@ class InsertTest extends GenericInsertTest
      */
     protected function getSut(string $table): Insert
     {
-        return (new Insert())->setInto($table);
+        return (new Insert())->into($table);
     }
 }

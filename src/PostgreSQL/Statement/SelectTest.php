@@ -15,7 +15,7 @@ class SelectTest extends GenericSelectTest
     public function testToStringModifiers()
     {
         $sql = (string)$this->getSut('foo')
-            ->addModifier(Select::ALL, Select::DISTINCT)
+            ->modifier(Select::ALL, Select::DISTINCT)
             ->addColumns('id', 'bar_id');
 
         $parts   = [];
@@ -58,7 +58,7 @@ class SelectTest extends GenericSelectTest
     {
         $columnQuery = $this->getSut('quix')
             ->addColumns('b')
-            ->addWhere(new Expr('id = ?', [7]));
+            ->where(new Expr('id = ?', [7]));
 
         $columnExpr = new Expr('NOW()');
 
@@ -66,18 +66,18 @@ class SelectTest extends GenericSelectTest
             ->addColumns('b', 'f');
 
         $sql = (string)$this->getSut('foo', 'bar')
-            ->addModifier('DISTINCT')
+            ->modifier('DISTINCT')
             ->addColumns('COUNT(DISTINCT baz) AS baz_count', new Column($columnQuery, 'quix_b'))
             ->addColumns(new Column($columnExpr, 'now'))
             ->addColumn('bar.id', 'bar_id')
-            ->addInnerJoin('quix', 'foo.id = q.foo_id', 'q')
-            ->addWhere('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']))
-            ->addGroupBy('q.foo_id', new Expr('q.bar.id'))
-            ->addHaving('baz_count > 0')
-            ->addOrderBy('baz_count', 'ASC')
+            ->innerJoin('quix', 'foo.id = q.foo_id', 'q')
+            ->where('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']))
+            ->groupBy('q.foo_id', new Expr('q.bar.id'))
+            ->having('baz_count > 0')
+            ->orderBy('baz_count', 'ASC')
             ->setLock(new Lock(Lock::FOR_UPDATE, [], Lock::MODIFIER_NOWAIT))
-            ->setLimit(10)
-            ->setOffset(20)
+            ->limit(10)
+            ->offset(20)
             ->addUnion($unionQuery);
 
         $parts   = [];
@@ -104,7 +104,7 @@ class SelectTest extends GenericSelectTest
     {
         $columnQuery = $this->getSut('quix')
             ->addColumns('b')
-            ->addWhere(new Expr('id = ?', [7]));
+            ->where(new Expr('id = ?', [7]));
 
         $columnExpr = new Expr('NOW()');
 
@@ -112,18 +112,18 @@ class SelectTest extends GenericSelectTest
             ->addColumns('b', 'f');
 
         $sql = (string)$this->getSut('foo', 'bar')
-            ->addModifier('DISTINCT')
+            ->modifier('DISTINCT')
             ->addColumns('COUNT(DISTINCT baz) AS baz_count', new Column($columnQuery, 'quix_b'))
             ->addColumns(new Column($columnExpr, 'now'))
             ->addColumn('bar.id', 'bar_id')
-            ->addInnerJoin('quix', 'foo.id = q.foo_id', 'q')
-            ->addWhere('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']))
-            ->addGroupBy('q.foo_id', new Expr('q.bar.id'))
-            ->addHaving('baz_count > 0')
-            ->addOrderBy('baz_count', 'ASC')
+            ->innerJoin('quix', 'foo.id = q.foo_id', 'q')
+            ->where('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']))
+            ->groupBy('q.foo_id', new Expr('q.bar.id'))
+            ->having('baz_count > 0')
+            ->orderBy('baz_count', 'ASC')
             ->setLock(new Lock(Lock::FOR_UPDATE, ['foo'], Lock::MODIFIER_NOWAIT))
-            ->setLimit(10)
-            ->setOffset(20)
+            ->limit(10)
+            ->offset(20)
             ->addIntersect($intersectQuery);
 
         $parts   = [];
@@ -150,7 +150,7 @@ class SelectTest extends GenericSelectTest
     {
         $columnQuery = $this->getSut('quix')
             ->addColumns('b')
-            ->addWhere(new Expr('id = ?', [7]));
+            ->where(new Expr('id = ?', [7]));
 
         $columnExpr = new Expr('NOW()');
 
@@ -161,18 +161,18 @@ class SelectTest extends GenericSelectTest
             ->addColumns('v', 'w');
 
         $sql = (string)$this->getSut('foo', 'bar')
-            ->addModifier('DISTINCT')
+            ->modifier('DISTINCT')
             ->addColumns('COUNT(DISTINCT baz) AS baz_count', new Column($columnQuery, 'quix_b'))
             ->addColumns(new Column($columnExpr, 'now'))
             ->addColumn('bar.id', 'bar_id')
-            ->addInnerJoin('quix', 'foo.id = q.foo_id', 'q')
-            ->addWhere('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']))
-            ->addGroupBy('q.foo_id', new Expr('q.bar.id'))
-            ->addHaving('baz_count > 0')
-            ->addOrderBy('baz_count', 'ASC')
+            ->innerJoin('quix', 'foo.id = q.foo_id', 'q')
+            ->where('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']))
+            ->groupBy('q.foo_id', new Expr('q.bar.id'))
+            ->having('baz_count > 0')
+            ->orderBy('baz_count', 'ASC')
             ->setLock(new Lock(Lock::FOR_KEY_SHARE))
-            ->setLimit(10)
-            ->setOffset(20)
+            ->limit(10)
+            ->offset(20)
             ->addUnion($unionQuery)
             ->addExcept($exceptQuery)
             ->setOuterLimit(100);
@@ -208,6 +208,6 @@ class SelectTest extends GenericSelectTest
      */
     protected function getSut(string|Table ...$tables): Select
     {
-        return (new Select())->addFrom(...$tables);
+        return (new Select())->from(...$tables);
     }
 }

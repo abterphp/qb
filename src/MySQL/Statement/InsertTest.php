@@ -12,7 +12,7 @@ class InsertTest extends GenericInsertTest
     public function testOnDuplicateKeyUpdate()
     {
         $sql = (string)$this->getSut('foo')
-            ->addModifier(Insert::HIGH_PRIORITY)
+            ->modifier(Insert::HIGH_PRIORITY)
             ->addValues('1234', '2345')
             ->setOnDuplicateKeyUpdate(new Expr('bar = bar + 1'));
 
@@ -32,7 +32,7 @@ class InsertTest extends GenericInsertTest
         $select->addColumn(new Expr('1'));
 
         $sql = (string)$this->getSut('foo')
-            ->addModifier(Insert::IGNORE)
+            ->modifier(Insert::IGNORE)
             ->setSelect($select);
 
         $parts   = [];
@@ -51,6 +51,6 @@ class InsertTest extends GenericInsertTest
      */
     protected function getSut(string $table): Insert
     {
-        return (new Insert())->setInto($table);
+        return (new Insert())->into($table);
     }
 }

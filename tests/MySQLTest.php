@@ -47,9 +47,9 @@ class MySQLTest extends TestCase
     public function testSelectOneCustomer()
     {
         $sql = (string)$this->sut->select()
-            ->addFrom('customers')
+            ->from('customers')
             ->addColumns('customerName')
-            ->setLimit(1);
+            ->limit(1);
 
         $statement = $this->pdo->query($sql);
 
@@ -61,23 +61,23 @@ class MySQLTest extends TestCase
         $limit = 5;
 
         $columnQuery = $this->sut->select()
-            ->addFrom(new Table('employees', 'boss'))
+            ->from(new Table('employees', 'boss'))
             ->addColumns('lastName')
-            ->addWhere(new Expr('boss.employeeNumber = employees.reportsTo'));
+            ->where(new Expr('boss.employeeNumber = employees.reportsTo'));
 
         $customerTypeColumn = new Column(new Expr("'customers'"), 'type');
         $employeeTypeColumn = new Column(new Expr("'employees'"), 'type');
 
         $unionQuery = $this->sut->select()
-            ->addFrom('customers')
+            ->from('customers')
             ->addColumns('contactLastName', 'NULL', $customerTypeColumn);
 
         $query = $this->sut->select()
-            ->addFrom('employees')
+            ->from('employees')
             ->addColumns('lastName', new Column($columnQuery, 'bossLastName'), $employeeTypeColumn)
-            ->addInnerJoin('offices', 'employees.officeCode = o.officeCode', 'o')
-            ->addWhere(new Expr('employees.jobTitle = ?', ['Sales Rep']))
-            ->addWhere('o.city = \'NYC\'')
+            ->innerJoin('offices', 'employees.officeCode = o.officeCode', 'o')
+            ->where(new Expr('employees.jobTitle = ?', ['Sales Rep']))
+            ->where('o.city = \'NYC\'')
             ->addUnion($unionQuery)
             ->setOuterOrderBy('type', 'DESC')
             ->setOuterOrderBy('lastName')
@@ -101,10 +101,10 @@ class MySQLTest extends TestCase
         $limit = 5;
 
         $sql = (string)$this->sut->select()
-            ->addFrom('customers')
-            ->addModifier(Select::SQL_CALC_FOUND_ROWS)
+            ->from('customers')
+            ->modifier(Select::SQL_CALC_FOUND_ROWS)
             ->addColumns('customerName')
-            ->setLimit($limit);
+            ->limit($limit);
 
         $statement = $this->pdo->query($sql);
 
@@ -125,8 +125,8 @@ class MySQLTest extends TestCase
 
             // INSERT
             $query = $this->sut->insert()
-                ->setInto(new Table('offices'))
-                ->setColumns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
+                ->into(new Table('offices'))
+                ->columns('officeCode', 'city', 'phone', 'addressLine1', 'country', 'postalCode', 'territory')
                 ->addValues("'abc'", "'Berlin'", "'+49 101 123 4567'", "''", "'Germany'", "'10111'", "'NA'");
 
             $statement = $this->pdo->prepare((string)$query);
@@ -137,14 +137,14 @@ class MySQLTest extends TestCase
             // UPDATE
             $query = $this->sut->update(new Table('offices'))
                 ->setValues(['territory' => "'Berlin'"])
-                ->addWhere("officeCode = 'abc'");
+                ->where("officeCode = 'abc'");
 
             $this->assertTrue($this->pdoWrapper->execute($query));
 
             // DELETE
             $query = $this->sut->delete()
-                ->addFrom(new Table('offices'))
-                ->addWhere(new Expr('officeCode = ?', ['abc']));
+                ->from(new Table('offices'))
+                ->where(new Expr('officeCode = ?', ['abc']));
 
             $this->assertTrue($this->pdoWrapper->execute($query));
 

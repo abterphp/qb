@@ -71,7 +71,7 @@ class SelectTest extends TestCase
     public function testWithInnerJoin()
     {
         $sql = (string)$this->getSut('foo')
-            ->addInnerJoin('baz', 'foo.id = baz.foo_id');
+            ->innerJoin('baz', 'foo.id = baz.foo_id');
 
         $parts   = [];
         $parts[] = "SELECT *";
@@ -86,7 +86,7 @@ class SelectTest extends TestCase
     public function testToStringWithLeftJoin()
     {
         $sql = (string)$this->getSut('foo')
-            ->addLeftJoin('baz', new Expr('foo.id = b.foo_id'), 'b');
+            ->leftJoin('baz', new Expr('foo.id = b.foo_id'), 'b');
 
         $parts   = [];
         $parts[] = "SELECT *";
@@ -101,7 +101,7 @@ class SelectTest extends TestCase
     public function testToStringWithRightJoin()
     {
         $sql = (string)$this->getSut(new Table('foo', 'f'))
-            ->addRightJoin('baz', new Expr('f.id = b.foo_id'), 'b');
+            ->rightJoin('baz', new Expr('f.id = b.foo_id'), 'b');
 
         $parts   = [];
         $parts[] = "SELECT *";
@@ -116,7 +116,7 @@ class SelectTest extends TestCase
     public function testToStringWithFullJoin()
     {
         $sql = (string)$this->getSut(new Table('foo', 'f'))
-            ->addFullJoin('baz', new Expr('f.id = b.foo_id'), 'b');
+            ->fullJoin('baz', new Expr('f.id = b.foo_id'), 'b');
 
         $parts   = [];
         $parts[] = "SELECT *";
@@ -136,7 +136,7 @@ class SelectTest extends TestCase
 
         $sql = (string)$this->getSut('foo')
             ->addColumn('foo.*')
-            ->addJoin($join0, $join1, $join2);
+            ->join($join0, $join1, $join2);
 
         $parts   = [];
         $parts[] = "SELECT foo.*";
@@ -153,16 +153,16 @@ class SelectTest extends TestCase
     public function testToStringComplex()
     {
         $sql = (string)$this->getSut()
-            ->addFrom('foo', 'bar')
-            ->addModifier('DISTINCT')
+            ->from('foo', 'bar')
+            ->modifier('DISTINCT')
             ->addColumns('COUNT(DISTINCT baz) AS baz_count', 'q.foo_id')
-            ->addInnerJoin('quix', 'foo.id = q.foo_id', 'q')
-            ->addWhere('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']))
-            ->addGroupBy('q.foo_id', new Expr('q.bar.id'))
-            ->addHaving('baz_count > 0')
-            ->addOrderBy('baz_count', 'ASC')
-            ->setLimit(10)
-            ->setOffset(20);
+            ->innerJoin('quix', 'foo.id = q.foo_id', 'q')
+            ->where('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']))
+            ->groupBy('q.foo_id', new Expr('q.bar.id'))
+            ->having('baz_count > 0')
+            ->orderBy('baz_count', 'ASC')
+            ->limit(10)
+            ->offset(20);
 
         $parts   = [];
         $parts[] = 'SELECT DISTINCT COUNT(DISTINCT baz) AS baz_count, q.foo_id';
@@ -183,12 +183,12 @@ class SelectTest extends TestCase
     public function testGetParamsComplex()
     {
         $query = $this->getSut()
-            ->addFrom('foo', 'bar')
+            ->from('foo', 'bar')
             ->addColumns(new Column(new Expr('COUNT(*) + ?', [2]), 'cpp'))
-            ->addLeftJoin('baz', new Expr('b.c < ?', [3]), 'b')
-            ->addWhere(new Expr('foo.a IN (?)', [[4], [5]]))
-            ->addGroupBy(new Expr('foo.c > ?', [6]))
-            ->addHaving(new Expr('foo.maybe = ?', [7]));
+            ->leftJoin('baz', new Expr('b.c < ?', [3]), 'b')
+            ->where(new Expr('foo.a IN (?)', [[4], [5]]))
+            ->groupBy(new Expr('foo.c > ?', [6]))
+            ->having(new Expr('foo.maybe = ?', [7]));
 
         $expectedParams = [
             [2, PDO::PARAM_INT],
@@ -209,6 +209,6 @@ class SelectTest extends TestCase
      */
     protected function getSut(string|Table ...$tables): ISelect
     {
-        return (new Select())->addFrom(...$tables);
+        return (new Select())->from(...$tables);
     }
 }

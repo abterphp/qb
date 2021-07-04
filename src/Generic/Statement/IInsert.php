@@ -8,11 +8,11 @@ use QB\Generic\Clause\Table;
 
 interface IInsert extends IStatement
 {
-    public function setInto(string|Table $table): static;
+    public function into(string|Table $table): static;
 
-    public function addModifier(string ...$modifiers): static;
+    public function modifier(string ...$modifiers): static;
 
-    public function setColumns(string ...$columns): static;
+    public function columns(string ...$columns): static;
 
     public function addValues(...$values): static;
 

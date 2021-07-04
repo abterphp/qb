@@ -26,7 +26,7 @@ class SelectTest extends GenericSelectTest
         ];
 
         $sql = (string)$this->getSut('foo')
-            ->addModifier(...$modifiers)
+            ->modifier(...$modifiers)
             ->addColumns('id', 'bar_id');
 
         $parts   = [];
@@ -115,7 +115,7 @@ class SelectTest extends GenericSelectTest
 
         $sql = (string)$this->getSut('foo')
             ->addColumns('id')
-            ->setLimit(10)
+            ->limit(10)
             ->addUnion($unionQuery)
             ->setOuterLock(new Lock(Lock::FOR_UPDATE, [], Lock::MODIFIER_SKIP_LOCKED));
 
@@ -137,7 +137,7 @@ class SelectTest extends GenericSelectTest
     {
         $columnQuery = $this->getSut('quix')
             ->addColumns('b')
-            ->addWhere(new Expr('id = ?', [7]));
+            ->where(new Expr('id = ?', [7]));
 
         $columnExpr = new Expr('NOW()');
 
@@ -145,18 +145,18 @@ class SelectTest extends GenericSelectTest
             ->addColumns('b', 'f');
 
         $sql = (string)$this->getSut('foo', 'bar')
-            ->addModifier('DISTINCT')
+            ->modifier('DISTINCT')
             ->addColumns('COUNT(DISTINCT baz) AS baz_count', new Column($columnQuery, 'quix_b'))
             ->addColumns(new Column($columnExpr, 'now'))
             ->addColumn('bar.id', 'bar_id')
-            ->addInnerJoin('quix', 'foo.id = q.foo_id', 'q')
-            ->addWhere('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']))
-            ->addGroupBy('q.foo_id', new Expr('q.bar.id'))
+            ->innerJoin('quix', 'foo.id = q.foo_id', 'q')
+            ->where('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']))
+            ->groupBy('q.foo_id', new Expr('q.bar.id'))
             ->setGroupWithRollup()
-            ->addHaving('baz_count > 0')
-            ->addOrderBy('baz_count', 'ASC')
-            ->setLimit(10)
-            ->setOffset(20)
+            ->having('baz_count > 0')
+            ->orderBy('baz_count', 'ASC')
+            ->limit(10)
+            ->offset(20)
             ->setLock(new Lock(Lock::FOR_UPDATE, [], Lock::MODIFIER_NOWAIT))
             ->addUnion($unionQuery)
             ->setOuterLimit(25)
@@ -190,6 +190,6 @@ class SelectTest extends GenericSelectTest
      */
     protected function getSut(string|Table ...$tables): Select
     {
-        return (new Select())->addFrom(...$tables);
+        return (new Select())->from(...$tables);
     }
 }
