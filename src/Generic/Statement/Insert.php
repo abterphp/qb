@@ -141,7 +141,13 @@ class Insert implements IInsert
         foreach ($this->rawValues as $values) {
             $line = [];
             foreach ($values as $value) {
-                $line[] = (string)$value;
+                if ($value === null) {
+                    $line[] = 'NULL';
+                } elseif (is_array($value)) {
+                    $line[] = sprintf("'%s'", json_encode($value));
+                } else {
+                    $line[] = (string)$value;
+                }
             }
             $lines[] = '(' . implode(', ', $line) . ')';
         }

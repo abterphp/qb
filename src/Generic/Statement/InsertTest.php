@@ -48,11 +48,11 @@ class InsertTest extends TestCase
 
     public function testInsertSimple()
     {
-        $sql = (string)$this->getSut('foo')->values('1234', '2345');
+        $sql = (string)$this->getSut('foo')->values('1234', ['2345', '3456'], null);
 
         $parts   = [];
         $parts[] = 'INSERT INTO foo';
-        $parts[] = 'VALUES (1234, 2345)';
+        $parts[] = 'VALUES (1234, \'["2345","3456"]\', NULL)';
 
         $expectedSql = implode(PHP_EOL, $parts);
 
