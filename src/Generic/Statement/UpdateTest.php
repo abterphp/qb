@@ -40,12 +40,12 @@ class UpdateTest extends TestCase
     {
         $sql = (string)$this->getSut('foo')
             ->modifier('BAR')
-            ->values(['id' => '1234', 'bar_id' => new Expr('?', [2345])])
+            ->values(['id' => '1234', 'bar_id' => new Expr('?', [2345]), 'baz' => ['a', 'b'], 'quix' => null])
             ->where('foo.bar = "foo-bar"', new Expr('bar.foo = ?', ['bar-foo']));
 
         $parts   = [];
         $parts[] = 'UPDATE BAR foo';
-        $parts[] = 'SET id = 1234, bar_id = ?';
+        $parts[] = "SET id = 1234, bar_id = ?, baz = '[\"a\",\"b\"]', quix = NULL";
         $parts[] = 'WHERE foo.bar = "foo-bar" AND bar.foo = ?';
 
         $expectedSql = implode(PHP_EOL, $parts);

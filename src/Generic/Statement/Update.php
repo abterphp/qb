@@ -89,6 +89,9 @@ class Update implements IUpdate
         return implode(PHP_EOL, $sqlParts);
     }
 
+    /**
+     * @return bool
+     */
     public function isValid(): bool
     {
         return count($this->tables) === 1 && count($this->rawValues) > 0 && count($this->whereParts) > 0;
@@ -116,7 +119,15 @@ class Update implements IUpdate
     {
         $values = [];
         foreach ($this->rawValues as $column => $value) {
-            $values[] = sprintf('%s = %s', $column, $value);
+            if ($value === null) {
+                $values[] = sprintf('%s = NULL', $column);
+            } elseif (is_scalar($value)) {
+                $values[] = sprintf('%s = %s', $column, $value);
+            } elseif ($value instanceof Expr) {
+                $values[] = sprintf("%s = ?", $column);
+            } else {
+                $values[] = sprintf("%s = '%s'", $column, json_encode($value));
+            }
         }
 
         return ['SET ' . implode(', ', $values)];
